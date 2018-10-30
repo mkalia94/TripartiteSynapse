@@ -3,13 +3,42 @@ from scipy.optimize import fsolve
 from assimulo.solvers import CVode
 from assimulo.problem import Explicit_Problem
 import matplotlib.pyplot as plt
+from parameters import *
+
+##       PARAMETERS
+NaCi0 = 13
+KCi0 = 145
+ClCi0 = 7
+NaCg0 = 13
+KCg0 = 90
+ClCg0 = 35
+Wi0 = 2
+Wg0 = 2
 
 
 
 
-#-----------------------------------------------------
-#         INTEGRATION PARAMETERS
-#-----------------------------------------------------
+blockerScaleAst = 1;
+blockerScaleNeuron = 1;
+pumpScaleAst = 1;
+pumpScaleNeuron = 1;
+nkccScale = 0.4;
+kirScale = 2;
+beta1 = 0.8;
+beta2 = 0.5;
+perc = 0.1;
+
+testparams = [blockerScaleAst, blockerScaleNeuron, \
+pumpScaleAst, pumpScaleNeuron, \
+nkccScale, kirScale, beta1, beta2, perc]
+
+
+
+
+
+
+
+
 t0=0
 t00b=30*60*1e3
 t01b=31*60*1e3
