@@ -28,14 +28,14 @@ initvals = [NNai0,NKi0,NCli0,NNag0,NKg0,NClg0,Wi0,Wg0]
 
 tstart = 30
 tend = 32
-blockerScaleAst = 1;
-blockerScaleNeuron = 1;
-pumpScaleAst = 1;
+blockerScaleAst = 0.01;
+blockerScaleNeuron = 1.5;
+pumpScaleAst = 10;
 pumpScaleNeuron = 1;
-nkccScale = 0.4;
-kirScale = 2;
+nkccScale = 0.01;
+kirScale = 5;
 beta1 = 0.8;
-beta2 = 0.5;
+beta2 = 1.5;
 perc = 0.1;
 testparams = [blockerScaleAst, blockerScaleNeuron, \
 pumpScaleAst, pumpScaleNeuron, \
