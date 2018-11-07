@@ -14,9 +14,9 @@ plotnamedict={'INaG':r'$I_{Na^+}^g$ (pA)',\
 'NKg':r'$N_{K^+}^g$ (fmol)',\
 'NClg':r'$N_{Cl^-}^g$ (fmol)',\
 'Ipump':r'$I_{pump}$ (pA)',\
-'Wi':r'$W_i$ (2000 $\micro m^3$)',\
-'Wg':r'$W_g$ (2000 $\micro m^3$)',\
-'We':r'$W_e$ (2000 $\micro m^3$)',\
+'Wi':r'$W_i$ (2000 $\mu m^3$)',\
+'Wg':r'$W_g$ (2000 $\mu m^3$)',\
+'We':r'$W_e$ (2000 $\mu m^3$)',\
 'h':r'h',\
 'm':r'm',\
 'n':r'n',\

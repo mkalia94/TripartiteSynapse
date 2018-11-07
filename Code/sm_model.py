@@ -81,12 +81,15 @@ def model(t,y,p,*args):
    fRelNa = p.kRelNa*1/p.F*p.F**2/(p.R*p.T)*Vg*((NaCg-NaCe*exp((-p.F*Vg)/(p.R*p.T)))/(1-exp((-p.F*Vg)/(p.R*p.T))))
    
    # Astrocyte: NKCC1
-   fNKCC1 = p.gNKCC1*p.R*p.T/p.F*(log(KCe) + log(NaCe) + 2*log(ClCe) - log(KCg) - log(NaCg) - 2*log(ClCg))
+   blockerExp = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
+   fNKCC1 = 1*p.gNKCC1*p.R*p.T/p.F*(log(KCe) + log(NaCe) + 2*log(ClCe) - log(KCg) - log(NaCg) - 2*log(ClCg))
    
    # Astrocyte: Kir4.1
    Vkg = p.R*p.T/p.F*log(KCe/KCg) 
-   IKir = p.GKir/p.F*p.F**2/(p.R*p.T)*Vg*((KCg-KCe*exp((-p.F*Vg)/(p.R*p.T)))/(1-exp((-p.F*Vg)/(p.R*p.T))))*1/(1+exp((p.KCe_thres-KCe)/p.kup2))%(sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
-   
+   IKir = p.GKir*(Vg-Vkg)*1/(1+exp((p.KCe_thres-KCe)/p.kup2))#(sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
+      
+   #p.GKir/p.F*p.F**2/(p.R*p.T)*Vg*((KCg-KCe*exp((-p.F*Vg)/(p.R*p.T)))/(1-exp((-p.F*Vg)/(p.R*p.T))))
+      
    # Water flux: neuron + astrocyte
    SCi = NaCi+KCi+ClCi+p.NAi/Wi
    SCe = NaCe+KCe+ClCe+p.NAe/We
@@ -95,6 +98,9 @@ def model(t,y,p,*args):
    fluxi = p.LH20i*(delpii)
    delpig = p.R*p.T*(SCg-SCe)
    fluxg = p.LH20g*(delpig)
+   
+   blockerExp = 1/(1+exp(p.beta1*(t-70))) + 1/(1+exp(-p.beta2*(t-80)))
+   blockerExp = p.perc + (1-p.perc)*blockerExp
    
    # Final model
    ODEs=[  (-1/p.F*(INaG+INaL+3*Ipump) ), \
@@ -111,3 +117,6 @@ def model(t,y,p,*args):
       return eval(args[0])
    else:
       return ODEs
+      
+from numpy import *
+

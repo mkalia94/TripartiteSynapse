@@ -9,7 +9,8 @@ class smclass:
          return(modelfile.model(t,y,self,*args))
       else:
          return(modelfile.model(t,y,self))
-      
+
+#Initial values
 NaCi0 = 13
 KCi0 = 145
 ClCi0 = 7
@@ -26,19 +27,35 @@ NKg0 = KCg0*Wg0
 NClg0 = ClCg0*Wg0
 initvals = [NNai0,NKi0,NCli0,NNag0,NKg0,NClg0,Wi0,Wg0]
 
-tstart = 30
-tend = 32
-blockerScaleAst = 0.01;
-blockerScaleNeuron = 1.5;
-pumpScaleAst = 10;
+# Free parameters
+tstart = 20
+tend = 30
+blockerScaleAst = 1;
+blockerScaleNeuron = 1.07;
+#blockerScaleNeuron = 1.07
+pumpScaleAst = 1.2;
 pumpScaleNeuron = 1;
-nkccScale = 0.01;
-kirScale = 5;
-beta1 = 0.8;
-beta2 = 1.5;
-perc = 0.1;
+nkccScale = 0.7;
+kirScale = 1.2
+beta1 =0.5;
+beta2 = 2;
+perc = 0.3;
+#perc = 0.3
 testparams = [blockerScaleAst, blockerScaleNeuron, \
 pumpScaleAst, pumpScaleNeuron, \
 nkccScale, kirScale, beta1, beta2, perc, tstart, tend]
 
+# Generate class instance
 sm = smclass(initvals,testparams)
+testparamlist = ['blockerScaleAst', 'blockerScaleNeuron', \
+'pumpScaleAst', 'pumpScaleNeuron', \
+'nkccScale', 'kirScale', 'beta1', 'beta2', 'perc', 'tstart', 'tend']
+initvallist =['NNai0','NKi0','NCli0','NNag0','NKg0','NClg0','Wi0','Wg0']
+
+
+# sm = smclass(initvals,testparams)
+# initvals = [NNai0,NKi0,NCli0,sm.m0,sm.h0,sm.n0,NNag0,NKg0,NClg0,Wi0,Wg0]
+# testparamlist = ['blockerScaleAst', 'blockerScaleNeuron', \
+# 'pumpScaleAst', 'pumpScaleNeuron', \
+# 'nkccScale', 'kirScale', 'beta1', 'beta2', 'perc', 'tstart', 'tend']
+# initvallist =['NNai0','NKi0','NCli0','m0','h0','n0','NNag0','NKg0','NClg0','Wi0','Wg0']

@@ -14,13 +14,13 @@ def parameters(p,testparams,initvals):
     p.LH20i = 2*1e-14
     p.Qpump = 54.5
     p.Cg = 20
-    p.alphae0 = 0.5        # Volume fraction: ECS
+    p.alphae0 = 0.01        # Volume fraction: ECS
     p.Vg0 = -80            # Fix initial glial membrane potential
     p.Vi0 = -65.5
     p.NaCe0 = 152          # ECS Na Conc.
     p.KCe0 = 3             # ECS K Conc.
     p.ClCe0 = 135          # ECS Cl Conc.
-    p.KCe_thres = 5
+    p.KCe_thres = 7
     p.kup2 = 0.1
     
     p.blockerScaleAst = testparams[0]
