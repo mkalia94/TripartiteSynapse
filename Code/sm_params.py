@@ -1,42 +1,42 @@
 from numpy import *
 def parameters(p,testparams,initvals):
-    p.C = 20
-    p.F = 96485.333
-    p.R = 8314.4598
-    p.T = 310
-    p.PNaG = 80*1e-5
-    p.PNaL_base = 0.2*1e-5
-    p.PKG = 40*1e-5
-    p.PKL_base = 2*1e-5
-    p.PClG = 1.95*1e-5
+    p.C = 20                # Neuron membrane capacitance
+    p.F = 96485.333         # Faraday's constant 
+    p.R = 8314.4598         # Gas constant
+    p.T = 310               # Temperature
+    p.PNaG = 80*1e-5        # permeability of gated Na current
+    p.PNaL_base = 0.2*1e-5  
+    p.PKG = 40*1e-5         # permbeability of gated K current
+    p.PKL_base = 2*1e-5 
+    p.PClG = 1.95*1e-5      # permeability of gated Cl current
     p.PClL_base = 0.25*1e-5
-    p.UKCl = 13*1e-7
-    p.LH20i = 2*1e-14
-    p.Qpump = 54.5
-    p.Cg = 20
+    p.UKCl = 13*1e-7        # flux rate of KCl cotransporter
+    p.LH20i = 2*1e-14       # Osmotic permeability in the neuron
+    p.Qpump = 54.5          # Baseline neuronal pump strength
+    p.Cg = 20               # Astrocyte membrane capacitance 
     p.alphae0 = 0.01        # Volume fraction: ECS
-    p.Vg0 = -80            # Fix initial glial membrane potential
-    p.Vi0 = -65.5
-    p.NaCe0 = 152          # ECS Na Conc.
-    p.KCe0 = 3             # ECS K Conc.
-    p.ClCe0 = 135          # ECS Cl Conc.
-    p.KCe_thres = 7
-    p.kup2 = 0.1
+    p.Vg0 = -80             # Fix initial glial membrane potential
+    p.Vi0 = -65.5           # Fix initial neuronal membrane potential 
+    p.NaCe0 = 152           # Fix initial ECS Na Conc.
+    p.KCe0 = 3              # Fix initial ECS K Conc.
+    p.ClCe0 = 135           # Fix initial ECS Cl Conc.
+    p.KCe_thres = 7         # Kir: Threshold for Kir gate
+    p.kup2 = 0.1            # Kir: Rate of transition from low uptake to high uptake
     
-    p.blockerScaleAst = testparams[0]
-    p.blockerScaleNeuron = testparams[1]
-    p.pumpScaleAst = testparams[2]
-    p.pumpScaleNeuron = testparams[3]
-    p.nkccScale = testparams[4]
-    p.kirScale = testparams[5]
-    p.beta1 = testparams[6]
-    p.beta2 = testparams[7]
-    p.perc = testparams[8]
-    p.tstart = testparams[9]
-    p.tend = testparams[10]
+    p.blockerScaleAst = testparams[0]        # How much more should you block astrocyte pump?
+    p.blockerScaleNeuron = testparams[1]     # How much more should you block neuronal pump?
+    p.pumpScaleAst = testparams[2]           # baseline astrocyte pump strength factor
+    p.pumpScaleNeuron = testparams[3]        # baseline neuron pump strength factor
+    p.nkccScale = testparams[4]              # factor NKCC1 flux rate
+    p.kirScale = testparams[5]               # factor Kir conductance
+    p.beta1 = testparams[6]                  # sigmoidal rate NKA blockade onset
+    p.beta2 = testparams[7]                  # sigmoidal rate NKA blockade offset
+    p.perc = testparams[8]                   # Perc of baseline blocked NKA
+    p.tstart = testparams[9]                 # Start blockade
+    p.tend = testparams[10]                  # End blockade
     
     # Initial concentrations and volumes (baseline rest)
-    p.NNai0 = initvals[0]
+    p.NNai0 = initvals[0]            
     p.NKi0 = initvals[1]
     p.NCli0 = initvals[2]
     p.NNag0 = initvals[3]
@@ -83,12 +83,12 @@ def parameters(p,testparams,initvals):
     p.JKCl0 = p.UKCl*p.R*p.T/p.F*(log(p.KCi0)+log(p.ClCi0)-log(p.KCe0)-log(p.ClCe0))
     p.neurPump = p.pumpScaleNeuron*p.Qpump*(p.NaCi0**(1.5)/(p.NaCi0**(1.5)+10**1.5))*(p.KCe0/(p.KCe0+3))
     
-    p.PNaL = -((p.INaG0 + 3*p.neurPump))/p.INaL0
-    p.PKL = -((p.IKG0 - 2*p.neurPump)+p.F*p.JKCl0)/p.IKL0
-    p.PClL = (p.F*p.JKCl0 - p.IClG0)/p.IClL0
+    p.PNaL = -((p.INaG0 + 3*p.neurPump))/p.INaL0             # Estimated sodium leak conductance in neuron
+    p.PKL = -((p.IKG0 - 2*p.neurPump)+p.F*p.JKCl0)/p.IKL0    # Estimated K leak conductance in neuron 
+    p.PClL = (p.F*p.JKCl0 - p.IClG0)/p.IClL0                 # Estimated Cl leak conducatance in neuron
     
     # Glial uptake parameters
-    p.kActive = p.Qpump*p.pumpScaleAst/p.F
+    p.kActive = p.Qpump*p.pumpScaleAst/p.F                  
     p.LH20g = p.LH20i
     p.gNKCC1 = p.nkccScale*6e-5
     p.GKir = p.kirScale*60*1e-3;
