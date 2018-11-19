@@ -21,7 +21,7 @@ def parameters(p,testparams,initvals):
     p.KCe0 = 3              # Fix initial ECS K Conc.
     p.ClCe0 = 135           # Fix initial ECS Cl Conc.
     p.KCe_thres = 7         # Kir: Threshold for Kir gate
-    p.kup2 = 0.1     # Kir: Rate of transition from low uptake to high uptake
+    p.kup2 = 0.1            # Kir: Rate of transition from low uptake to high uptake
     
     p.blockerScaleAst = testparams[0]        # How much more should you block astrocyte pump?
     p.blockerScaleNeuron = testparams[1]     # How much more should you block neuronal pump?
@@ -29,13 +29,11 @@ def parameters(p,testparams,initvals):
     p.pumpScaleNeuron = testparams[3]        # baseline neuron pump strength factor
     p.nkccScale = testparams[4]              # factor NKCC1 flux rate
     p.kirScale = testparams[5]               # factor Kir conductance
-    p.nka_na = testparams[6]
-    p.nka_k = testparams[7]
-    p.beta1 = testparams[8]                  # sigmoidal rate NKA blockade onset
-    p.beta2 = testparams[9]                  # sigmoidal rate NKA blockade offset
-    p.perc = testparams[10]                   # Perc of baseline blocked NKA
-    p.tstart = testparams[11]                 # Start blockade
-    p.tend = testparams[12]                  # End blockade
+    p.beta1 = testparams[6]                  # sigmoidal rate NKA blockade onset
+    p.beta2 = testparams[7]                  # sigmoidal rate NKA blockade offset
+    p.perc = testparams[8]                   # Perc of baseline blocked NKA
+    p.tstart = testparams[9]                 # Start blockade
+    p.tend = testparams[10]                  # End blockade
     
     # Initial concentrations and volumes (baseline rest)
     p.NNai0 = initvals[0]            
@@ -83,7 +81,7 @@ def parameters(p,testparams,initvals):
     p.IKL0 = p.F**2/(p.R*p.T)*p.Vi0*((p.KCi0-p.KCe0*exp((-p.F*p.Vi0)/(p.R*p.T)))/(1-exp((-p.F*p.Vi0)/(p.R*p.T))))
     p.IClL0 = (p.F**2)/(p.R*p.T)*p.Vi0*((p.ClCi0-p.ClCe0*exp((p.F*p.Vi0)/(p.R*p.T)))/(1-exp((p.F*p.Vi0)/(p.R*p.T))))
     p.JKCl0 = p.UKCl*p.R*p.T/p.F*(log(p.KCi0)+log(p.ClCi0)-log(p.KCe0)-log(p.ClCe0))
-    p.neurPump = p.pumpScaleNeuron*p.Qpump*(p.NaCi0**(1.5)/(p.NaCi0**(1.5)+p.nka_na**1.5))*(p.KCe0/(p.KCe0+p.nka_k))
+    p.neurPump = p.pumpScaleNeuron*p.Qpump*(p.NaCi0**(1.5)/(p.NaCi0**(1.5)+10**1.5))*(p.KCe0/(p.KCe0+3))
     
     p.PNaL = -((p.INaG0 + 3*p.neurPump))/p.INaL0             # Estimated sodium leak conductance in neuron
     p.PKL = -((p.IKG0 - 2*p.neurPump)+p.F*p.JKCl0)/p.IKL0    # Estimated K leak conductance in neuron 
@@ -100,16 +98,11 @@ def parameters(p,testparams,initvals):
     p.fRelCl0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.ClCg0-p.ClCe0*exp((p.F*p.Vg0)/(p.R*p.T)))/(1-exp((p.F*p.Vg0)/(p.R*p.T))))
     p.fRelNa0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.NaCg0-p.NaCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-p.F*p.Vg0)/(p.R*p.T))))
     p.fNKCC10 = p.gNKCC1*p.R*p.T/p.F*(log(p.KCe0) + log(p.NaCe0) + 2*log(p.ClCe0) - log(p.KCg0) - log(p.NaCg0) - 2*log(p.ClCg0))
-    p.fActive0 = p.kActive*(p.NaCg0**(1.5)/(p.NaCg0**(1.5)+p.nka_na**1.5))*(p.KCe0/(p.KCe0+p.nka_k))
+    p.fActive0 = p.kActive*(p.NaCg0**(1.5)/(p.NaCg0**(1.5)+10**1.5))*(p.KCe0/(p.KCe0+3))
     p.IKir0 = p.GKir*1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.KCg0-p.KCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-p.F*p.Vg0)/(p.R*p.T))))*1/(1+exp((p.KCe_thres-p.KCe0)/p.kup2)) #(sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
-    Vkg0 = p.R*p.T/p.F*log(p.KCe0/p.KCg0)
-    Vkg0 = 25*log(p.KCe0/p.KCg0) 
-    p.IKir0 = p.GKir*(p.Vg0-Vkg0)*1/(1+exp((p.KCe_thres-p.KCe0)/p.kup2))
-    p.GKir = 0.14
-    p.IKir0 = p.GKir*sqrt(p.KCe0)*(p.Vg0-Vkg0)
     
     #(p.KCe0/(3+p.KCe0))**2*(p.NaCg0/(10+p.NaCg0))**3
     
     p.kRelNa = (3*p.fActive0 - p.fNKCC10)/p.fRelNa0
-    p.kRelK = (-p.IKir0-2*p.fActive0-p.fNKCC10)/p.fRelK0
+    p.kRelK = (p.IKir0-2*p.fActive0-p.fNKCC10)/p.fRelK0
     p.kRelCl = -2*p.fNKCC10/p.fRelCl0

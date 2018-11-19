@@ -15,7 +15,7 @@ from plotdict import *
 from sm_class import *
 
 t0 = 0
-tfinal = 50
+tfinal = 70
 
 
 def solver(t0,tfinal,initvals):

@@ -15,7 +15,7 @@ NaCi0 = 13
 KCi0 = 145
 ClCi0 = 7
 NaCg0 = 13
-KCg0 = 80
+KCg0 = 90
 ClCg0 = 35
 Wi0 = 2
 Wg0 = 2
@@ -28,24 +28,22 @@ NClg0 = ClCg0*Wg0
 initvals = [NNai0,NKi0,NCli0,NNag0,NKg0,NClg0,Wi0,Wg0]
 
 # Free parameters
-tstart = 40
-tend = 44
-blockerScaleAst =1;
+tstart = 20
+tend = 30
+blockerScaleAst = 1;
 blockerScaleNeuron = 1;
 #blockerScaleNeuron = 1.07
-pumpScaleAst = 0.7*10**5;
+pumpScaleAst = 1.2;
 pumpScaleNeuron = 1;
-nkccScale = 1e-2;
-kirScale = 0.005
-nka_na = 12
-nka_k = 1.5
-beta1 =1.1;
-beta2 = 1.1;
-perc = 0.6;
+nkccScale = 2;
+kirScale = 1.2
+beta1 =0.5;
+beta2 = 2;
+perc = 0;
 #perc = 0.3
 testparams = [blockerScaleAst, blockerScaleNeuron, \
 pumpScaleAst, pumpScaleNeuron, \
-nkccScale, kirScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend]
+nkccScale, kirScale, beta1, beta2, perc, tstart, tend]
 
 # Generate class instance
 sm = smclass(initvals,testparams)

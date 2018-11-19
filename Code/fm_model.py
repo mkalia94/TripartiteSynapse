@@ -67,13 +67,13 @@ def model(t,y,p,*args):
    blockerExp = p.perc + (1-p.perc)*blockerExp
    
    # Neuron: Na-K pump
-   Ipump = (p.blockerScaleNeuron*blockerExp-(p.blockerScaleNeuron-1))*p.pumpScaleNeuron*p.Qpump*(NaCi**(1.5)/(NaCi**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
+   Ipump = (p.blockerScaleNeuron*blockerExp-(p.blockerScaleNeuron-1))*p.pumpScaleNeuron*p.Qpump*(NaCi**(1.5)/(NaCi**(1.5)+10**1.5))*(KCe/(KCe+3))
    
    # Neuron: KCl cotransport
    JKCl = p.UKCl*p.R*p.T/p.F*(log(KCi)+log(ClCi)-log(KCe)-log(ClCe))
    
    # Astrocyte: pump
-   fActive = (p.blockerScaleAst*blockerExp-(p.blockerScaleAst-1))*p.kActive*(NaCg**(1.5)/(NaCg**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
+   fActive = (p.blockerScaleAst*blockerExp-(p.blockerScaleAst-1))*p.kActive*(NaCg**(1.5)/(NaCg**(1.5)+10**1.5))*(KCe/(KCe+3))
    
    # Astrocyte: Leak
    fRelK = p.kRelK*1/p.F*p.F**2/(p.R*p.T)*Vg*((KCg-KCe*exp((-p.F*Vg)/(p.R*p.T)))/(1-exp((-p.F*Vg)/(p.R*p.T))))
@@ -81,14 +81,12 @@ def model(t,y,p,*args):
    fRelNa = p.kRelNa*1/p.F*p.F**2/(p.R*p.T)*Vg*((NaCg-NaCe*exp((-p.F*Vg)/(p.R*p.T)))/(1-exp((-p.F*Vg)/(p.R*p.T))))
    
    # Astrocyte: NKCC1
-   # blockerExp = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
+   blockerExp = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
    fNKCC1 = 1*p.gNKCC1*p.R*p.T/p.F*(log(KCe) + log(NaCe) + 2*log(ClCe) - log(KCg) - log(NaCg) - 2*log(ClCg))
    
    # Astrocyte: Kir4.1
    Vkg = p.R*p.T/p.F*log(KCe/KCg) 
-   Vkg = 25*log(KCe/KCg) 
-   IKir = p.GKir*sqrt(KCe)*(Vg-Vkg)
-   # IKir = p.GKir*(Vg-Vkg)*sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
+   IKir = p.GKir*(Vg-Vkg)*1/(1+exp((p.KCe_thres-KCe)/p.kup2))#(sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
       
    #p.GKir/p.F*p.F**2/(p.R*p.T)*Vg*((KCg-KCe*exp((-p.F*Vg)/(p.R*p.T)))/(1-exp((-p.F*Vg)/(p.R*p.T))))
       
@@ -101,15 +99,15 @@ def model(t,y,p,*args):
    delpig = p.R*p.T*(SCg-SCe)
    fluxg = p.LH20g*(delpig)
    
-   # blockerExp = 1/(1+exp(p.beta1*(t-70))) + 1/(1+exp(-p.beta2*(t-80)))
-   # blockerExp = p.perc + (1-p.perc)*blockerExp
+   blockerExp = 1/(1+exp(p.beta1*(t-70))) + 1/(1+exp(-p.beta2*(t-80)))
+   blockerExp = p.perc + (1-p.perc)*blockerExp
    
    # Final model
    ODEs=[  (-1/p.F*(INaG+INaL+3*Ipump) ), \
    (-1/p.F*(IKG+IKL-2*Ipump) - JKCl), \
    (1/p.F*(IClG+IClL)-JKCl), \
    -3*fActive + fRelNa + fNKCC1, \
-   IKir + 2*fActive + fRelK + fNKCC1, \
+   -IKir + 2*fActive + fRelK + fNKCC1, \
    2*fNKCC1 + fRelCl, \
    fluxi, \
    fluxg]    
