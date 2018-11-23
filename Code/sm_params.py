@@ -20,7 +20,7 @@ def parameters(p,testparams,initvals):
     p.NaCe0 = 152           # Fix initial ECS Na Conc.
     p.KCe0 = 3              # Fix initial ECS K Conc.
     p.ClCe0 = 135           # Fix initial ECS Cl Conc.
-    p.KCe_thres = 7         # Kir: Threshold for Kir gate
+    p.KCe_thres = 13        # Kir: Threshold for Kir gate
     p.kup2 = 0.1     # Kir: Rate of transition from low uptake to high uptake
     
     p.blockerScaleAst = testparams[0]        # How much more should you block astrocyte pump?
@@ -93,6 +93,7 @@ def parameters(p,testparams,initvals):
     p.kActive = p.Qpump*p.pumpScaleAst/p.F                  
     p.LH20g = p.LH20i
     p.gNKCC1 = p.nkccScale*6e-5
+    p.gNKCC1 = p.nkccScale*0.03*p.UKCl
     p.GKir = p.kirScale*60*1e-3;
     
     # Astrocyte leaks
@@ -101,12 +102,15 @@ def parameters(p,testparams,initvals):
     p.fRelNa0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.NaCg0-p.NaCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-p.F*p.Vg0)/(p.R*p.T))))
     p.fNKCC10 = p.gNKCC1*p.R*p.T/p.F*(log(p.KCe0) + log(p.NaCe0) + 2*log(p.ClCe0) - log(p.KCg0) - log(p.NaCg0) - 2*log(p.ClCg0))
     p.fActive0 = p.kActive*(p.NaCg0**(1.5)/(p.NaCg0**(1.5)+p.nka_na**1.5))*(p.KCe0/(p.KCe0+p.nka_k))
-    p.IKir0 = p.GKir*1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.KCg0-p.KCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-p.F*p.Vg0)/(p.R*p.T))))*1/(1+exp((p.KCe_thres-p.KCe0)/p.kup2)) #(sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
+    # p.IKir0 = p.GKir*1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.KCg0-p.KCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-p.F*p.Vg0)/(p.R*p.T))))*1/(1+exp((p.KCe_thres-p.KCe0)/p.kup2)) #(sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
     Vkg0 = p.R*p.T/p.F*log(p.KCe0/p.KCg0)
-    Vkg0 = 25*log(p.KCe0/p.KCg0) 
-    p.IKir0 = p.GKir*(p.Vg0-Vkg0)*1/(1+exp((p.KCe_thres-p.KCe0)/p.kup2))
-    p.GKir = 0.14
-    p.IKir0 = p.GKir*sqrt(p.KCe0)*(p.Vg0-Vkg0)
+    # Vkg0 = 25*log(p.KCe0/p.KCg0) 
+    # p.IKir0 = p.GKir*(p.Vg0-Vkg0)*1/(1+exp((p.KCe_thres-p.KCe0)/p.kup2))
+    # p.GKir = p.kirScale*144/p.F
+    # p.IKir0 = p.GKir*sqrt(p.KCe0)*(p.Vg0-Vkg0)
+    p.GKir = p.kirScale*3.7*6*10**3/p.F
+    minfty0 = 1/(2+exp(1.62*(p.F/p.R/p.T)*(p.Vg0-Vkg0)))
+    p.IKir0 = p.GKir*minfty0*p.KCe0/(p.KCe0+p.KCe_thres)*(p.Vg0-Vkg0)
     
     #(p.KCe0/(3+p.KCe0))**2*(p.NaCg0/(10+p.NaCg0))**3
     

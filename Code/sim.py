@@ -15,7 +15,7 @@ from plotdict import *
 from sm_class import *
 
 t0 = 0
-tfinal = 70
+tfinal = 80
 
 
 def solver(t0,tfinal,initvals):
@@ -28,9 +28,10 @@ def solver(t0,tfinal,initvals):
     t, y = sim.simulate(tfinal)
     return t,y
     
-def plotter(t,y,*str):  
-    p=plt.axvspan(sm.tstart, sm.tend, color='0.7', alpha=0.5, lw=0,label=r"{d}$\%$ of baseline NKA".format(d=sm.perc))
-    for plotname in str:
+def plotter(fignum,t,y,*str):  
+    plt.figure(fignum)
+    plt.axvspan(sm.tstart, sm.tend, color='0.7', alpha=0.5, lw=0,label=r"{d}$\%$ of baseline NKA".format(d=sm.perc))
+    for plotname in str[0]:
         t1 = array(t)
         ploty = sm.model(t1,y,plotname)
         
@@ -41,6 +42,7 @@ def plotter(t,y,*str):
             plt.ylabel(r'{d}'.format(d=plotname))
             plt.plot(t1,ploty,label = r"{d}".format(d=plotname))
         plt.xlabel("t (min.)")
+    plt.xlim(t0,tfinal)
     plt.savefig(r'Images/{d}.eps'.format(d=plotname),format='eps')
     plt.legend()
     plt.show()

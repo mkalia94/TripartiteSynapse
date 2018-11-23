@@ -86,8 +86,9 @@ def model(t,y,p,*args):
    
    # Astrocyte: Kir4.1
    Vkg = p.R*p.T/p.F*log(KCe/KCg) 
-   Vkg = 25*log(KCe/KCg) 
-   IKir = p.GKir*sqrt(KCe)*(Vg-Vkg)
+   # Vkg = 25*log(KCe/KCg) 
+   minfty = 1/(2+exp(1.62*(p.F/p.R/p.T)*(Vg-Vkg)))
+   IKir = p.GKir*minfty*KCe/(KCe+p.KCe_thres)*(Vg-Vkg)
    # IKir = p.GKir*(Vg-Vkg)*sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
       
    #p.GKir/p.F*p.F**2/(p.R*p.T)*Vg*((KCg-KCe*exp((-p.F*Vg)/(p.R*p.T)))/(1-exp((-p.F*Vg)/(p.R*p.T))))
