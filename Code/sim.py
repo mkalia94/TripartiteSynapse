@@ -4,7 +4,7 @@
 #                    sm_model: Contains function that defines the function
 #                    sm_class: Generates class which includes model, parameters in one instance
 #                    sim: t,y = solver(t0,tfinal,initvals) solves the ODE from t=t0 to t=tfinal
-#                         plotter(t,y,'term') plots 'term', for example, plotter(t,y,'KCe') plots extracellular concentrations
+#                         plotter(fignum,t,y,'term') plots 'term', for example, plotter(1,t,y,'KCe') plots extracellular concentrations in figure (1)
 #                         saveparams() saves the current parameters and initial values in one table, in one figure
 
 from numpy import *

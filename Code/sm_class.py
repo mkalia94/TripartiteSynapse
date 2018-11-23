@@ -32,20 +32,24 @@ tstart = 40
 tend = 42
 blockerScaleAst =3.1;
 blockerScaleNeuron  =3.1;
-#blockerScaleNeuron = 1.07
 pumpScaleAst = 1;
 pumpScaleNeuron = 1;
 nkccScale = 10;
 kirScale = 1
 nka_na = 13
 nka_k = 0.2
+nkccblock_after = 0
+kirblock_after = 0
+
+#Fixed params
 beta1 = 1.1;
 beta2 = 1.1;
-perc = 0.85;
-#perc = 0.3
+perc = 0.85
+
+
 testparams = [blockerScaleAst, blockerScaleNeuron, \
 pumpScaleAst, pumpScaleNeuron, \
-nkccScale, kirScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend]
+nkccScale, kirScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend,nkccblock_after,kirblock_after]
 
 # Generate class instance
 sm = smclass(initvals,testparams)
@@ -54,10 +58,3 @@ testparamlist = ['blockerScaleAst', 'blockerScaleNeuron', \
 'nkccScale', 'kirScale', 'beta1', 'beta2', 'perc', 'tstart', 'tend']
 initvallist =['NNai0','NKi0','NCli0','NNag0','NKg0','NClg0','Wi0','Wg0']
 
-
-# sm = smclass(initvals,testparams)
-# initvals = [NNai0,NKi0,NCli0,sm.m0,sm.h0,sm.n0,NNag0,NKg0,NClg0,Wi0,Wg0]
-# testparamlist = ['blockerScaleAst', 'blockerScaleNeuron', \
-# 'pumpScaleAst', 'pumpScaleNeuron', \
-# 'nkccScale', 'kirScale', 'beta1', 'beta2', 'perc', 'tstart', 'tend']
-# initvallist =['NNai0','NKi0','NCli0','m0','h0','n0','NNag0','NKg0','NClg0','Wi0','Wg0']

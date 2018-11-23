@@ -36,6 +36,8 @@ def parameters(p,testparams,initvals):
     p.perc = testparams[10]                   # Perc of baseline blocked NKA
     p.tstart = testparams[11]                 # Start blockade
     p.tend = testparams[12]                  # End blockade
+    p.nkccblock_after = testparams[13]
+    p.kirblock_after = testparams[14]
     
     # Initial concentrations and volumes (baseline rest)
     p.NNai0 = initvals[0]            
@@ -102,17 +104,11 @@ def parameters(p,testparams,initvals):
     p.fRelNa0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.NaCg0-p.NaCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-p.F*p.Vg0)/(p.R*p.T))))
     p.fNKCC10 = p.gNKCC1*p.R*p.T/p.F*(log(p.KCe0) + log(p.NaCe0) + 2*log(p.ClCe0) - log(p.KCg0) - log(p.NaCg0) - 2*log(p.ClCg0))
     p.fActive0 = p.kActive*(p.NaCg0**(1.5)/(p.NaCg0**(1.5)+p.nka_na**1.5))*(p.KCe0/(p.KCe0+p.nka_k))
-    # p.IKir0 = p.GKir*1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.KCg0-p.KCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-p.F*p.Vg0)/(p.R*p.T))))*1/(1+exp((p.KCe_thres-p.KCe0)/p.kup2)) #(sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
     Vkg0 = p.R*p.T/p.F*log(p.KCe0/p.KCg0)
-    # Vkg0 = 25*log(p.KCe0/p.KCg0) 
-    # p.IKir0 = p.GKir*(p.Vg0-Vkg0)*1/(1+exp((p.KCe_thres-p.KCe0)/p.kup2))
-    # p.GKir = p.kirScale*144/p.F
-    # p.IKir0 = p.GKir*sqrt(p.KCe0)*(p.Vg0-Vkg0)
     p.GKir = p.kirScale*3.7*6*10**3/p.F
     minfty0 = 1/(2+exp(1.62*(p.F/p.R/p.T)*(p.Vg0-Vkg0)))
     p.IKir0 = p.GKir*minfty0*p.KCe0/(p.KCe0+p.KCe_thres)*(p.Vg0-Vkg0)
     
-    #(p.KCe0/(3+p.KCe0))**2*(p.NaCg0/(10+p.NaCg0))**3
     
     p.kRelNa = (3*p.fActive0 - p.fNKCC10)/p.fRelNa0
     p.kRelK = (-p.IKir0-2*p.fActive0-p.fNKCC10)/p.fRelK0
