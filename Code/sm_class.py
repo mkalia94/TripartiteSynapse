@@ -18,7 +18,7 @@ NaCg0 = 13
 KCg0 = 80
 ClCg0 = 35
 Wi0 = 2
-Wg0 = 2
+Wg0 = 1.5
 NNai0 = NaCi0*Wi0
 NKi0 = KCi0*Wi0
 NCli0 = ClCi0*Wi0
@@ -29,9 +29,9 @@ initvals = [NNai0,NKi0,NCli0,NNag0,NKg0,NClg0,Wi0,Wg0]
 
 # Free parameters
 tstart = 40
-tend = 41.7
-blockerScaleAst =2.6;
-blockerScaleNeuron  =2.6;
+tend = 42
+blockerScaleAst =3.1;
+blockerScaleNeuron  =3.1;
 #blockerScaleNeuron = 1.07
 pumpScaleAst = 1;
 pumpScaleNeuron = 1;
@@ -39,9 +39,9 @@ nkccScale = 10;
 kirScale = 1
 nka_na = 13
 nka_k = 0.2
-beta1 = 0.8;
-beta2 = 0.7;
-perc = 0.65;
+beta1 = 1.1;
+beta2 = 1.1;
+perc = 0.85;
 #perc = 0.3
 testparams = [blockerScaleAst, blockerScaleNeuron, \
 pumpScaleAst, pumpScaleNeuron, \
