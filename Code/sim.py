@@ -7,24 +7,36 @@
 #                         plotter(fignum,t,y,'term') plots 'term', for example, plotter(1,t,y,'KCe') plots extracellular concentrations in figure (1)
 #                         saveparams() saves the current parameters and initial values in one table, in one figure
 
+import timeit
 from numpy import *
 from assimulo.solvers import CVode
 from assimulo.problem import Explicit_Problem
 import matplotlib.pyplot as plt
 from plotdict import *
 from sm_class import *
-
+# from fm_class import *
+# from smgates_class import *
+# from koen_class import *
 t0 = 0
 tfinal = 80
 
 
+def func():
+    yy = zeros((11,120*10**5))
+    yy[:,0] = initvals
+    for i in range(tfinal*10**5-1):
+        yy[:,i+1] = yy[:,i] + 1e-5*sm.model(i*1e-5,yy[:,i])
+    return yy
+    
 def solver(t0,tfinal,initvals):
     mod = Explicit_Problem(sm.model, initvals, t0)
     sim = CVode(mod)
-    sim.atol = 1e-12
-    sim.rtol = 1e-12
+    sim.atol = 1e-13
+    sim.rtol = 1e-13
     sim.iter = 'Newton'
-    sim.linear_solver = 'SPGMR'
+    sim.discr='BDF'
+    sim.report_continuously = True
+    sim.verbosity = 10
     t, y = sim.simulate(tfinal)
     return t,y
     
@@ -34,7 +46,6 @@ def plotter(fignum,t,y,*str):
     for plotname in str[0]:
         t1 = array(t)
         ploty = sm.model(t1,y,plotname)
-        
         if plotname in plotnamedict:
             plt.ylabel(r'{d}'.format(d=plotnamedict[plotname]))
             plt.plot(t1,ploty,label = r"{d}".format(d=plotnamedict[plotname]))

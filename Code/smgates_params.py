@@ -1,10 +1,9 @@
 from numpy import *
-from scipy.optimize import fsolve
 def parameters(p,testparams,initvals):
-    p.C = 20.0                # Neuron membrane capacitance
+    p.C = 20                # Neuron membrane capacitance
     p.F = 96485.333         # Faraday's constant 
     p.R = 8314.4598         # Gas constant
-    p.T = 310.0               # Temperature
+    p.T = 310               # Temperature
     p.PNaG = 80*1e-5        # permeability of gated Na current
     p.PNaL_base = 0.2*1e-5  
     p.PKG = 40*1e-5         # permbeability of gated K current
@@ -14,14 +13,14 @@ def parameters(p,testparams,initvals):
     p.UKCl = 13*1e-7        # flux rate of KCl cotransporter
     p.LH20i = 2*1e-14       # Osmotic permeability in the neuron
     p.Qpump = 54.5          # Baseline neuronal pump strength
-    p.Cg = 20.0               # Astrocyte membrane capacitance 
+    p.Cg = 20               # Astrocyte membrane capacitance 
     
-    p.Vg0 = -80.0             # Fix initial glial membrane potential
+    p.Vg0 = -80             # Fix initial glial membrane potential
     p.Vi0 = -65.5           # Fix initial neuronal membrane potential 
-    p.NaCe0 = 152.0           # Fix initial ECS Na Conc.
-    p.KCe0 = 3.0              # Fix initial ECS K Conc.
-    p.ClCe0 = 135.0           # Fix initial ECS Cl Conc.
-    p.KCe_thres = 13.0        # Kir: Threshold for Kir gate
+    p.NaCe0 = 152           # Fix initial ECS Na Conc.
+    p.KCe0 = 3              # Fix initial ECS K Conc.
+    p.ClCe0 = 135           # Fix initial ECS Cl Conc.
+    p.KCe_thres = 13        # Kir: Threshold for Kir gate
     p.kup2 = 0.1     # Kir: Rate of transition from low uptake to high uptake
     
     p.blockerScaleAst = testparams[0]        # How much more should you block astrocyte pump?
@@ -39,7 +38,6 @@ def parameters(p,testparams,initvals):
     p.tend = testparams[12]                  # End blockade
     p.nkccblock_after = testparams[13]
     p.kirblock_after = testparams[14]
-    p.alphae0 = testparams[15]
     
     # Initial concentrations and volumes (baseline rest)
     p.NNai0 = initvals[0]            
@@ -53,46 +51,21 @@ def parameters(p,testparams,initvals):
     p.NaCg0 = p.NNag0/p.Wg0        # Glial Na Conc.
     p.KCg0 = p.NKg0/p.Wg0          # Glial K Conc.
     p.ClCg0 = p.NClg0/p.Wg0        # Glial Cl Conc.
-    # Volume fraction: ECS
-    p.We0 = p.alphae0/(1-p.alphae0)*p.Wi0 + p.alphae0/(1-p.alphae0)*p.Wg0
+    p.alphae0 = 1000        # Volume fraction: ECS
+    p.We0 = p.alphae0*p.Wi0
     p.Wtot = p.Wi0+p.We0+p.Wg0
     p.NaCi0 = p.NNai0/p.Wi0        # ICS Na Conc.
     p.KCi0 = p.NKi0/p.Wi0          # ICS K Conc.
     p.ClCi0 = p.NCli0/p.Wi0        # ICS Cl Conc.
     
     # Impermeants and conserved quantities
-    
-    # p.NAi = p.NNai0 + p.NKi0 - p.NCli0 - p.C/p.F*p.Vi0
-    # p.NAe = ((p.NaCi0+p.KCi0+p.ClCi0+p.NAi/p.Wi0)-(p.NaCe0+p.KCe0+p.ClCe0))*p.We0
-    # p.NBg = (1/2*(p.NaCe0 + p.KCe0 + p.ClCe0 + p.NAe/p.We0) - (p.KCg0 + p.NaCg0) + p.Cg/2/p.F*p.Vg0/p.Wg0)*p.Wg0
-    # p.NAg = (1/2*(p.NaCe0 + p.KCe0 + p.ClCe0 + p.NAe/p.We0) - p.Cg/2/p.F*p.Vg0/p.Wg0 -p.ClCg0)*p.Wg0
-    # p.CNa = p.NaCi0*p.Wi0 + p.NaCe0*p.We0 + p.NaCg0*p.Wg0
-    # p.CK = p.KCi0*p.Wi0 + p.KCe0*p.We0 + p.KCg0*p.Wg0
-    # p.CCl = p.ClCi0*p.Wi0 + p.ClCe0*p.We0 + p.ClCg0*p.Wg0
-    # if (p.NAi<0) | (p.NAe<0) | (p.NBg<0) | (p.NAg<0):
-    #     print('negative impermeants')
-    def getimpermeant(NBe):
-        NAi = p.NNai0 + p.NKi0 - p.NCli0 - p.C/p.F*p.Vi0
-        NAe = ((p.NaCi0+p.KCi0+p.ClCi0+NAi/p.Wi0)-(p.NaCe0+p.KCe0+p.ClCe0 + NBe/p.We0))*p.We0
-        NBg = (1/2*(p.NaCe0 + p.KCe0 + p.ClCe0 + NAe/p.We0+NBe/p.We0) - (p.KCg0 + p.NaCg0) + p.Cg/2/p.F*p.Vg0/p.Wg0)*p.Wg0
-        NAg = (1/2*(p.NaCe0 + p.KCe0 + p.ClCe0 + NAe/p.We0+NBe/p.We0) - p.Cg/2/p.F*p.Vg0/p.Wg0 -p.ClCg0)*p.Wg0
-        CNa = p.NaCi0*p.Wi0 + p.NaCe0*p.We0 + p.NaCg0*p.Wg0
-        CK = p.KCi0*p.Wi0 + p.KCe0*p.We0 + p.KCg0*p.Wg0
-        CCl = p.ClCi0*p.Wi0 + p.ClCe0*p.We0 + p.ClCg0*p.Wg0
-        eq = CNa + CK - CCl - NAi + NBe - NAe + NBg - NAg
-        return eq    
-    sol = fsolve(getimpermeant,0)    
-    p.NBe = sol[0]
     p.NAi = p.NNai0 + p.NKi0 - p.NCli0 - p.C/p.F*p.Vi0
-    p.NAe = ((p.NaCi0+p.KCi0+p.ClCi0+p.NAi/p.Wi0)-(p.NaCe0+p.KCe0+p.ClCe0 + p.NBe/p.We0))*p.We0
-    p.NBg = (1/2*(p.NaCe0 + p.KCe0 + p.ClCe0 + p.NAe/p.We0+p.NBe/p.We0) - (p.KCg0 + p.NaCg0) + p.Cg/2/p.F*p.Vg0/p.Wg0)*p.Wg0
-    p.NAg = (1/2*(p.NaCe0 + p.KCe0 + p.ClCe0 + p.NAe/p.We0+p.NBe/p.We0) - p.Cg/2/p.F*p.Vg0/p.Wg0 -p.ClCg0)*p.Wg0
+    p.NAe = ((p.NaCi0+p.KCi0+p.ClCi0+p.NAi/p.Wi0)-(p.NaCe0+p.KCe0+p.ClCe0))*p.We0
+    p.NBg = (1/2*(p.NaCe0 + p.KCe0 + p.ClCe0 + p.NAe/p.We0) - (p.KCg0 + p.NaCg0) + p.Cg/2/p.F*p.Vg0/p.Wg0)*p.Wg0
+    p.NAg = (1/2*(p.NaCe0 + p.KCe0 + p.ClCe0 + p.NAe/p.We0) - p.Cg/2/p.F*p.Vg0/p.Wg0 -p.ClCg0)*p.Wg0
     p.CNa = p.NaCi0*p.Wi0 + p.NaCe0*p.We0 + p.NaCg0*p.Wg0
     p.CK = p.KCi0*p.Wi0 + p.KCe0*p.We0 + p.KCg0*p.Wg0
     p.CCl = p.ClCi0*p.Wi0 + p.ClCe0*p.We0 + p.ClCg0*p.Wg0
-    if (p.NAi<0) | (p.NAe<0) | (p.NBg<0) | (p.NAg<0) | (p.NBe<0):
-        print('negative impermeants')
-    
     
     # Gates
     p.alpham0 = 0.32*(p.Vi0+52)/(1-exp(-(p.Vi0+52)/4))
@@ -107,7 +80,7 @@ def parameters(p,testparams,initvals):
     
     # Neuronal leaks
     p.INaG0 = p.PNaG*(p.m0**3)*(p.h0)*(p.F**2)*(p.Vi0)/(p.R*p.T)*((p.NaCi0-p.NaCe0*exp(-(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-(p.F*p.Vi0)/(p.R*p.T))))
-    p.IKG0 = (p.PKG*(p.n0**4))*(p.F**2)*(p.Vi0)/(p.R*p.T)*((p.KCi0-p.KCe0*exp(-(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-p.F*p.Vi0/(p.R*p.T))))
+    p.IKG0 = (p.PKG*(p.n0**2))*(p.F**2)*(p.Vi0)/(p.R*p.T)*((p.KCi0-p.KCe0*exp(-(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-p.F*p.Vi0/(p.R*p.T))))
     p.IClG0 = p.PClG*1/(1+exp(-(p.Vi0+10)/10))*(p.F**2)*p.Vi0/(p.R*p.T)*((p.ClCi0-p.ClCe0*exp(p.F*p.Vi0/(p.R*p.T)))/(1-exp(p.F*p.Vi0/(p.R*p.T))))
     p.INaL0 = (p.F**2)/(p.R*p.T)*p.Vi0*((p.NaCi0-p.NaCe0*exp((-p.F*p.Vi0)/(p.R*p.T)))/(1-exp((-p.F*p.Vi0)/(p.R*p.T))))
     p.IKL0 = p.F**2/(p.R*p.T)*p.Vi0*((p.KCi0-p.KCe0*exp((-p.F*p.Vi0)/(p.R*p.T)))/(1-exp((-p.F*p.Vi0)/(p.R*p.T))))

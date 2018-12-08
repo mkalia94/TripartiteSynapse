@@ -5,20 +5,26 @@ def model(t,y,p,*args):
       NNa=y[:,0]
       NK=y[:,1]
       NCl=y[:,2]
-      NNag=y[:,3]
-      NKg=y[:,4]
-      NClg=y[:,5]
-      Wi=y[:,6]
-      Wg=y[:,7]
+      m=y[:,3]
+      h=y[:,4]
+      n=y[:,5]      
+      NNag=y[:,6]
+      NKg=y[:,7]
+      NClg=y[:,8]
+      Wi=y[:,9]
+      Wg=y[:,10]
    else:
       NNa=y[0]
       NK=y[1]
       NCl=y[2]
-      NNag=y[3]
-      NKg=y[4]
-      NClg=y[5]
-      Wi=y[6]
-      Wg=y[7]
+      m=y[3]
+      h=y[4]
+      n=y[5]      
+      NNag=y[6]
+      NKg=y[7]
+      NClg=y[8]
+      Wi=y[9]
+      Wg=y[10]
    
    NNae = p.CNa - NNag - NNa
    NKe = p.CK - NKg - NK
@@ -47,13 +53,10 @@ def model(t,y,p,*args):
    betah = 4/(1+exp(-(V+30)/5))
    alphan = 0.016*(V+35)/(1-exp(-(V+35)/5))
    betan = 0.25*exp(-(V+50)/40)
-   m = alpham/(alpham+betam)
-   h = alphah/(alphah+betah)
-   n = alphan/(alphan+betan)
    
    # Neuron: Gated currents
    INaG = p.PNaG*(m**3)*(h)*(p.F**2)*(V)/(p.R*p.T)*((NaCi-NaCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-(p.F*V)/(p.R*p.T))))
-   IKG = (p.PKG*(n**4))*(p.F**2)*(V)/(p.R*p.T)*((KCi-KCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-p.F*V/(p.R*p.T))))
+   IKG = (p.PKG*(n**2))*(p.F**2)*(V)/(p.R*p.T)*((KCi-KCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-p.F*V/(p.R*p.T))))
    IClG = p.PClG*1/(1+exp(-(V+10)/10))*(p.F**2)*V/(p.R*p.T)*((ClCi-ClCe*exp(p.F*V/(p.R*p.T)))/(1-exp(p.F*V/(p.R*p.T))))
    
    
@@ -98,7 +101,7 @@ def model(t,y,p,*args):
     
    # Water flux: neuron + astrocyte
    SCi = NaCi+KCi+ClCi+p.NAi/Wi
-   SCe = NaCe+KCe+ClCe+p.NAe/We + p.NBe/We
+   SCe = NaCe+KCe+ClCe+p.NAe/We
    SCg = NaCg + KCg + ClCg + p.NAg/Wg + p.NBg/Wg
    delpii = p.R*p.T*(SCi-SCe)
    fluxi = p.LH20i*(delpii)
@@ -113,6 +116,9 @@ def model(t,y,p,*args):
    ODEs=[  (-1/p.F*(INaG+INaL+3*Ipump) ), \
    (-1/p.F*(IKG+IKL-2*Ipump) - JKCl), \
    (1/p.F*(IClG+IClL)-JKCl), \
+   alpham*(1-m)-betam*m,\
+   alphah*(1-h)-betah*h,\
+   alphan*(1-n)-betan*n,
    -3*fActive + fRelNa + fNKCC1, \
    IKir + 2*fActive + fRelK + fNKCC1, \
    2*fNKCC1 + fRelCl, \
