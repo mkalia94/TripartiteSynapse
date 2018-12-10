@@ -22,8 +22,8 @@ NCli0 = ClCi0*Wi0
 initvals = [NNai0,NKi0,NCli0,Wi0]
 
 # Free parameters
-tstart = 40
-tend = 300
+tstart = 30
+tend = 1000
 beta1 = 0.5;
 beta2 = 0.5;
 perc = 0.0

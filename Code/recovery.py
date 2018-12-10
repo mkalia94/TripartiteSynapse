@@ -1,10 +1,10 @@
 from sim import *
-ecsratio = arange(0.1,0.9,0.05)
-perclist = arange(0.1,0.9,0.1)
+ecsratio = arange(0.1,0.9,0.01)
+perclist = arange(0.1,0.9,0.01)
 
 # ecsratio = [0.2]
 # perclist = [0.7]
-swellratio = zeros((size(ecsratio),size(perclist)))
+swellratio = zeros((size(ecsratio),size(perclist),3))
 
 for i in range(size(ecsratio)):
     for j in range(size(perclist)):
@@ -24,9 +24,9 @@ for i in range(size(ecsratio)):
         sim.verbosity = 10
         t, y = sim.simulate(tfinal+100)
         Wi = sm.model(array(t),y,'Wi')
-        swellratio[i,j] = Wi[-1]/Wi[0]
+        swellratio[i,j,:] = (alphae0,perc,Wi[-1]/Wi[0])
         
 from matplotlib import pyplot as plt
-plt.imshow(swellratio)
-        
+plt.imshow(swellratio[:,:,3])
+plt.show()        
         

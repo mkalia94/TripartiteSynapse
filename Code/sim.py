@@ -13,13 +13,12 @@ from assimulo.solvers import CVode
 from assimulo.problem import Explicit_Problem
 import matplotlib.pyplot as plt
 from plotdict import *
-from sm_class import *
+# from sm_class import *
 # from fm_class import *
 # from smgates_class import *
-# from koen_class import *
+from koen_class import *
 t0 = 0
-tfinal = 80
-
+tfinal = 500
 
 def func():
     yy = zeros((11,120*10**5))
@@ -31,10 +30,11 @@ def func():
 def solver(t0,tfinal,initvals):
     mod = Explicit_Problem(sm.model, initvals, t0)
     sim = CVode(mod)
-    sim.atol = 1e-13
-    sim.rtol = 1e-13
+    sim.atol = 1e-9
+    sim.rtol = 1e-9
     sim.iter = 'Newton'
-    sim.discr='BDF'
+    sim.discr = 'BDF'
+    # sim.linear_solver = 'SPGMR'
     sim.report_continuously = True
     sim.verbosity = 10
     t, y = sim.simulate(tfinal)

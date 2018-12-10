@@ -53,7 +53,7 @@ def model(t,y,p,*args):
    
    # Neuron: Gated currents
    INaG = p.PNaG*(m**3)*(h)*(p.F**2)*(V)/(p.R*p.T)*((NaCi-NaCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-(p.F*V)/(p.R*p.T))))
-   IKG = (p.PKG*(n**4))*(p.F**2)*(V)/(p.R*p.T)*((KCi-KCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-p.F*V/(p.R*p.T))))
+   IKG = (p.PKG*(n**2))*(p.F**2)*(V)/(p.R*p.T)*((KCi-KCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-p.F*V/(p.R*p.T))))
    IClG = p.PClG*1/(1+exp(-(V+10)/10))*(p.F**2)*V/(p.R*p.T)*((ClCi-ClCe*exp(p.F*V/(p.R*p.T)))/(1-exp(p.F*V/(p.R*p.T))))
    
    
@@ -66,6 +66,9 @@ def model(t,y,p,*args):
    blockerExp = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
    blockerExp = p.perc + (1-p.perc)*blockerExp
    
+   fac = 3
+   recover = 1/(1+exp(-p.beta1*(t-p.tend-100))) + 1/(1+exp(p.beta2*(t-p.tend - 200)))
+   recover = (fac-1)*recover - (fac-2)
    # Neuron: Na-K pump
    Ipump = (p.blockerScaleNeuron*blockerExp-(p.blockerScaleNeuron-1))*p.pumpScaleNeuron*p.Qpump*(NaCi**(1.5)/(NaCi**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
    

@@ -107,14 +107,14 @@ def parameters(p,testparams,initvals):
     
     # Neuronal leaks
     p.INaG0 = p.PNaG*(p.m0**3)*(p.h0)*(p.F**2)*(p.Vi0)/(p.R*p.T)*((p.NaCi0-p.NaCe0*exp(-(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-(p.F*p.Vi0)/(p.R*p.T))))
-    p.IKG0 = (p.PKG*(p.n0**4))*(p.F**2)*(p.Vi0)/(p.R*p.T)*((p.KCi0-p.KCe0*exp(-(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-p.F*p.Vi0/(p.R*p.T))))
+    p.IKG0 = (p.PKG*(p.n0**2))*(p.F**2)*(p.Vi0)/(p.R*p.T)*((p.KCi0-p.KCe0*exp(-(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-p.F*p.Vi0/(p.R*p.T))))
     p.IClG0 = p.PClG*1/(1+exp(-(p.Vi0+10)/10))*(p.F**2)*p.Vi0/(p.R*p.T)*((p.ClCi0-p.ClCe0*exp(p.F*p.Vi0/(p.R*p.T)))/(1-exp(p.F*p.Vi0/(p.R*p.T))))
     p.INaL0 = (p.F**2)/(p.R*p.T)*p.Vi0*((p.NaCi0-p.NaCe0*exp((-p.F*p.Vi0)/(p.R*p.T)))/(1-exp((-p.F*p.Vi0)/(p.R*p.T))))
     p.IKL0 = p.F**2/(p.R*p.T)*p.Vi0*((p.KCi0-p.KCe0*exp((-p.F*p.Vi0)/(p.R*p.T)))/(1-exp((-p.F*p.Vi0)/(p.R*p.T))))
     p.IClL0 = (p.F**2)/(p.R*p.T)*p.Vi0*((p.ClCi0-p.ClCe0*exp((p.F*p.Vi0)/(p.R*p.T)))/(1-exp((p.F*p.Vi0)/(p.R*p.T))))
     p.JKCl0 = p.UKCl*p.R*p.T/p.F*(log(p.KCi0)+log(p.ClCi0)-log(p.KCe0)-log(p.ClCe0))
     p.neurPump = p.pumpScaleNeuron*p.Qpump*(p.NaCi0**(1.5)/(p.NaCi0**(1.5)+p.nka_na**1.5))*(p.KCe0/(p.KCe0+p.nka_k))
-    
+    # p.neurPump = p.Qpump*(0.62/(1+(6.7/p.NaCi0)**3)+0.38/(1+(67.6/p.NaCi0)**3))
     p.PNaL = -((p.INaG0 + 3*p.neurPump))/p.INaL0             # Estimated sodium leak conductance in neuron
     p.PKL = -((p.IKG0 - 2*p.neurPump)+p.F*p.JKCl0)/p.IKL0    # Estimated K leak conductance in neuron 
     p.PClL = (p.F*p.JKCl0 - p.IClG0)/p.IClL0                 # Estimated Cl leak conducatance in neuron

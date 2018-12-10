@@ -39,6 +39,10 @@ def model(t,y,p,*args):
    alphan = 0.016*(V+35)/(1-exp(-(V+35)/5))
    betan = 0.25*exp(-(V+50)/40)
    
+   # m = alpham/(alpham+betam)
+   # h = alphah/(alphah+betah)
+   # n = alphan/(alphan+betan)
+   
    # Neuron: Gated currents
    INaG = p.PNaG*(m**3)*(h)*(p.F**2)*(V)/(p.R*p.T)*((NaCi-NaCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-(p.F*V)/(p.R*p.T))))
    IKG = (p.PKG*(n**2))*(p.F**2)*(V)/(p.R*p.T)*((KCi-KCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-p.F*V/(p.R*p.T))))
@@ -73,11 +77,11 @@ def model(t,y,p,*args):
    # INaG = INaG*blockerExp
    
    # Final model
-   ODEs=[  (-1/p.F*(INaG+INaL+3*Ipump) ), \
-   (-1/p.F*(IKG+IKL-2*Ipump) - JKCl), \
-   (1/p.F*(IClG+IClL)-JKCl), \
-   alpham*(1-m)-betam*m,\
-   alphah*(1-h)-betah*h,\
+   ODEs=[  (-1/p.F*(INaG+INaL+3*Ipump) ),
+   (-1/p.F*(IKG+IKL-2*Ipump) - JKCl),
+   (1/p.F*(IClG+IClL)-JKCl),
+   alpham*(1-m)-betam*m,
+   alphah*(1-h)-betah*h,
    alphan*(1-n)-betan*n,
    fluxi]    
    ODEs = array(ODEs)*60*1e3
