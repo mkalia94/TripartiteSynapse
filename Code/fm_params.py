@@ -1,5 +1,9 @@
 from numpy import *
 def parameters(p,testparams,initvals):
+    
+    #============================================================================
+    #-----------------------KNOWN PARAMETERS------------------------------------
+    #============================================================================
     p.C = 20                # Neuron membrane capacitance
     p.F = 96485.333         # Faraday's constant 
     p.R = 8314.4598         # Gas constant
@@ -14,14 +18,41 @@ def parameters(p,testparams,initvals):
     p.LH20i = 2*1e-14       # Osmotic permeability in the neuron
     p.Qpump = 54.5          # Baseline neuronal pump strength
     p.Cg = 20               # Astrocyte membrane capacitance 
-    p.alphae0 = 0.5         # Volume fraction: ECS
     p.Vg0 = -80             # Fix initial glial membrane potential
     p.Vi0 = -65.5           # Fix initial neuronal membrane potential 
-    p.NaCe0 = 152           # Fix initial ECS Na Conc.
-    p.KCe0 = 3              # Fix initial ECS K Conc.
-    p.ClCe0 = 135           # Fix initial ECS Cl Conc.
     p.KCe_thres = 13        # Kir: Threshold for Kir gate
     p.kup2 = 0.1     # Kir: Rate of transition from low uptake to high uptake
+    p.PCaG = 0.75*1e-5 # (from Naomi)
+    p.kNCXi = 5.4 # 1/10th of NKA strength, from Oschmann (2017), spatial separation..
+    p.alphaNaNCX = 87.5 # in mM
+    p.alphaCaNCX = 1.38 # in mM, from Oschmann 2017
+    p.eNCX = 0.35 # in mM, from Oschmann 2017
+    p.ksatNCX = 0.1 # in mM, from Oschmann 2017
+    p.kGLT = 8e-6 # Take max current of 0.67pA/microm^2 from Oschmann, compute avg = (.)/6
+    p.HeOHa = 0.66 # from Breslin, Wade sodium microdomains..
+    p.Nv = 1.5*1e4 # Naomi
+    p.Gv = 2 # Naomi
+    p.k1max = 1 # Naomi
+    p.KM = 0.0023 # Naomi
+    p.KDV = 0.1 # Naomi
+    p.k20 = 0.021*1e-3 # Naomi
+    p.k2cat = 20*1e-3 # Naomi
+    p.kmin20 = 0.017*1e-3 # Naomi
+    p.kmin1 = 0.05*1e-3 # Naomi
+    p.k3 = 4.4 # Naomi
+    p.kmin3 = 56*1e-3 # Naomi
+    p.k4 = 1.450 # Naomi
+    p.tinact = 3 # Naomi
+    p.trec = 800 # Naomi
+    p.tpost = 50 # Naomi
+    p.Vpost0 = -65.5 # Emperical
+    p.kNCXg = p.kNCXi  
+    p.gAMPA = 0.035 # Tewari Majumdar
+    p.VAMPA = 0 # Tewari Majumdar
+    p.Rm = 0.79 # Tewari Majumdar
+    p.alphaAMPA = 1.1 # Segev and Koch chap 1
+    p.betaAMPA = 0.19 # Segev and Koch chap 1
+    
     
     p.blockerScaleAst = testparams[0]        # How much more should you block astrocyte pump?
     p.blockerScaleNeuron = testparams[1]     # How much more should you block neuronal pump?
@@ -38,35 +69,73 @@ def parameters(p,testparams,initvals):
     p.tend = testparams[12]                  # End blockade
     p.nkccblock_after = testparams[13]
     p.kirblock_after = testparams[14]
+    p.alphae0 = testparams[15]
+    p.choice = testparams[16]
     
-    # Initial concenthe police bombaytrations and volumes (baseline rest)
-    p.NNai0 = initvals[0]            
-    p.NKi0 = initvals[1]
-    p.NCli0 = initvals[2]
-    p.NNag0 = initvals[3]
-    p.NKg0 = initvals[4]
-    p.NClg0 = initvals[5]
-    p.Wi0 = initvals[6]
-    p.Wg0 = initvals[7]
-    p.NaCg0 = p.NNag0/p.Wg0        # Glial Na Conc.
-    p.KCg0 = p.NKg0/p.Wg0          # Glial K Conc.
-    p.ClCg0 = p.NClg0/p.Wg0        # Glial Cl Conc.
-    p.We0 = p.alphae0*p.Wi0
-    p.Wtot = p.Wi0+p.We0+p.Wg0
-    p.NaCi0 = p.NNai0/p.Wi0        # ICS Na Conc.
-    p.KCi0 = p.NKi0/p.Wi0          # ICS K Conc.
-    p.ClCi0 = p.NCli0/p.Wi0        # ICS Cl Conc.
+    # Initial concentrations and volumes (baseline rest)
+    
+    p.NaCi0 = initvals[0]
+    p.KCi0 = initvals[1]
+    p.ClCi0 = initvals[2]
+    p.CaCi0 = initvals[3]
+    p.GluCi0 = initvals[4]
+    p.NaCe0 = initvals[5]
+    p.KCe0 = initvals[6]
+    p.ClCe0 = initvals[7]
+    p.CaCc0 = initvals[8]
+    p.GluCc0 = initvals[9] 
+    p.NaCg0 = initvals[10]
+    p.KCg0 = initvals[11]
+    p.ClCg0 = initvals[12]
+    p.CaCg0 = initvals[13]
+    p.GluCg0 = initvals[14]
+    p.Wi0 = initvals[15]
+    p.Wg0 = initvals[16]
+    p.VolPreSyn = initvals[17]
+    p.VolPAP = initvals[18]
+    p.Volc = initvals[19]
+    p.NI0 = p.GluCi0*p.VolPreSyn
+    p.NF0 = p.GluCc0*p.Volc
+    p.NGlui0 = p.NI0
+    p.NGluc0 = p.NF0
+    
+    p.We0 = p.alphae0*(p.Wi0 + p.Wg0)/(1-p.alphae0)
+    
+    p.NNai0 = p.NaCi0*p.Wi0
+    p.NKi0 = p.KCi0*p.Wi0
+    p.NCli0 = p.ClCi0*p.Wi0
+    p.NCai0 = p.CaCi0*p.VolPreSyn
+    p.NNae0 = p.NaCe0*p.We0
+    p.NKe0 = p.KCe0*p.We0
+    p.NCle0 = p.ClCe0*p.We0
+    p.NCac0 = p.CaCc0*p.Volc
+    p.NNag0 = p.NaCg0*p.Wg0
+    p.NKg0 = p.KCg0*p.Wg0
+    p.NClg0 = p.ClCg0*p.Wg0
+    p.NCag0 = p.CaCg0*p.VolPAP
+    p.NGlug0 = p.GluCg0*p.VolPAP
+    
+    p.CNa = p.NNai0 + p.NNae0 + p.NNag0
+    p.CK = p.NKi0 + p.NKe0 + p.NKg0
+    p.CCl = p.NCli0 + p.NCle0 + p.NClg0
+    p.CCa = p.NCai0 + p.NCac0 + p.NCag0
+    p.Wtot = p.Wi0 + p.We0 + p.Wg0
+    
+    #============================================================================
+    #-----------------------DERIVED QUANTITIES------------------------------------
+    #============================================================================
+    
+    
     
     # Impermeants and conserved quantities
-    p.NAi = p.NNai0 + p.NKi0 - p.NCli0 - p.C/p.F*p.Vi0
-    p.NAe = ((p.NaCi0+p.KCi0+p.ClCi0+p.NAi/p.Wi0)-(p.NaCe0+p.KCe0+p.ClCe0))*p.We0
-    p.NBg = (1/2*(p.NaCthe police bombaye0 + p.KCe0 + p.ClCe0 + p.NAe/p.We0) - (p.KCg0 + p.NaCg0) + p.Cg/2/p.F*p.Vg0/p.Wg0)*p.Wg0
-    p.NAg = (1/2*(p.NaCe0 + p.KCe0 + p.ClCe0 + p.NAe/p.We0) - p.Cg/2/p.F*p.Vg0/p.Wg0 -p.ClCg0)*p.Wg0
-    p.CNa = p.NaCi0*p.Wi0 + p.NaCe0*p.We0 + p.NaCg0*p.Wg0
-    p.CK = p.KCi0*p.Wi0 + p.KCe0*p.We0 + p.KCg0*p.Wg0
-    p.CCl = p.ClCi0*p.Wi0 + p.ClCe0*p.We0 + p.ClCg0*p.Wg0
+    p.NAi = 2*p.NCai0 - p.NCli0 - p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F
+    p.NAe = (p.Cg*p.Vg0*p.Wi0 + p.C*p.Vi0*(-p.We0 + p.Wi0) + p.F*(2*p.NCai0*p.We0 - p.NGlui0*p.We0 + 2*p.NKi0*p.We0 + 2*p.NNai0*p.We0 + 2*p.NCac0*p.Wi0 - 2*p.NCle0*p.Wi0 - p.NGluc0*p.Wi0))/(2*p.F*p.Wi0)
+    p.NBe = -((p.Cg*p.Vg0*p.Wi0 + p.C*p.Vi0*(p.We0 + p.Wi0) + p.F*(-2*p.NCai0*p.We0 + p.NGlui0*p.We0 - 2*p.NKi0*p.We0 - 2*p.NNai0*p.We0 + 2*p.NCac0*p.Wi0 - p.NGluc0*p.Wi0 + 2*p.NKe0*p.Wi0 + 2*p.NNae0*p.Wi0))/(2*p.F*p.Wi0))
+    p.NAg = -((p.C*p.Vi0*p.Wg0 + p.Cg*p.Vg0*p.Wi0 + p.F*(-2*p.NCai0*p.Wg0 + p.NGlui0*p.Wg0 - 2*p.NKi0*p.Wg0 - 2*p.NNai0*p.Wg0 - 2*p.NCag0*p.Wi0 + 2*p.NClg0*p.Wi0 + p.NGlug0*p.Wi0))/(2*p.F*p.Wi0))
+    p.NBg = (-p.C*p.Vi0*p.Wg0 + p.Cg*p.Vg0*p.Wi0 + p.F*(2*p.NCai0*p.Wg0 - p.NGlui0*p.Wg0 + 2*p.NKi0*p.Wg0 + 2*p.NNai0*p.Wg0 - 2*p.NCag0*p.Wi0 + p.NGlug0*p.Wi0 - 2*p.NKg0*p.Wi0 - 2*p.NNag0*p.Wi0))/(2*p.F*p.Wi0)
     
-    # Gates
+
+    # Gates    
     p.alpham0 = 0.32*(p.Vi0+52)/(1-exp(-(p.Vi0+52)/4))
     p.betam0 = 0.28*(p.Vi0+25)/(exp((p.Vi0+25)/5)-1)
     p.alphah0 = 0.128*exp(-(p.Vi0+53)/18)
@@ -79,17 +148,28 @@ def parameters(p,testparams,initvals):
     
     # Neuronal leaks
     p.INaG0 = p.PNaG*(p.m0**3)*(p.h0)*(p.F**2)*(p.Vi0)/(p.R*p.T)*((p.NaCi0-p.NaCe0*exp(-(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-(p.F*p.Vi0)/(p.R*p.T))))
-    p.IKG0 = (p.PKG*(p.n0**4))*(p.F**2)*(p.Vi0)/(p.R*p.T)*((p.KCi0-p.KCe0*exp(-(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-p.F*p.Vi0/(p.R*p.T))))
+    p.IKG0 = (p.PKG*(p.n0**2))*(p.F**2)*(p.Vi0)/(p.R*p.T)*((p.KCi0-p.KCe0*exp(-(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-p.F*p.Vi0/(p.R*p.T))))
     p.IClG0 = p.PClG*1/(1+exp(-(p.Vi0+10)/10))*(p.F**2)*p.Vi0/(p.R*p.T)*((p.ClCi0-p.ClCe0*exp(p.F*p.Vi0/(p.R*p.T)))/(1-exp(p.F*p.Vi0/(p.R*p.T))))
     p.INaL0 = (p.F**2)/(p.R*p.T)*p.Vi0*((p.NaCi0-p.NaCe0*exp((-p.F*p.Vi0)/(p.R*p.T)))/(1-exp((-p.F*p.Vi0)/(p.R*p.T))))
     p.IKL0 = p.F**2/(p.R*p.T)*p.Vi0*((p.KCi0-p.KCe0*exp((-p.F*p.Vi0)/(p.R*p.T)))/(1-exp((-p.F*p.Vi0)/(p.R*p.T))))
     p.IClL0 = (p.F**2)/(p.R*p.T)*p.Vi0*((p.ClCi0-p.ClCe0*exp((p.F*p.Vi0)/(p.R*p.T)))/(1-exp((p.F*p.Vi0)/(p.R*p.T))))
     p.JKCl0 = p.UKCl*p.R*p.T/p.F*(log(p.KCi0)+log(p.ClCi0)-log(p.KCe0)-log(p.ClCe0))
-    p.neurPump = p.pumpScaleNeuron*p.Qpump*(p.NaCi0**(1.5)/(p.NaCi0**(1.5)+p.nka_na**1.5))*(p.KCe0/(p.KCe0+p.nka_k))
+    p.sigmapump = 1/7*(exp(p.NaCe0/67.3)-1)
+    p.fpump = 1/(1+0.1245*exp(-0.1*p.F/p.R/p.T*p.Vi0)+0.0365*p.sigmapump*exp(-p.F/p.R/p.T*p.Vi0))
+    p.neurPump = p.pumpScaleNeuron*p.Qpump*p.fpump*(p.NaCi0**(1.5)/(p.NaCi0**(1.5)+p.nka_na**1.5))*(p.KCe0/(p.KCe0+p.nka_k))
+    p.INCXi0 = p.kNCXi*(p.NaCe0**3)/(p.alphaNaNCX**3+p.NaCe0**3)*(p.CaCc0/(p.alphaCaNCX+p.CaCc0))* \
+   (p.NaCi0**3/p.NaCe0**3*exp(p.eNCX*p.F*p.Vi0/p.R/p.T)-p.CaCi0/p.CaCc0*exp((p.eNCX-1)*p.F*p.Vi0/p.R/p.T))/\
+   (1+p.ksatNCX*exp((p.eNCX-1)*p.F*p.Vi0/p.R/p.T))
+    p.fGLTi0 = 0.1*p.kGLT*p.R*p.T/p.F*log(p.NaCe0**3/p.NaCi0**3*p.KCi0/p.KCe0*p.HeOHa*p.GluCc0/p.GluCi0)
+    p.ICaG0 = p.PCaG*p.m0**2*p.h0*4*p.F/(p.R*p.T)*p.Vi0*((p.CaCi0-p.CaCc0*exp(-2*(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-2*(p.F*p.Vi0)/(p.R*p.T))))
+    p.ICaL0 = 4*(p.F**2)/(p.R*p.T)*p.Vi0*((p.CaCi0-p.CaCc0*exp((-2*p.F*p.Vi0)/(p.R*p.T)))/(1-exp((-2*p.F*p.Vi0)/(p.R*p.T))))
+    p.fRelGlui0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vi0*((p.GluCi0-p.GluCc0*exp((p.F*p.Vi0)/(p.R*p.T)))/(1-exp((p.F*p.Vi0)/(p.R*p.T)))) 
+
     
-    p.PNaL = -((p.INaG0 + 3*p.neurPump))/p.INaL0             # Estimated sodium leak conductance in neuron
-    p.PKL = -((p.IKG0 - 2*p.neurPump)+p.F*p.JKCl0)/p.IKL0    # Estimated K leak conductance in neuron 
+    p.PNaL = (-p.INaG0 - 3*p.neurPump - 3*p.INCXi0 + 3*p.F*p.fGLTi0)/p.INaL0             # Estimated sodium leak conductance in neuron
+    p.PKL = (-p.IKG0 + 2*p.neurPump - p.F*p.JKCl0 - p.F*p.fGLTi0)/p.IKL0    # Estimated K leak conductance in neuron 
     p.PClL = (p.F*p.JKCl0 - p.IClG0)/p.IClL0                 # Estimated Cl leak conducatance in neuron
+    p.PCaL = (-p.ICaG0+p.INCXi0)/p.ICaL0
     
     # Glial uptake parameters
     p.kActive = p.Qpump*p.pumpScaleAst/p.F                  
@@ -98,18 +178,57 @@ def parameters(p,testparams,initvals):
     p.gNKCC1 = p.nkccScale*0.03*p.UKCl
     p.GKir = p.kirScale*60*1e-3;
     
+    #-----------------------------------------------------------------------------------------------
     # Astrocyte leaks
     p.fRelK0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.KCg0-p.KCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-p.F*p.Vg0)/(p.R*p.T))))
     p.fRelCl0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.ClCg0-p.ClCe0*exp((p.F*p.Vg0)/(p.R*p.T)))/(1-exp((p.F*p.Vg0)/(p.R*p.T))))
     p.fRelNa0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.NaCg0-p.NaCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-p.F*p.Vg0)/(p.R*p.T))))
     p.fNKCC10 = p.gNKCC1*p.R*p.T/p.F*(log(p.KCe0) + log(p.NaCe0) + 2*log(p.ClCe0) - log(p.KCg0) - log(p.NaCg0) - 2*log(p.ClCg0))
-    p.fActive0 = p.kActive*(p.NaCg0**(1.5)/(p.NaCg0**(1.5)+p.nka_na**1.5))*(p.KCe0/(p.KCe0+p.nka_k))
+    p.sigmapumpA = 1/7*(exp(p.NaCe0/67.3)-1)
+    p.fpumpA = 1/(1+0.1245*exp(-0.1*p.F/p.R/p.T*p.Vg0)+0.0365*p.sigmapumpA*exp(-p.F/p.R/p.T*p.Vg0))
+    p.fActive0 = p.kActive*p.fpumpA*(p.NaCg0**(1.5)/(p.NaCg0**(1.5)+p.nka_na**1.5))*(p.KCe0/(p.KCe0+p.nka_k))
     Vkg0 = p.R*p.T/p.F*log(p.KCe0/p.KCg0)
-    p.GKir = p.kirScale*3.7*6*10**3/p.F
+    p.GKir = p.kirScale*3.7*6*10**3/p.F/p.F
     minfty0 = 1/(2+exp(1.62*(p.F/p.R/p.T)*(p.Vg0-Vkg0)))
     p.IKir0 = p.GKir*minfty0*p.KCe0/(p.KCe0+p.KCe_thres)*(p.Vg0-Vkg0)
+    p.fRelGlu0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.GluCg0-p.GluCc0*exp((p.F*p.Vg0)/(p.R*p.T)))/(1-exp((p.F*p.Vg0)/(p.R*p.T)))) 
+    p.fRelCa0 = 4/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.CaCg0-p.CaCc0*exp((-2*p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-2*p.F*p.Vg0)/(p.R*p.T))))
+    p.fGLTg0 = p.kGLT*p.R*p.T/p.F*log(p.NaCe0**3/p.NaCg0**3*p.KCg0/p.KCe0*p.HeOHa*p.GluCc0/p.GluCg0)
+    p.INCXg0 = p.kNCXg*(p.NaCe0**3)/(p.alphaNaNCX**3+p.NaCe0**3)*(p.CaCg0/(p.alphaCaNCX+p.CaCg0))* \
+   (p.NaCg0**3/p.NaCe0**3*exp(p.eNCX*p.F*p.Vg0/p.R/p.T)-p.CaCg0/p.CaCc0*exp((p.eNCX-1)*p.F*p.Vg0/p.R/p.T))/\
+   (1+p.ksatNCX*exp((p.eNCX-1)*p.F*p.Vg0/p.R/p.T))
+    p.fRelGlu0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.GluCg0-p.GluCc0*exp((p.F*p.Vg0)/(p.R*p.T)))/(1-exp((p.F*p.Vg0)/(p.R*p.T)))) 
+    p.k1init = p.k1max*p.CaCi0/(p.CaCi0+p.KM)
+    p.gCainit = p.CaCi0/(p.CaCi0+p.KDV)
+    p.k2init = p.k20+p.gCainit*p.k2cat
+    p.kmin2catinit = p.k2cat*p.kmin20/p.k20   
+    p.kmin2init = p.kmin20+p.gCainit*p.kmin2catinit
     
-    
-    p.kRelNa = (3*p.fActive0 - p.fNKCC10)/p.fRelNa0
-    p.kRelK = (-p.IKir0-2*p.fActive0-p.fNKCC10)/p.fRelK0
+    p.kRelNa = (3*p.fActive0 - p.fNKCC10+3/p.F*p.INCXg0 - 3*p.fGLTg0)/p.fRelNa0
+    p.kRelK = (-p.IKir0-2*p.fActive0-p.fNKCC10+p.fGLTg0)/p.fRelK0
     p.kRelCl = -2*p.fNKCC10/p.fRelCl0
+    p.kRelCa = -1/p.F*p.INCXg0/p.fRelCa0
+    #---------------------------------------------------------------------------------------------------------
+    
+    #Glutamate recycling initial conditions
+    p.ND0 = ((p.CaCi0 + p.KM)*(2*p.CaCi0**2*p.k3**2*p.k4*(3*p.CaCi0*p.k20*p.k3*(p.KDV*(p.k20 + p.kmin1) + p.CaCi0*(p.k20 + p.k2cat + p.kmin1)) + (p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**3)*p.NI0)/(6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec)
+    p.NN0 = (1/(6*p.CaCi0**3*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec))*(2*p.CaCi0**2*p.k3**2*p.k4*(3*p.CaCi0*p.k20*p.k3*(p.CaCi0 + p.KDV) + p.CaCi0*(p.k20 + p.k2cat)*p.kmin20 + p.k20*p.KDV*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**3)*p.NI0
+    p.NR0 = ((2*p.CaCi0**2*p.k3**2*p.k4 + p.CaCi0*p.k3*p.k4*p.kmin3 + 2*p.kmin3**2*(p.k4 + 3*p.kmin3))*p.NI0)/(6*p.CaCi0**3*p.k3**3*p.k4*p.trec)
+    p.NR10 = ((p.CaCi0*p.k3*p.k4 + 2*p.kmin3*(p.k4 + 3*p.kmin3))*p.NI0)/(2*p.CaCi0**2*p.k3**2*p.k4*p.trec)
+    p.NR20 = ((p.k4 + 3*p.kmin3)*p.NI0)/(p.CaCi0*p.k3*p.k4*p.trec)
+    p.NR30 = p.NI0/(p.k4*p.trec)
+    
+    
+    # p.ND0 = ((-(p.k20 + (p.CaCi0*p.k2cat)/(p.CaCi0 + p.KDV))*(p.kmin20 + (p.CaCi0*p.k20*p.k2cat*p.kmin20)/(p.CaCi0 + p.KDV))*(-4*p.CaCi0*p.k3*(-p.k4 - 3*p.kmin3)*p.kmin3 - (-2*p.CaCi0*p.k3 - p.kmin3)*(-(-p.k4 - 3*p.kmin3)*(-p.CaCi0*p.k3 - 2*p.kmin3) + 3*p.CaCi0*p.k3*p.kmin3)) - (-p.k20 - (p.CaCi0*p.k2cat)/(p.CaCi0 + p.KDV) - p.kmin1)*(-3*p.CaCi0*p.k3*p.kmin3*(-(-p.k4 - 3*p.kmin3)*(-p.CaCi0*p.k3 - 2*p.kmin3) + 3*p.CaCi0*p.k3*p.kmin3) - (-3*p.CaCi0*p.k3 - p.kmin20 - (p.CaCi0*p.k20*p.k2cat*p.kmin20)/(p.CaCi0 + p.KDV))*(-4*p.CaCi0*p.k3*(-p.k4 - 3*p.kmin3)*p.kmin3 - (-2*p.CaCi0*p.k3 - p.kmin3)*(-(-p.k4 - 3*p.kmin3)*(-p.CaCi0*p.k3 - 2*p.kmin3) + 3*p.CaCi0*p.k3*p.kmin3))))*p.NI0)/((-((6*(p.CaCi0)**4*p.k1max*p.k20*(p.k3)**3*p.k4)/(p.CaCi0 + p.KM)) - (6*(p.CaCi0)**5*p.k1max*p.k2cat*(p.k3)**3*p.k4)/((p.CaCi0 + p.KDV)*(p.CaCi0 + p.KM)))*p.trec)
+    # p.NN0 = ((6*(p.CaCi0)**4*(p.k3)*3*p.k4 + 6*(p.CaCi0)**3*(p.k3)**3*p.k4*p.KDV + 2*(p.CaCi0)**3*(p.k3)**2*p.k4*p.kmin20 + 2*(p.CaCi0)**3*p.k20*p.k2cat*(p.k3)**2*p.k4*p.kmin20 + 2*(p.CaCi0)**2*(p.k3)**2*p.k4*p.KDV*p.kmin20 + (p.CaCi0)**2*p.k3*p.k4*p.kmin20*p.kmin3 + (p.CaCi0)**2*p.k20*p.k2cat*p.k3*p.k4*p.kmin20*p.kmin3 + p.CaCi0*p.k3*p.k4*p.KDV*p.kmin20*p.kmin3 + 2*p.CaCi0*p.k4*p.kmin20*(p.kmin3)**2 + 2*p.CaCi0*p.k20*p.k2cat*p.k4*p.kmin20*(p.kmin3)**2 + 2*p.k4*p.KDV*p.kmin20*(p.kmin3)**2 + 6*p.CaCi0*p.kmin20*(p.kmin3)**3 + 6*p.CaCi0*p.k20*p.k2cat*p.kmin20*(p.kmin3)**3 + 6*p.KDV*p.kmin20*(p.kmin3)**3)*p.NI0)/(6*(p.CaCi0)**3*(p.k3)**3*p.k4*(p.CaCi0*p.k20 + p.CaCi0*p.k2cat + p.k20*p.KDV)* p.trec)
+    # p.NR0 = ((2*(p.CaCi0)**2*(p.k3)**2*p.k4 + p.CaCi0*p.k3*p.k4*p.kmin3 + 2*p.k4*(p.kmin3)**2 + 6*(p.kmin3)**3)*p.NI0)/(6*(p.CaCi0)**3*(p.k3)**3*p.k4*p.trec)
+    # p.NR10 = ((p.CaCi0*p.k3*p.k4 + 2*p.k4*p.kmin3 + 6*(p.kmin3)**2)*p.NI0)/(2*(p.CaCi0)**2*(p.k3)**2*p.k4*p.trec)
+    # p.NR20 = ((p.k4 + 3*p.kmin3)*p.NI0)/(p.CaCi0*p.k3*p.k4*p.trec)
+    # p.NR30 = p.NI0/(p.k4*p.trec)
+    p.kRelGlui = (p.NI0/(p.trec)-p.fGLTi0)/p.fRelGlui0
+    p.kRelGlu = (-p.fGLTg0 - p.fGLTi0 - p.kRelGlui*p.fRelGlui0 + p.k4*p.NR30)/p.fRelGlu0
+    
+    p.CGlu = p.NI0+p.NF0+p.ND0+p.NR0+p.NR10+p.NR20+p.NR30+p.NN0+p.NGlug0
+    
+    # Postsynaptic parameters
+    p.mAMPA0 = p.alphaAMPA*p.GluCc0/(p.betaAMPA+p.alphaAMPA*p.GluCc0)
