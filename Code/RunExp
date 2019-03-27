@@ -1,0 +1,7 @@
+#!/bin/bash
+python fm_class.py --name 'PumpScale = 8, GLTScale = 5, KirScale = 100, small ECS, 60min' --solve --write -s --freeparams 'tend = 80' 'pumpScaleNeuron = 8' 'pumpScaleAst = 8' 'gltScale = 5' 'kirScale = 100'
+python fm_class.py --name 'PumpScale = 8, GLTScale = 5, KirScale = 100, mid ECS, 60min' --solve --write -m --freeparams 'tend = 80' 'pumpScaleNeuron = 8' 'pumpScaleAst = 8' 'gltScale = 5' 'kirScale = 100'
+python fm_class.py --name 'PumpScale = 8, GLTScale = 5, KirScale = 100, Big ECS, 60min' --solve --write -b --freeparams 'tend = 80' 'pumpScaleNeuron = 8' 'pumpScaleAst = 8' 'gltScale = 5' 'kirScale = 100'
+
+
+

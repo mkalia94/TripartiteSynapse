@@ -1,4 +1,4 @@
-from sm_class import *
+from smgates_class import *
 from scipy.optimize import root
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -19,7 +19,7 @@ def approxGD(input):
     NCle = sm.CCl - ClCi*Wi -ClCg*Wg
     We = sm.Wtot - Wi - Wg 
     NaCe = NNae/We
-    KCe = NKe/Weplt.p
+    KCe = NKe/We
     ClCe = NCle/We
     
     equations = [NaCi*KCe - KCi*NaCe,\
@@ -82,63 +82,66 @@ def approxGD(input):
 # sess.run(init)
 # 
 ecs = arange(0.1,0.9,0.05)
-gdratio = zeros(size(ecs))
+glia = arange(0.9,1.1,0.05)
+gdratio = zeros((size(ecs),size(glia)))
 
 
 
 
 for i in range(size(ecs)):
-    ecsratio = ecs[i]
-    Wi0 = 2.0
-    sm.Wtot = Wi0/((1-ecsratio)/2)
-    Wg0 = (1-ecsratio)/2*sm.Wtot 
-    We0 = ecsratio*sm.Wtot
-    NaCi0 = 13.0
-    KCi0 = 145.0
-    ClCi0 = 7.0
-    NaCg0 = 13.0
-    KCg0 = 80.0
-    ClCg0 = 35.0
-    NNai0 = NaCi0*Wi0
-    NKi0 = KCi0*Wi0
-    NCli0 = ClCi0*Wi0
-    NNag0 = NaCg0*Wg0
-    NKg0 = KCg0*Wg0
-    NClg0 = ClCg0*Wg0
-    initvals = [NNai0,NKi0,NCli0,NNag0,NKg0,NClg0,Wi0,Wg0]
-    testparams = [blockerScaleAst, blockerScaleNeuron, \
-pumpScaleAst, pumpScaleNeuron, \
-nkccScale, kirScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend,nkccblock_after,kirblock_after,ecsratio]
-    paramfile.parameters(sm,testparams,initvals)
-    initvals = 1*ones((8,1))
-    # initvals = [100,100,100,100,100,100,2,2]
-    # for k in range(numits):
-    #     xin = initvals
-    #     xout = zeros(8)
-    #     inputdict = {X: xin, Y: xout}
-    #     sess.run(train_op, feed_dict=inputdict)
-    #     loss = sess.run(loss_op, feed_dict=inputdict)
-    #     print('({0:2d},{1:2d}): \t iteration:{2:2d} \t loss:{3:.2f}'.format(i,j,k,loss))
-    #     if loss<1e-4:
-    #         gdratio[i,j] = Wi.eval()/Wg.eval()
-    #         break
-    #     
-    # 
-    succ = False
-    ctr = 0
-    while succ == False & ctr<11:
-        initvals1 = initvals + random.normal(initvals,0.1)
-        sol = root(approxGD,initvals1)
-        succ = sol.success
-        if min(sol.x)<0:
-            succ = False
-        ctr = ctr + 1
-    if succ == True & (max(sol.x)<1000):
-        sol1 = sol.x
-        gdratio[i] = sol1[6]/sol1[7]
-        print('%d,%d done'.format([i]))
-    else:
-        print('fsolve didn\'t compute accurately')
-            
+    for j in range(size(glia)):
+        ecsratio = ecs[i]
+        gliaratio = glia[j]
+        Wi0 = 2.0
+        Wg0 = gliaratio*Wi0
+        We0 = ecsratio/(1-ecsratio)*Wi0 + ecsratio/(1-ecsratio)*Wg0 
+        sm.Wtot = Wi0 + Wg0 + We0
+        NaCi0 = 13.0
+        KCi0 = 145.0
+        ClCi0 = 7.0
+        NaCg0 = 13.0
+        KCg0 = 80.0
+        ClCg0 = 35.0
+        NNai0 = NaCi0*Wi0
+        NKi0 = KCi0*Wi0
+        NCli0 = ClCi0*Wi0
+        NNag0 = NaCg0*Wg0
+        NKg0 = KCg0*Wg0
+        NClg0 = ClCg0*Wg0
+        initvals = [NNai0,NKi0,NCli0,NNag0,NKg0,NClg0,Wi0,Wg0]
+        testparams = [blockerScaleAst, blockerScaleNeuron, \
+    pumpScaleAst, pumpScaleNeuron, \
+    nkccScale, kirScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend,nkccblock_after,kirblock_after,ecsratio]
+        paramfile.parameters(sm,testparams,initvals)
+        initvals = 1*ones((8,1))
+        # initvals = [100,100,100,100,100,100,2,2]
+        # for k in range(numits):
+        #     xin = initvals
+        #     xout = zeros(8)
+        #     inputdict = {X: xin, Y: xout}
+        #     sess.run(train_op, feed_dict=inputdict)
+        #     loss = sess.run(loss_op, feed_dict=inputdict)
+        #     print('({0:2d},{1:2d}): \t iteration:{2:2d} \t loss:{3:.2f}'.format(i,j,k,loss))
+        #     if loss<1e-4:
+        #         gdratio[i,j] = Wi.eval()/Wg.eval()
+        #         break
+        #     
+        # 
+        succ = False
+        ctr = 0
+        while succ == False & ctr<11:
+            initvals1 = initvals + random.normal(initvals,0.1)
+            sol = root(approxGD,initvals1)
+            succ = sol.success
+            if min(sol.x)<0:
+                succ = False
+            ctr = ctr + 1
+        if succ == True & (max(sol.x)<1000):
+            sol1 = sol.x
+            gdratio[i,j] = sol1[6]/sol1[7]
+            print('%d,%d done'.format([i]))
+        else:
+            print('fsolve didn\'t compute accurately')
+                
 plt.imshow(gdratio)
 plt.show()

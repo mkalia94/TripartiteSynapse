@@ -1,0 +1,10 @@
+Experiment: ['smallECS'], V[0] = -65.500, V[end] = -31.571 
+Experiment: ['largeECS'], V[0] = -65.500, V[end] = -65.500 
+Experiment: ['smallECS long'], V[0] = -65.500, V[end] = -31.571 
+Experiment: ['largeECS long'], V[0] = -65.500, V[end] = -30.689 
+Experiment: ['PumpScale = 8, GLTScale = 5, small ECS'], V[0] = -65.500, V[end] = -65.500 
+Experiment: ['PumpScale = 8, GLTScale = 5, mid ECS'], V[0] = -65.500, V[end] = -65.500 
+Experiment: ['PumpScale = 8, GLTScale = 5, BIG ecs'], V[0] = -65.500, V[end] = -65.500 
+Experiment: ['PumpScale = 8, GLTScale = 5, KirScale = 100, small ECS, 60min'], V[0] = -65.500, V[end] = -65.500 
+Experiment: ['PumpScale = 8, GLTScale = 5, KirScale = 100, mid ECS, 60min'], V[0] = -65.500, V[end] = -65.500 
+Experiment: ['PumpScale = 8, GLTScale = 5, KirScale = 100, Big ECS, 60min'], V[0] = -65.500, V[end] = -65.501 

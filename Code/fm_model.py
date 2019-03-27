@@ -1,4 +1,5 @@
 from numpy import *
+from scipy import signal
 
 def model(t,y,p,*args):
    if args:
@@ -66,14 +67,14 @@ def model(t,y,p,*args):
    CaCc = NCac/p.Volc
    GluCc = NGluc/p.Volc
    #Neuron
-   NGlui = NI
+   NGlui = NI + NN + NR + NR1 + NR2 + NR3 + ND
    NaCi =NNa/Wi
    KCi = NK/Wi
    ClCi = NCl/Wi
    CaCi = NCai/p.VolPreSyn
    GluCi = NGlui/p.VolPreSyn
    #Astrocyte
-   NGlug = p.CGlu - NGlui - NGluc - NN - NR - NR1 - NR2 - NR3 - ND
+   NGlug = p.CGlu - NGlui - NGluc
    NaCg = NNag/Wg
    KCg = NKg/Wg
    ClCg = NClg/Wg
@@ -128,7 +129,7 @@ def model(t,y,p,*args):
    (1+p.ksatNCX*exp((p.eNCX-1)*p.F*V/p.R/p.T))
    
    # EAAT
-   fGLTi = 0.1*p.kGLT*p.R*p.T/p.F*log(NaCe**3/NaCi**3*KCi/KCe*p.HeOHa*GluCc/GluCi)
+   fGLTi = p.kGLT*p.R*p.T/p.F*log(NaCe**3/NaCi**3*KCi/KCe*p.HeOHa*GluCc/GluCi)
    
    #============================================================================================================
    #----------------------------------CLEFT---------------------------------------------------------------------
@@ -176,7 +177,7 @@ def model(t,y,p,*args):
    fGLTg = p.kGLT*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe*p.HeOHa*GluCc/GluCg)   
    
    # NCX
-   INCXg = p.kNCXg*(NaCe**3)/(p.alphaNaNCX**3+NaCe**3)*(CaCg/(p.alphaCaNCX+CaCg))* \
+   INCXg = p.kNCXg*(NaCe**3)/(p.alphaNaNCX**3+NaCe**3)*(CaCc/(p.alphaCaNCX+CaCc))* \
    (NaCg**3/NaCe**3*exp(p.eNCX*p.F*Vg/p.R/p.T)-CaCg/CaCc*exp((p.eNCX-1)*p.F*Vg/p.R/p.T))/\
    (1+p.ksatNCX*exp((p.eNCX-1)*p.F*Vg/p.R/p.T)) 
     
@@ -220,6 +221,7 @@ def model(t,y,p,*args):
       fRelCl = blockerExp_new*fRelCl      
          
    
+   
 
    
    # blockerExp = 1/(1+exp(p.beta1*(t-70))) + 1/(1+exp(-p.beta2*(t-80)))
@@ -228,6 +230,7 @@ def model(t,y,p,*args):
    # Final model
    ODEs=[ #Neuron
    (-1/p.F*(INaG+INaL+3*Ipump))-3/p.F*INCXi + 3*fGLTi, \
+   #+ 0*5/p.F*(1-signal.square(array(1.5*t))), \
    (-1/p.F*(IKG+IKL-2*Ipump)-JKCl-fGLTi), \
    (1/p.F*(IClG+IClL)-JKCl), \
    alpham*(1-m)-betam*m,\

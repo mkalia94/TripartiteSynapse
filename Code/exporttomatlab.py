@@ -1,6 +1,6 @@
 import scipy.io as sio
-from sm_class import *
-C = sm.C                # Neuron membrane capacitance
+from smgates_class import *
+C = float(sm.C)                # Neuron membrane capacitance
 F = sm.F         # Faraday's constant 
 R = sm.R         # Gas constant
 T = sm.T              # Temperature
@@ -70,4 +70,4 @@ kRelCl = -2*sm.fNKCC10/sm.fRelCl0
 
 dict = {'C':C,'F':F,'R':R,'T':T,'PNaG':PNaG,'PNaL':PNaL,'PKG':PKG,'PKL':PKL,'PClG':PClG,'PClL':PClL,'UKCl':UKCl,'LH20i':LH20i,'Qpump':Qpump,'Cg':Cg,'Vg0':Vg0,'Vi0':Vi0,'NaCe0':NaCe0,'KCe0':KCe0,'ClCe0':ClCe0,'nkccScale':nkccScale,'kirScale':kirScale,'nka_na':nka_na,'nka_k':nka_k,'beta1':beta1,'beta2':beta2,'perc':perc,'tstart':tstart,'tend':tend,'alphae0':alphae0,'NNai0':NNai0,'NKi0':NKi0,'NCli0':NCli0,'NNag0':NNag0,'NKg0':NKg0,'NClg0':NClg0,'Wi0':Wi0,'Wg0':Wg0,'NaCg0':NaCg0,'KCg0':KCg0,'ClCg0':ClCg0,'NaCi0':NaCi0,'KCi0':KCi0,'ClCi0':ClCi0,'kActive':kActive,'LH20g':LH20g,'gNKCC1':gNKCC1,'GKir':GKir,'kRelNa':kRelNa,'kRelK':kRelK,'kRelCl':kRelCl}
 
-sio.savemat('params.mat',dict)
+sio.savemat('paramsUllahPump.mat',dict)

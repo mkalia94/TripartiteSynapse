@@ -54,6 +54,19 @@ def model(t,y,p,*args):
    alphan = 0.016*(V+35)/(1-exp(-(V+35)/5))
    betan = 0.25*exp(-(V+50)/40)
    
+   # alpham = 0.1*(V+30)/(1-exp(-(V+30)/10))
+   # betam = 4*exp(-(V+55)/18)
+   # alphah = 0.07*exp(-(V+44)/20)
+   # betah = 1/(1+exp(-(V+14)/10))
+   # alphan = 0.01*(V+34)/(1-exp(-(V+34)/10))
+   # betan = 0.125*exp(-(V+44)/80)
+   # # 
+   # minfty = alpham/(alpham+betam)
+   # ninfty = alphan/(alphan+betan)
+   # hinfty = alphah/(alphah+betah)
+   # 
+   # m=minfty
+      
    # Neuron: Gated currents
    INaG = p.PNaG*(m**3)*(h)*(p.F**2)*(V)/(p.R*p.T)*((NaCi-NaCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-(p.F*V)/(p.R*p.T))))
    IKG = (p.PKG*(n**2))*(p.F**2)*(V)/(p.R*p.T)*((KCi-KCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-p.F*V/(p.R*p.T))))
@@ -70,13 +83,20 @@ def model(t,y,p,*args):
    blockerExp = p.perc + (1-p.perc)*blockerExp
    
    # Neuron: Na-K pump
-   Ipump = (p.blockerScaleNeuron*blockerExp-(p.blockerScaleNeuron-1))*p.pumpScaleNeuron*p.Qpump*(NaCi**(1.5)/(NaCi**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
+   sigmapump = 1/7*(exp(NaCe/67.3)-1)
+   fpump = 1/(1+0.1245*exp(-0.1*p.F/p.R/p.T*V)+0.0365*sigmapump*exp(-p.F/p.R/p.T*V))
+   Ipump = (p.blockerScaleNeuron*blockerExp-(p.blockerScaleNeuron-1))*p.pumpScaleNeuron*fpump*p.Qpump*(NaCi**(1.5)/(NaCi**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
+   # Ipump = (p.blockerScaleNeuron*blockerExp-(p.blockerScaleNeuron-1))*p.pumpScaleNeuron*p.Qpump*1/(1+exp((25-NaCi)/3))*1/(1+exp(5.5-KCe))
+   
    
    # Neuron: KCl cotransport
    JKCl = p.UKCl*p.R*p.T/p.F*(log(KCi)+log(ClCi)-log(KCe)-log(ClCe))
    
    # Astrocyte: pump
-   fActive = (p.blockerScaleAst*blockerExp-(p.blockerScaleAst-1))*p.kActive*(NaCg**(1.5)/(NaCg**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
+   sigmapumpA = 1/7*(exp(NaCe/67.3)-1)
+   fpumpA = 1/(1+0.1245*exp(-0.1*p.F/p.R/p.T*Vg)+0.0365*sigmapumpA*exp(-p.F/p.R/p.T*Vg))
+   fActive = (p.blockerScaleAst*blockerExp-(p.blockerScaleAst-1))*p.kActive*fpumpA*(NaCg**(1.5)/(NaCg**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
+   # fActive = (p.blockerScaleAst*blockerExp-(p.blockerScaleAst-1))*p.kActive*1/(1+exp((25-NaCg)/3))*1/(1+exp(5.5-KCe))
    
    # Astrocyte: Leak
    fRelK = p.kRelK*1/p.F*p.F**2/(p.R*p.T)*Vg*((KCg-KCe*exp((-p.F*Vg)/(p.R*p.T)))/(1-exp((-p.F*Vg)/(p.R*p.T))))
@@ -101,35 +121,52 @@ def model(t,y,p,*args):
     
    # Water flux: neuron + astrocyte
    SCi = NaCi+KCi+ClCi+p.NAi/Wi
-   SCe = NaCe+KCe+ClCe+p.NAe/We
+   SCe = NaCe+KCe+ClCe+p.NAe/We + p.NBe/We
    SCg = NaCg + KCg + ClCg + p.NAg/Wg + p.NBg/Wg
    delpii = p.R*p.T*(SCi-SCe)
    fluxi = p.LH20i*(delpii)
    delpig = p.R*p.T*(SCg-SCe)
    fluxg = p.LH20g*(delpig)
+   
+   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tend-20))) + 1/(1+exp(-p.beta2*(t-p.tend - 30)))
+   blockerExp_new =  blockerExp_new
+   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tend-20))) + 1/(1+exp(p.beta2*(t-p.tend - 100)))
+   blockerExp_up =  blockerExp_up*2.5-1.5
 
+   if p.choice == 1:
+      INaG = blockerExp_new*INaG
+   elif p.choice == 2:
+      Ipump = blockerExp_up*Ipump
+      fActive = blockerExp_up*fActive
+   elif p.choice ==3:
+      fNKCC1 = blockerExp_up*fNKCC1
+   elif p.choice == 4:
+      fRelNa = blockerExp_new*fRelNa
+   elif p.choice == 5:
+      fRelK = blockerExp_new*fRelK
+   elif p.choice == 6:
+      fRelCl = blockerExp_new*fRelCl      
+         
    
-   # blockerExp = 1/(1+exp(p.beta1*(t-70))) + 1/(1+exp(-p.beta2*(t-80)))
-   # INaG = INaG*blockerExp
-   
-   # Final model
-   ODEs=[  (-1/p.F*(INaG+INaL+3*Ipump) ), \
-   (-1/p.F*(IKG+IKL-2*Ipump) - JKCl), \
-   (1/p.F*(IClG+IClL)-JKCl), \
-   alpham*(1-m)-betam*m,\
-   alphah*(1-h)-betah*h,\
-   alphan*(1-n)-betan*n,
-   -3*fActive + fRelNa + fNKCC1, \
-   IKir + 2*fActive + fRelK + fNKCC1, \
-   2*fNKCC1 + fRelCl, \
-   fluxi, \
-   fluxg]    
-   ODEs = array(ODEs)*60*1e3
-      
    if args:
       return eval(args[0])
    else:
+      # Final model
+      ODEs=[  (-1/p.F*(INaG+INaL+3*Ipump) ), \
+      (-1/p.F*(IKG+IKL-2*Ipump) - JKCl), \
+      (1/p.F*(IClG+IClL)-JKCl), \
+      alpham*(1-m)-betam*m,\
+      alphah*(1-h)-betah*h,\
+      alphan*(1-n)-betan*n,
+      # 0,
+      # 3*(hinfty-h)*(alphah+betah),
+      # 3*(ninfty-n)*(alphan+betan),
+      -3*fActive + fRelNa + fNKCC1, \
+      IKir + 2*fActive + fRelK + fNKCC1, \
+      2*fNKCC1 + fRelCl, \
+      fluxi, \
+      fluxg]    
+      ODEs = array(ODEs)*60*1e3
       return ODEs
-      
-from numpy import *
+   
 
