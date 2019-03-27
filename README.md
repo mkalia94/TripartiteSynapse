@@ -1,4 +1,3 @@
-Energy deprived Tripartite Synapse
 
 # Dependencies
 Runs on Python 3.x
