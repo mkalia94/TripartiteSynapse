@@ -1,9 +1,10 @@
+## The Tripartite Synapse
 
 # Dependencies
 Runs on Python 3.x
 Dependencies: scipy, numpy, assimulo, matplotlib, argparse, timeit
 
-# Example
+# Sample Run
 An example of running multiple experiments in a bash script is done in `Code/RunExp`
 
 # How to use 
@@ -16,6 +17,11 @@ An example of running multiple experiments in a bash script is done in `Code/Run
  (big-size)
 * `--name` gives a name to the experiment run. Example: `--name 'Experiment 1`
 * `--plot` plots expressions in different figures and outputs everything at the end of the experiment. Example: `--plot 'V' 'Vg' 'NaCi'` plots neuronal membrane potential `V`, astrocyte membrane potential `Vg` and neuronal sodium concentration `NaCi`.
+
+# Example
+Running 
+`python -i fm_class.py --freeparams 'pumpScaleAst=2' 'pumpScaleNeuron=2' 'tstart=20' 'tend=25' --solve --write -s --name 'HyperNKA2' --plot 'GluCi' 'CaCi' 'GluCg' 'CaCg'`
+will simulate the tripartite synapse under 5 minutes of metabolic stress, when the baseline pump strength is set to twice its initial strength. The name of the experiment is `HyperNKA2` and the result is written to `Code/Experiments.txt`. After the simulation plots of calcium and glutamate concentrations in the neuron (presynaptic terminal) and astrocyte (perisynaptic astrocyte process) in separate figures. 
 
 # Pipeline
 1. Collect parameters from `--freeparams`.
