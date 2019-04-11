@@ -73,6 +73,8 @@ nkccblock_after = 0
 kirblock_after = 0
 alphae0 = 0.98
 choicee = 0
+astroblock = 0
+
 
 #Fixed params
 beta1 = 1.1;
@@ -99,7 +101,7 @@ initvals = [NaCi0,KCi0,ClCi0,CaCi0,GluCi0,NaCe0,KCe0,ClCe0,CaCc0,GluCc0,NaCg0,KC
 ClCg0,CaCg0,GluCg0,Wi0,Wg0,VolPreSyn,VolPAP,Volc]
 testparams = [blockerScaleAst, blockerScaleNeuron, \
 pumpScaleAst, pumpScaleNeuron, \
-nkccScale, kirScale,gltScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend,nkccblock_after,kirblock_after,alphae0,choicee]
+nkccScale, kirScale,gltScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend,nkccblock_after,kirblock_after,alphae0,choicee,astroblock]
 sm = smclass(initvals,testparams)
 testparamlist = ['blockerScaleAst', 'blockerScaleNeuron', \
 'pumpScaleAst', 'pumpScaleNeuron', \
@@ -128,7 +130,7 @@ def solver(t0,tfinal,initvals):
     t, y = sim.simulate(tfinal)
     return t,y
     
-def plotter(fignum,t,y,*str):  
+def plotter(expname,fignum,t,y,*str):  
     plt.rc('font',size=20)
     plt.rc('axes',titlesize=20)
     plt.locator_params(axis='y', nbins=6)
@@ -148,7 +150,7 @@ def plotter(fignum,t,y,*str):
         plt.xlabel("t (min.)")
     plt.xlim(t0,tfinal)
     plt.title(r"Max pump strength $=$ {d}$\%$ of baseline".format(d=int(sm.model(array(t),y,'min(blockerExp)')*100)))
-    # plt.savefig(r'Images/{d}.eps'.format(d=plotname),format='eps')
+    plt.savefig(r'Images/%s_%s.png'%(expname,plotname),format='png')
     plt.legend()
     fig.tight_layout()
     
@@ -182,8 +184,7 @@ if args.solve:
     if args.plot:
         ctr=1
         for i in args.plot:
-            plotter(ctr,t,y,[i])
+            plotter(args.name,ctr,t,y,[i])
             ctr = ctr + 1
-        plt.show()    
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------

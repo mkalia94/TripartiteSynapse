@@ -72,6 +72,7 @@ def parameters(p,testparams,initvals):
     p.kirblock_after = testparams[15]
     p.alphae0 = testparams[16]
     p.choice = testparams[17]
+    p.astroblock = testparams[18]
     p.kGLT = p.gltScale*10*1*1e-6 # Take max current of 0.67pA/microm^2 from Oschmann, compute avg = (.)/6
 
     

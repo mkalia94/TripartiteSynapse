@@ -202,27 +202,52 @@ def model(t,y,p,*args):
    #----------------------------SENSITIVITY ANALYSIS--------------------------------------------------------------
    #==============================================================================================================
    
-   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tend-20))) + 1/(1+exp(-p.beta2*(t-p.tend - 30)))
+   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tend-22))) + 1/(1+exp(-p.beta2*(t-p.tend - 28)))
    blockerExp_new =  blockerExp_new
-   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tend-20))) + 1/(1+exp(p.beta2*(t-p.tend - 30)))
+   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tend-22))) + 1/(1+exp(p.beta2*(t-p.tend - 28)))
    blockerExp_up =  blockerExp_up*400-399
 
    if p.choice == 1:
       INaG = blockerExp_new*INaG
    elif p.choice == 2:
-      IKir = blockerExp_up*IKir
+      fGLTi = blockerExp_up*fGLTi
    elif p.choice ==3:
-      fNKCC1 = blockerExp_up*fNKCC1
+      fGLTg = blockerExp_new*fGLTg
    elif p.choice == 4:
-      fRelNa = blockerExp_new*fRelNa
+      INCXg = blockerExp_up*INCXg
    elif p.choice == 5:
-      fRelK = blockerExp_new*fRelK
-   elif p.choice == 6:
-      fRelCl = blockerExp_new*fRelCl      
-         
+      INCXg = blockerExp_new*INCXg
    
+   if p.astroblock ==1:
+      if t<p.tstart:
+         astblock = 1
+      elif t>p.tend:
+         astblock = 1
+      else:
+         astblock = 0    
+   else:
+      astblock = 1
+      
+   #==============================================================================================================
+   #----------------------------RECOVERY EXPERIMENTS--------------------------------------------------------------
+   #==============================================================================================================      
    
-
+   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tend-120))) + 1/(1+exp(-p.beta2*(t-p.tend - 140)))
+   blockerExp_new =  blockerExp_new
+   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tend-120))) + 1/(1+exp(p.beta2*(t-p.tend - 140)))
+   blockerExp_up =  blockerExp_up*400-399
+   
+   if p.choice == 6:
+      INaG = blockerExp_new*INaG
+   elif p.choice == 7:
+      fGLTi = blockerExp_up*fGLTi
+   elif p.choice ==8:
+      fGLTg = blockerExp_up*fGLTg
+   elif p.choice == 9:
+      INCXg = blockerExp_new*INCXg
+   elif p.choice == 10:
+      INCXg = blockerExp_new*INCXg   
+      
    
    # blockerExp = 1/(1+exp(p.beta1*(t-70))) + 1/(1+exp(-p.beta2*(t-80)))
    # INaG = INaG*blockerExp
@@ -243,20 +268,20 @@ def model(t,y,p,*args):
    3*p.k3*CaCi*NR-(p.kmin3+2*p.k3*CaCi)*NR1+2*p.kmin3*NR2,\
    2*p.k3*CaCi*NR1-(2*p.kmin3+p.k3*CaCi)*NR2+3*p.kmin3*NR3,\
    p.k3*CaCi*NR2-(3*p.kmin3+p.k4)*NR3,\
-   p.k4*NR3 - fGLTi - fGLTg - fRelGlu - fRelGlui,\
+   p.k4*NR3 - fGLTi - astblock*fGLTg - astblock*fRelGlu - fRelGlui,\
    - NI/p.trec + fGLTi + fRelGlui,\
    NI/p.trec-k1*ND+p.kmin1*NN,\
    #ASTROCYTE
-   -3*fActive + fRelNa + fNKCC1-3/p.F*INCXg + 3*fGLTg,\
-   IKir + 2*fActive + fRelK + fNKCC1-fGLTg, \
-   2*fNKCC1 + fRelCl, \
-   1/(p.F)*INCXg - fRelCa,\
+   astblock*(-3*fActive + fRelNa + fNKCC1-3/p.F*INCXg + 3*fGLTg),\
+   astblock*(IKir + 2*fActive + fRelK + fNKCC1-fGLTg), \
+   astblock*(2*fNKCC1 + fRelCl), \
+   astblock*(1/(p.F)*INCXg - fRelCa),\
    #POSTSYN
    0,#1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
    0,#p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\
    #WATER
    fluxi, \
-   fluxg]    
+   astblock*fluxg]    
    ODEs = array(ODEs)*60*1e3
       
    if args:
