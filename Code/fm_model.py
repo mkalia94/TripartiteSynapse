@@ -202,9 +202,9 @@ def model(t,y,p,*args):
    #----------------------------SENSITIVITY ANALYSIS--------------------------------------------------------------
    #==============================================================================================================
    
-   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tend-22))) + 1/(1+exp(-p.beta2*(t-p.tend - 28)))
+   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
    blockerExp_new =  blockerExp_new
-   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tend-22))) + 1/(1+exp(p.beta2*(t-p.tend - 28)))
+   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tstart))) + 1/(1+exp(p.beta2*(t-p.tend)))
    blockerExp_up =  blockerExp_up*400-399
 
    if p.choice == 1:
@@ -219,12 +219,8 @@ def model(t,y,p,*args):
       INCXg = blockerExp_new*INCXg
    
    if p.astroblock ==1:
-      if t<p.tstart:
-         astblock = 1
-      elif t>p.tend:
-         astblock = 1
-      else:
-         astblock = 0    
+      blockerExp_new = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
+      astroblock =  blockerExp_new
    else:
       astblock = 1
       
@@ -232,9 +228,9 @@ def model(t,y,p,*args):
    #----------------------------RECOVERY EXPERIMENTS--------------------------------------------------------------
    #==============================================================================================================      
    
-   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tend-120))) + 1/(1+exp(-p.beta2*(t-p.tend - 140)))
+   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tend-20))) + 1/(1+exp(-p.beta2*(t-p.tend - 80)))
    blockerExp_new =  blockerExp_new
-   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tend-120))) + 1/(1+exp(p.beta2*(t-p.tend - 140)))
+   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tend-20))) + 1/(1+exp(p.beta2*(t-p.tend - 80)))
    blockerExp_up =  blockerExp_up*400-399
    
    if p.choice == 6:
