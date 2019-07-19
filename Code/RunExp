@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Baseline pump strength and extracellular space
-#python fm_class.py --name 'P8smallECS' --solve --write -s --freeparams 'tend = 60' 'tfinal = 100' 'pumpScaleNeuron = 8' 'pumpScaleAst = 8' 'gltScale = 5' 'kirScale = 100' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCg' 'CaCi' 'CaCg' 'Wi' 'Wg'
+#python fm_class.py --name 'gltscale = 1' --solve --write -b --freeparams 'tend = 22' 'tfinal = 30' 'pumpScaleNeuron = 1' 'pumpScaleAst = 1' 'gltScale = 1' 'kirScale = 1' 'perc = 0.2' --plot 'NaCg' 'NaCi' 'KCe' 'V' 
 #python fm_class.py --name 'smallECS' --solve --write -s --freeparams 'tend = 60' 'tfinal = 100' 'pumpScaleNeuron = 1' 'pumpScaleAst = 1' 'gltScale = 1' 'kirScale = 1' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCg' 'CaCi' 'CaCg' 'Wi' 'Wg'
 #python fm_class.py --name 'P8bigECS' --solve --write -b --freeparams 'tend = 60' 'tfinal = 100' 'pumpScaleNeuron = 8' 'pumpScaleAst = 8' 'gltScale = 5' 'kirScale = 100' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCg' 'CaCi' 'CaCg' 'Wi' 'Wg'
 #python fm_class.py --name 'bigECS' --solve --write -b --freeparams 'tend = 60' 'tfinal = 100' 'pumpScaleNeuron = 1' 'pumpScaleAst = 1' 'gltScale = 1' 'kirScale = 1' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCg' 'CaCi' 'CaCg' 'Wi' 'Wg'
@@ -11,6 +11,6 @@
 
 
 #Calibration
-python fm_class.py --name 'calibration3' --solve -s --freeparams 'tend=22' 'pumpScaleNeuron = 1' 'pumpScaleAst = 1' 'perc = 0.2' --plot 'KCe' 'NaCi' 'NaCg' 
+python fm_class.py --name 'calibration3' --solve -s --freeparams 'tend=40' 'tfinal=100' 'pumpScaleNeuron = 1' 'pumpScaleAst = 1' 'perc = 0.2' 'Wg0 = 1.7' --plot 'KCe' 'NaCi' 'NaCg' 'INCXi' 'INCXg'
 
 

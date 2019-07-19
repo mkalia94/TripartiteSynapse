@@ -13,10 +13,10 @@ from assimulo.solvers import CVode
 from assimulo.problem import Explicit_Problem
 import matplotlib.pyplot as plt
 from plotdict import *
-# from sm_class import *
+#from sm_class import *
 # from fm_class import *
-# from smgates_class import *
-from koen_class import *
+from smgates_class import *
+#from koen_class import *
 t0 = 0
 tfinal = 500
 
@@ -26,7 +26,7 @@ def func():
     for i in range(tfinal*10**5-1):
         yy[:,i+1] = yy[:,i] + 1e-5*sm.model(i*1e-5,yy[:,i])
     return yy
-    
+
 def solver(t0,tfinal,initvals):
     mod = Explicit_Problem(sm.model, initvals, t0)
     sim = CVode(mod)
@@ -39,8 +39,8 @@ def solver(t0,tfinal,initvals):
     sim.verbosity = 10
     t, y = sim.simulate(tfinal)
     return t,y
-    
-def plotter(fignum,t,y,*str):  
+
+def plotter(fignum,t,y,*str):
     plt.figure(fignum)
     plt.axvspan(sm.tstart, sm.tend, color='0.7', alpha=0.5, lw=0,label=r"{d}$\%$ of baseline NKA".format(d=sm.perc))
     for plotname in str[0]:
@@ -57,14 +57,14 @@ def plotter(fignum,t,y,*str):
     plt.savefig(r'Images/{d}.eps'.format(d=plotname),format='eps')
     plt.legend()
     plt.show()
-    
+
 def plotall(t,y):
     ctr = 0
     for str in ['KCe','NaCi','NaCg']:
         plt.figure(ctr)
         plotter(t,y,str)
         ctr += 1
-    
+
 def saveparams():
     fig,ax = plt.subplots(1,2)
     fig.subplots_adjust(wspace=1.2)
@@ -72,7 +72,7 @@ def saveparams():
                 rowLabels = initvallist,
                 colLabels = ['Initial values'],
                 loc = "center")
-    ax[0].axis("off")      
+    ax[0].axis("off")
     ax[1].table(cellText = reshape(array(testparams),(11,1)),
               rowLabels = testparamlist,
               colLabels = ['Test parameters'],

@@ -1,8 +1,9 @@
 from numpy import *
 from scipy import signal
 
-def model(t,y,p,*args):
-   if args:
+def model(t,y,p,**kwargs):
+   casevec = [0,0,0,0]
+   if kwargs is not None:
       NNa=y[:,0]
       NK=y[:,1]
       NCl=y[:,2]
@@ -26,6 +27,15 @@ def model(t,y,p,*args):
       mAMPA =  y[:,20]
       Wi = y[:,21]
       Wg = y[:,22]
+      for key in kwargs.iteritems():
+         if key=='ret':
+            casevec[0] = 1
+         if key=='block':
+            casevec[1] = 1
+         if key=='excite':
+            casevec[2] = 1
+         if key == 'astblock':
+            casevec[3] = 1   
    else:
       NNa=y[0]
       NK=y[1]
@@ -106,7 +116,27 @@ def model(t,y,p,*args):
    
    # Leak currents
    INaL = p.PNaL*(p.F**2)/(p.R*p.T)*V*((NaCi-NaCe*exp((-p.F*V)/(p.R*p.T)))/(1-exp((-p.F*V)/(p.R*p.T))))
-   IKL = p.PKL*p.F**2/(p.R*p.T)*V*((KCi-KCe*exp((-p.F*V)/(p.R*p.T)))/(1-exp((-p.F*V)/(p.R*p.T))))
+   IKL = p.PKL*p.F**2/(p.R*p.T)*V*((KC   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
+   blockerExp_new =  blockerExp_new
+   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tstart))) + 1/(1+exp(p.beta2*(t-p.tend)))
+   blockerExp_up =  blockerExp_up*400-399
+
+   if p.choice == 1:
+      INaG = blockerExp_new*INaG
+   elif p.choice == 2:
+      fGLTi = blockerExp_up*fGLTi
+   elif p.choice ==3:
+      fGLTg = blockerExp_new*fGLTg
+   elif p.choice == 4:
+      INCXg = blockerExp_up*INCXg
+   elif p.choice == 5:
+      INCXg = blockerExp_new*INCXg
+   
+   if p.astroblock ==1:
+      blockerExp_new = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
+      astroblock =  blockerExp_new
+   else:
+      astblock = 1i-KCe*exp((-p.F*V)/(p.R*p.T)))/(1-exp((-p.F*V)/(p.R*p.T))))
    IClL = p.PClL*(p.F**2)/(p.R*p.T)*V*((ClCi-ClCe*exp((p.F*V)/(p.R*p.T)))/(1-exp((p.F*V)/(p.R*p.T))))
    ICaL = 4*p.PCaL*(p.F**2)/(p.R*p.T)*V*((CaCi-CaCc*exp((-2*p.F*V)/(p.R*p.T)))/(1-exp((-2*p.F*V)/(p.R*p.T))))
    fRelGlui = p.kRelGlui*1/p.F*p.F**2/(p.R*p.T)*V*((GluCi-GluCc*exp((p.F*V)/(p.R*p.T)))/(1-exp((p.F*V)/(p.R*p.T))))
@@ -181,7 +211,8 @@ def model(t,y,p,*args):
    (NaCg**3/NaCe**3*exp(p.eNCX*p.F*Vg/p.R/p.T)-CaCg/CaCc*exp((p.eNCX-1)*p.F*Vg/p.R/p.T))/\
    (1+p.ksatNCX*exp((p.eNCX-1)*p.F*Vg/p.R/p.T)) 
     
-   #==============================================================================================================
+   #================================================
+   ==============================================================
    #----------------------------VOLUME DYNAMICS-------------------------------------------------------------------
    #==============================================================================================================
    SCi = NaCi+KCi+ClCi+p.NAi/Wi
@@ -199,59 +230,34 @@ def model(t,y,p,*args):
    IAMPA = p.gAMPA*mAMPA*(Vpost-p.VAMPA)
    
    #==============================================================================================================
-   #----------------------------SENSITIVITY ANALYSIS--------------------------------------------------------------
+   #----------------------------INTERVENTIONS--------------------------------------------------------------
    #==============================================================================================================
    
-   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
-   blockerExp_new =  blockerExp_new
-   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tstart))) + 1/(1+exp(p.beta2*(t-p.tend)))
-   blockerExp_up =  blockerExp_up*400-399
-
-   if p.choice == 1:
-      INaG = blockerExp_new*INaG
-   elif p.choice == 2:
-      fGLTi = blockerExp_up*fGLTi
-   elif p.choice ==3:
-      fGLTg = blockerExp_new*fGLTg
-   elif p.choice == 4:
-      INCXg = blockerExp_up*INCXg
-   elif p.choice == 5:
-      INCXg = blockerExp_new*INCXg
+   if casevec[1] == 1:
+      dict = kwargs['block']
+      for key,value in dict.iteritems():
+         blockOther = 1/(1+exp(p.beta1*(t-value[0]))) + 1/(1+exp(-p.beta2*(t-value[1])))
+         execCode = '{a} = {b}*{a}'.format(a=key,b=blockOther)
+         exec(execCode)
    
-   if p.astroblock ==1:
-      blockerExp_new = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
-      astroblock =  blockerExp_new
+   
+   if casevec[2] == 1:
+      IExcite = 5/p.F*(1-signal.square(array(100*t)))
    else:
-      astblock = 1
+      IExcite = 0
+      
+   if casevec[3] == 1:
+      arg_astblock = kwargs['astblock']
+      astblock =  1/(1+exp(p.beta1*(t-arg_astblock[0]))) + 1/(1+exp(-p.beta2*(t-arg_astblock[1])))  
+      
       
    #==============================================================================================================
    #----------------------------RECOVERY EXPERIMENTS--------------------------------------------------------------
    #==============================================================================================================      
    
-   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tend-20))) + 1/(1+exp(-p.beta2*(t-p.tend - 80)))
-   blockerExp_new =  blockerExp_new
-   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tend-20))) + 1/(1+exp(p.beta2*(t-p.tend - 80)))
-   blockerExp_up =  blockerExp_up*400-399
-   
-   if p.choice == 6:
-      INaG = blockerExp_new*INaG
-   elif p.choice == 7:
-      fGLTi = blockerExp_up*fGLTi
-   elif p.choice ==8:
-      fGLTg = blockerExp_up*fGLTg
-   elif p.choice == 9:
-      INCXg = blockerExp_new*INCXg
-   elif p.choice == 10:
-      INCXg = blockerExp_new*INCXg   
-      
-   
-   # blockerExp = 1/(1+exp(p.beta1*(t-70))) + 1/(1+exp(-p.beta2*(t-80)))
-   # INaG = INaG*blockerExp
-   
    # Final model
    ODEs=[ #Neuron
-   (-1/p.F*(INaG+INaL+3*Ipump))-3/p.F*INCXi + 3*fGLTi, \
-   #+ 0*5/p.F*(1-signal.square(array(1.5*t))), \
+   (-1/p.F*(INaG+INaL+3*Ipump))-3/p.F*INCXi + 3*fGLTi + IExcite,
    (-1/p.F*(IKG+IKL-2*Ipump)-JKCl-fGLTi), \
    (1/p.F*(IClG+IClL)-JKCl), \
    alpham*(1-m)-betam*m,\
@@ -280,8 +286,8 @@ def model(t,y,p,*args):
    astblock*fluxg]    
    ODEs = array(ODEs)*60*1e3
       
-   if args:
-      return eval(args[0])
+   if casevec[0]==1:
+      return eval(kwargs['ret'])
    else:
       return ODEs
       

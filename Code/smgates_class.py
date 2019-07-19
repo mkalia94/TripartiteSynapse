@@ -53,7 +53,7 @@ initvals = [NNai0,NKi0,NCli0,NNag0,NKg0,NClg0,Wi0,Wg0]
 
 # Free parameters
 tstart = 20
-tend = 25
+tend = 300
 blockerScaleAst =1.0;
 blockerScaleNeuron  =1.0;
 pumpScaleAst = 1;
@@ -120,7 +120,7 @@ def plotter(fignum,t,y,*str):
     plt.rc('font',size=20)
     plt.rc('axes',titlesize=20)
     plt.locator_params(axis='y', nbins=6)
-    plt.locator_params(axis='x', nbins=3)
+    plt.locator_params(axis='x', nbins=203)
     fig = plt.figure(fignum)
     ax = fig.add_subplot(111)
     plt.axvspan(sm.tstart, sm.tend, color='0.7', alpha=0.5, lw=0,label=r"OGD".format(d=(sm.perc*100)))

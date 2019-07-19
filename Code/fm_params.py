@@ -22,13 +22,12 @@ def parameters(p,testparams,initvals):
     p.Vi0 = -65.5           # Fix initial neuronal membrane potential 
     p.KCe_thres = 13        # Kir: Threshold for Kir gate
     p.kup2 = 0.1     # Kir: Rate of transition from low uptake to high uptake
-    p.PCaG = 1*0.75*1e-5 # (from Naomi)
-    p.kNCXi = 1*54 # 1/10th of NKA strength, from Oschmann (2017), spatial separation..
+    p.PCaG = 0.75*1e-5 # (from Naomi)
+    p.kNCXi = 54 # 1/10th of NKA strength, from Oschmann (2017), spatial separation..
     p.alphaNaNCX = 87.5 # in mM
     p.alphaCaNCX = 1.38 # in mM, from Oschmann 2017
     p.eNCX = 0.35 # in mM, from Oschmann 2017
     p.ksatNCX = 0.1 # in mM, from Oschmann 2017
-    p.kGLT = 10*1*1e-6 # Take max current of 0.67pA/microm^2 from Oschmann, compute avg = (.)/6
     p.HeOHa = 0.66 # from Breslin, Wade sodium microdomains..
     p.Nv = 1.5*1e4 # Naomi
     p.Gv = 2 # Naomi
@@ -73,7 +72,7 @@ def parameters(p,testparams,initvals):
     p.alphae0 = testparams[16]
     p.choice = testparams[17]
     p.astroblock = testparams[18]
-    p.kGLT = p.gltScale*10*1*1e-6 # Take max current of 0.67pA/microm^2 from Oschmann, compute avg = (.)/6
+    p.kGLT = p.gltScale*1e-5 # Take max current of 0.67pA/microm^2 from Oschmann, compute avg = (.)/6
 
     
     # Initial concentrations and volumes (baseline rest)
@@ -183,9 +182,8 @@ def parameters(p,testparams,initvals):
     # Glial uptake parameters
     p.kActive = p.Qpump*p.pumpScaleAst/p.F                  
     p.LH20g = p.LH20i
-    p.gNKCC1 = p.nkccScale*6e-5
     p.gNKCC1 = p.nkccScale*0.03*p.UKCl
-    p.GKir = p.kirScale*60*1e-3;
+    p.GKir = p.kirScale*6*1e-2;
     
     #-----------------------------------------------------------------------------------------------
     # Astrocyte leaks

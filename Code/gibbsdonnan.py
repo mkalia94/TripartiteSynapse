@@ -1,7 +1,6 @@
 from smgates_class import *
 from scipy.optimize import root
 import matplotlib.pyplot as plt
-import tensorflow as tf
 
 ## APPROX GIBBS DONNAN
 def approxGD(input):
