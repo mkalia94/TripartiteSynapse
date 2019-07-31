@@ -3,7 +3,7 @@ from scipy import signal
 
 def model(t,y,p,**kwargs):
    casevec = [0,0,0,0]
-   if kwargs is not None:
+   if size(shape(y))==2:
       NNa=y[:,0]
       NK=y[:,1]
       NCl=y[:,2]
@@ -26,16 +26,7 @@ def model(t,y,p,**kwargs):
       Vpost = y[:,19]
       mAMPA =  y[:,20]
       Wi = y[:,21]
-      Wg = y[:,22]
-      for key in kwargs.iteritems():
-         if key=='ret':
-            casevec[0] = 1
-         if key=='block':
-            casevec[1] = 1
-         if key=='excite':
-            casevec[2] = 1
-         if key == 'astblock':
-            casevec[3] = 1   
+      Wg = y[:,22] 
    else:
       NNa=y[0]
       NK=y[1]
@@ -61,7 +52,16 @@ def model(t,y,p,**kwargs):
       Wi = y[21]
       Wg = y[22]
    
-   
+   for key in kwargs:
+      if kwargs['ret']:
+         casevec[0] = 1
+      if kwargs['block']:
+         casevec[1] = 1
+      if kwargs['excite']:
+         casevec[2] = 1
+      if kwargs['astblock']:
+         casevec[3] = 1    
+          
    # Ionic amounts and concentrations
    #ECS
    We = p.Wtot - Wi - Wg
@@ -116,27 +116,7 @@ def model(t,y,p,**kwargs):
    
    # Leak currents
    INaL = p.PNaL*(p.F**2)/(p.R*p.T)*V*((NaCi-NaCe*exp((-p.F*V)/(p.R*p.T)))/(1-exp((-p.F*V)/(p.R*p.T))))
-   IKL = p.PKL*p.F**2/(p.R*p.T)*V*((KC   blockerExp_new = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
-   blockerExp_new =  blockerExp_new
-   blockerExp_up = 1/(1+exp(-p.beta1*(t-p.tstart))) + 1/(1+exp(p.beta2*(t-p.tend)))
-   blockerExp_up =  blockerExp_up*400-399
-
-   if p.choice == 1:
-      INaG = blockerExp_new*INaG
-   elif p.choice == 2:
-      fGLTi = blockerExp_up*fGLTi
-   elif p.choice ==3:
-      fGLTg = blockerExp_new*fGLTg
-   elif p.choice == 4:
-      INCXg = blockerExp_up*INCXg
-   elif p.choice == 5:
-      INCXg = blockerExp_new*INCXg
-   
-   if p.astroblock ==1:
-      blockerExp_new = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(1+exp(-p.beta2*(t-p.tend)))
-      astroblock =  blockerExp_new
-   else:
-      astblock = 1i-KCe*exp((-p.F*V)/(p.R*p.T)))/(1-exp((-p.F*V)/(p.R*p.T))))
+   IKL = p.PKL*p.F**2/(p.R*p.T)*V*((KCi-KCe*exp((-p.F*V)/(p.R*p.T)))/(1-exp((-p.F*V)/(p.R*p.T))))
    IClL = p.PClL*(p.F**2)/(p.R*p.T)*V*((ClCi-ClCe*exp((p.F*V)/(p.R*p.T)))/(1-exp((p.F*V)/(p.R*p.T))))
    ICaL = 4*p.PCaL*(p.F**2)/(p.R*p.T)*V*((CaCi-CaCc*exp((-2*p.F*V)/(p.R*p.T)))/(1-exp((-2*p.F*V)/(p.R*p.T))))
    fRelGlui = p.kRelGlui*1/p.F*p.F**2/(p.R*p.T)*V*((GluCi-GluCc*exp((p.F*V)/(p.R*p.T)))/(1-exp((p.F*V)/(p.R*p.T))))
@@ -212,7 +192,7 @@ def model(t,y,p,**kwargs):
    (1+p.ksatNCX*exp((p.eNCX-1)*p.F*Vg/p.R/p.T)) 
     
    #================================================
-   ==============================================================
+   #==============================================================
    #----------------------------VOLUME DYNAMICS-------------------------------------------------------------------
    #==============================================================================================================
    SCi = NaCi+KCi+ClCi+p.NAi/Wi
@@ -235,20 +215,50 @@ def model(t,y,p,**kwargs):
    
    if casevec[1] == 1:
       dict = kwargs['block']
-      for key,value in dict.iteritems():
+      for key in dict:
+         value = dict[key]
          blockOther = 1/(1+exp(p.beta1*(t-value[0]))) + 1/(1+exp(-p.beta2*(t-value[1])))
-         execCode = '{a} = {b}*{a}'.format(a=key,b=blockOther)
-         exec(execCode)
-   
-   
+         if key == 'INaG':
+            INaG = INaG*blockOther
+         elif key == 'Ipump':
+            Ipump = Ipump*blockOther
+         elif key == 'Ipump':
+            fActive = fActive*blockOther
+         elif key == 'IKG':
+            IKG = IKG*blockOther
+         elif key == 'IClG':
+            IClG = IClG*blockOther
+         elif key == 'JKCl':
+            JKCl = JKCl*blockOther
+         elif key == 'INCXi':
+            INCXi = INCXi*blockOther
+         elif key == 'fNKCC1':
+            fNKCC1 = fNKCC1*blockOther
+         elif key == 'IKir':
+            IKir = IKir*blockOther
+         elif key == 'fGLTg':
+            fGLTg = fGLTg*blockOther
+         elif key == 'INCXg':
+            INCXg = INCXg*blockOther
+         elif key == 'Wateri':
+            fluxi = fluxi*blockOther
+         elif key == 'Waterg':
+            fluxg = fluxg*blockOther                   
+            
    if casevec[2] == 1:
-      IExcite = 5/p.F*(1-signal.square(array(100*t)))
+      arg_excite = kwargs['excite']
+      if t > arg_excite[0] & t < arg_excite[1]:
+         IExcite = 5/p.F*(1-signal.square(array(100*t)))
+      else:
+         IExcite = 0   
    else:
       IExcite = 0
       
    if casevec[3] == 1:
       arg_astblock = kwargs['astblock']
       astblock =  1/(1+exp(p.beta1*(t-arg_astblock[0]))) + 1/(1+exp(-p.beta2*(t-arg_astblock[1])))  
+   else:
+      astblock = 1
       
       
    #==============================================================================================================
