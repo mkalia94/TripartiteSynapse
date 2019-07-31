@@ -99,3 +99,6 @@ Experiment: ['shortP1midChoice6_1'], V[0] = -65.500, V[end] = -65.878
 Experiment: ['shortP1midChoice6_2'], V[0] = -65.500, V[end] = -65.880 
 Experiment: ['blah'], V[0] = -65.500, V[end] = -65.500 
 Experiment: ['SmallECS_AstBlockFromHealthy'], V[0] = -65.500, V[end] = -65.500 
+Experiment: ['SmallECS_AstBlockFromHealthy'], V[0] = -65.500, V[end] = -65.500 
+Experiment: ['Small_ECSAstBlockUnhealthy'], V[0] = -65.500, V[end] = -31.564 
+Experiment: ['BigECS_AstBlockFromHealthy'], V[0] = -65.500, V[end] = -65.500 
