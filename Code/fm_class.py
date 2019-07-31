@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from plotdict import *
 from scipy.integrate import odeint
 import scipy.io as sio
+import json
 
 
 # ARGUMENT PARSING AND MODEL CLASS
@@ -20,18 +21,21 @@ arg.add_argument('-m', action='store_true')
 arg.add_argument('--name',nargs=1)
 arg.add_argument('--solve',action='store_true')
 arg.add_argument('--write',action='store_true')
-arg.add_argument('--plot',nargs='*') 
+arg.add_argument('--plot',nargs='*')
+arg.add_argument('--block',type=json.loads)
+arg.add_argument('--excite',nargs=2,type=float)
+arg.add_argument('--astblock',nargs=2,type=float)
 args = arg.parse_args()
 
 # Model class
-class smclass:
+class fmclass:
    def __init__(self,initvals,testparams):
       paramfile.parameters(self,testparams,initvals)
    def model(self,t,y,**args):
       if args:
-         return(modelfile.model(t,y,self,**args))
+        return(modelfile.model(t,y,self,**args))
       else:
-         return(modelfile.model(t,y,self))
+        return(modelfile.model(t,y,self))
          
          
 #-------------------------------------------------------------------------------
@@ -77,7 +81,6 @@ alphae0 = 0.98
 choicee = 0
 astroblock = 0
 
-
 #Fixed params
 beta1 = 1.1;
 beta2 = 1.1;
@@ -113,16 +116,22 @@ testparamlist = ['blockerScaleAst', 'blockerScaleNeuron', \
 'nkccScale', 'kirScale','gltScale', 'beta1', 'beta2', 'perc', 'tstart', 'tend']
 initvallist =['NNai0','NKi0','NCli0','NNag0','NKg0','NClg0','Wi0','Wg0']
 
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-# SOLVE ODE
+
+
+## SOLVE ODE
 initvals = [sm.NNai0,sm.NKi0,sm.NCli0,sm.m0,sm.h0,sm.n0,sm.NCai0,sm.NN0,sm.NR0,\
 sm.NR10,sm.NR20,sm.NR30,sm.NF0,sm.NI0,sm.ND0,sm.NNag0,sm.NKg0,sm.NClg0,sm.NCag0,sm.Vpost0,sm.mAMPA0,sm.Wi0,sm.Wg0]
-
-def modelfunc(initvals,t0)
+    
+def modelfunc(t,y,*retvar):
+    if retvar:
+        return sm.model(t,y,block = args.block, excite = args.excite, astblock = args.astblock, ret = retvar[0])
+    else:
+        return sm.model(t,y,block = args.block, excite = args.excite, astblock = args.astblock, ret = None)
+        
+    
 
 def solver(t0,tfinal,initvals):
-    mod = Explicit_Problem(sm.model, initvals, t0)
+    mod = Explicit_Problem(modelfunc, initvals, t0)
     sim = CVode(mod)
     sim.atol = 1e-11
     sim.rtol = 1e-11
@@ -141,10 +150,24 @@ def plotter(expname,fignum,t,y,*str):
     plt.locator_params(axis='x', nbins=3)
     fig = plt.figure(fignum)
     ax = fig.add_subplot(111)
-    plt.axvspan(sm.tstart, sm.tend, color='0.7', alpha=0.5, lw=0,label=r"OGD".format(d=(sm.perc*100)))
+    plt.axvspan(sm.tstart, sm.tend, color='0.7', alpha=0.5, lw=0,label=r"ED: {d}%".format(d=int(modelfunc(array(t),y,'1-min(blockerExp)')*100)))
+    if args.excite:
+        val = args.excite
+        plt.axvspan(val[0], val[1], color='red', alpha=0.5, lw=0,label='Neuron excited')
+    if args.astblock:
+        val = args.astblock
+        plt.axvspan(val[0], val[1], color='orange', alpha=0.5, lw=0,label='Ast. blocked')    
+    if args.block:
+        dict = args.block
+        for key in dict:
+                val = dict[key]
+                if key in plotnamedict:
+                    plt.axvspan(val[0], val[1], color='forestgreen', alpha=0.5, lw=0,label=r"{a}".format(a=plotnamedict[key]))
+                else:
+                     plt.axvspan(val[0], val[1], color='forestgreen', alpha=0.5, lw=0,label=r"{a}".format(a=key))   
     for plotname in str[0]:
         t1 = array(t)
-        ploty = sm.model(t1,y,ret=plotname)
+        ploty = modelfunc(t1,y,plotname)
         if plotname in plotnamedict:
             plt.ylabel(r'{d}'.format(d=plotnamedict[plotname]))
             plt.plot(t1,ploty,label = r"{d}".format(d=plotnamedict[plotname]))
@@ -154,11 +177,11 @@ def plotter(expname,fignum,t,y,*str):
         plt.xlabel("t (min.)")
     plt.xlim(t0,tfinal)
     
-    plt.title(r"Max pump strength $=$ {d}$\%$ of baseline".format(d=int(sm.model(array(t),y,'min(blockerExp)')*100)))
     fig.tight_layout()
-    plotfilename = 'Images/{a}_{b}.png',format(a=expname,b=plotname)
-    plt.savefig(plotfilename,format='png')
+    plotfilename = 'Images/{a}_{b}.pdf'.format(a=expname[0],b=plotname)
     plt.legend()
+    plt.savefig(plotfilename,format='pdf',bbox_inches='tight')
+
     
     
 def saveparams():
@@ -180,7 +203,7 @@ def saveparams():
 
 if args.solve:
     t,y = solver(t0,tfinal,initvals)
-    V = sm.model(array(t),y,'V')
+    V = modelfunc(array(t),y,'V')
     
     if args.write:
         f = open('ExperimentResults.txt','r+')
@@ -383,4 +406,5 @@ dict = {'C':sm.C,
         'kRelGlu' : sm.kRelGlu,
         'CGlu' : sm.CGlu}
 
-sio.savemat('params.mat',dict)
+paramName = 'Images/{a}_params.mat'.format(a=args.name[0])
+sio.savemat(paramName,dict)
