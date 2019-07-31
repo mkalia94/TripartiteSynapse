@@ -232,6 +232,8 @@ def model(t,y,p,**kwargs):
             JKCl = JKCl*blockOther
          elif key == 'INCXi':
             INCXi = INCXi*blockOther
+         elif key == 'fGLTi':
+            INCXi = fGLTi*blockOther   
          elif key == 'fNKCC1':
             fNKCC1 = fNKCC1*blockOther
          elif key == 'IKir':

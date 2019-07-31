@@ -28,7 +28,7 @@ arg.add_argument('--astblock',nargs=2,type=float)
 args = arg.parse_args()
 
 # Model class
-class fmclass:
+class smclass:
    def __init__(self,initvals,testparams):
       paramfile.parameters(self,testparams,initvals)
    def model(self,t,y,**args):
