@@ -139,3 +139,7 @@ Experiment: ['BigECS_3xNKA'], V[0] = -65.500, V[end] = -65.501
 Experiment: ['SmallECS_8xNKA'], V[0] = -65.500, V[end] = -65.500 
 Experiment: ['MedECS_8xNKA'], V[0] = -65.500, V[end] = -65.500 
 Experiment: ['BigECS_8xNKA'], V[0] = -65.500, V[end] = -65.502 
+Experiment: ['SmallECS_BlockNaAstrocyte'], V[0] = -65.500, V[end] = -31.479 
+Experiment: ['SmallECS_BlockCl'], V[0] = -65.500, V[end] = -31.482 
+Experiment: ['BigECS_BlockNaAstrocyte'], V[0] = -65.500, V[end] = -30.684 
+Experiment: ['BigECS_BlockCl'], V[0] = -65.500, V[end] = -30.686 
