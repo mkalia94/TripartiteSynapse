@@ -249,7 +249,7 @@ def model(t,y,p,**kwargs):
             
    if casevec[2] == 1:
       arg_excite = kwargs['excite']
-      if t > arg_excite[0] & t < arg_excite[1]:
+      if (t > arg_excite[0]) & (t < arg_excite[1]):
          IExcite = 5/p.F*(1-signal.square(array(100*t)))
       else:
          IExcite = 0   

@@ -1,0 +1,59 @@
+# Baseline pump strength and extracellular space
+python fm_class.py --name 'gltscale = 1' --solve --write -b --freeparams 'tend = 22' 'tfinal = 30' 'pumpScaleNeuron = 1' 'pumpScaleAst = 1' 'gltScale = 1' 'kirScale = 1' 'perc = 0.2' --plot 'NaCg' 'NaCi' 'KCe' 'V' 
+python fm_class.py --name 'smallECS' --solve --write -s --freeparams 'tend = 60' 'tfinal = 100' 'pumpScaleNeuron = 1' 'pumpScaleAst = 1' 'gltScale = 1' 'kirScale = 1' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCg' 'CaCi' 'CaCg' 'Wi' 'Wg'
+python fm_class.py --name 'P8bigECS' --solve --write -b --freeparams 'tend = 60' 'tfinal = 100' 'pumpScaleNeuron = 8' 'pumpScaleAst = 8' 'gltScale = 5' 'kirScale = 100' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCg' 'CaCi' 'CaCg' 'Wi' 'Wg'
+python fm_class.py --name 'bigECS' --solve --write -b --freeparams 'tend = 60' 'tfinal = 100' 'pumpScaleNeuron = 1' 'pumpScaleAst = 1' 'gltScale = 1' 'kirScale = 1' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCg' 'CaCi' 'CaCg' 'Wi' 'Wg'
+
+
+#Astblock experiments
+python fm_class.py --name 'SmallECS_AstBlockFromHealthy' --solve --write -s --astblock 40.0 200.0 --freeparams 'tfinal=100' 'tstart = 500' 'tend=501' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCc' 'GluCg' 'Wi' 'Wg'
+python fm_class.py --name 'Small_ECSAstBlockUnhealthy' --solve --write -s --astblock 100.0 150.0 --freeparams 'tfinal=150' 'tstart = 20' 'tend=40' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCc' 'GluCg' 'Wi' 'Wg'
+python fm_class.py --name 'BigECS_AstBlockFromHealthy' --solve --write -b --astblock 40.0 200.0 --freeparams 'tfinal=100' 'tstart = 500' 'tend=501' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCc' 'GluCg' 'Wi' 'Wg'
+python fm_class.py --name 'BigECS_AstBlockUnhealthy' --solve --write -b --astblock 100.0 150.0 --freeparams 'tfinal=150' 'tstart = 20' 'tend=40' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCc' 'GluCg' 'Wi' 'Wg'
+
+#Excite experiments
+python fm_class.py --name 'SmallECS_ExciteFromHealthy' --solve --write -s --excite 0.0 10.0 --freeparams 'tfinal=5' 'tstart=500' 'tend=501' --plot 'V' 'Vg' 'GluCi' 'GluCg' 'GluCc' 'CaCi' 'CaCg' 'CaCc'
+python fm_class.py --name 'SmallECS_ExciteFromUnhealthy' --solve --write -s --excite 60.0 70.0 --freeparams 'tfinal=100' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'GluCi' 'GluCg' 'GluCc' 'CaCi' 'CaCg' 'CaCc'
+python fm_class.py --name 'BigECS_ExciteFromHealthy' --solve --write -b --excite 0.0 10.0 --freeparams 'tfinal=5' 'tstart=500' 'tend=501' --plot 'V' 'Vg' 'GluCi' 'GluCg' 'GluCc' 'CaCi' 'CaCg' 'CaCc'
+python fm_class.py --name 'BigECS_ExciteFromUnhealthy' --solve --write -b --excite 60.0 70.0 --freeparams 'tfinal=100' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'GluCi' 'GluCg' 'GluCc' 'CaCi' 'CaCg' 'CaCc'
+
+#Selective blockade experiments
+python fm_class.py --name 'SmallECS_BlockINaG' --solve --write -s --block '{"INaG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockIKG' --solve --write -s --block '{"IKG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockIClG' --solve --write -s --block '{"IClG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockJKCl' --solve --write -s --block '{"JKCl":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockINCXi' --solve --write -s --block '{"INCXi":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockfGLTi' --solve --write -s --block '{"fGLTi":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockIKir' --solve --write -s --block '{"IKir":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockINCXg' --solve --write -s --block '{"INCXg":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockfGLTg' --solve --write -s --block '{"fGLTg":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockfNKCC1' --solve --write -s --block '{"fNKCC1":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockWateri' --solve --write -s --block '{"Wateri":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockWaterg' --solve --write -s --block '{"Waterg":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+
+python fm_class.py --name 'BigECS_BlockINaG' --solve --write -b --block '{"INaG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BigECS_BlockIKG' --solve --write -b --block '{"IKG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BigECS_BlockIClG' --solve --write -b --block '{"IClG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BigECS_BlockJKCl' --solve --write -b --block '{"JKCl":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BIgECS_BlockINCXi' --solve --write -b --block '{"INCXi":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BigECS_BlockfGLTi' --solve --write -b --block '{"fGLTi":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BigECS_BlockIKir' --solve --write -b --block '{"IKir":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BIgECS_BlockINCXg' --solve --write -b --block '{"INCXg":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BigECS_BlockfGLTg' --solve --write -b --block '{"fGLTg":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BigECS_BlockfNKCC1' --solve --write -b --block '{"fNKCC1":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BigECS_BlockWateri' --solve --write -b --block '{"Wateri":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'BigECS_BlockWaterg' --solve --write -b --block '{"Waterg":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+
+#Baseline pump strength and ECS
+python fm_class.py --name 'SmallECS_1xNKA' --solve --write -s --freeparams 'tfinal=150' 'tstart=20' 'tend=60' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
+python fm_class.py --name 'MedECS_1xNKA' --solve --write -m --freeparams 'tfinal=150' 'tstart=20' 'tend=60' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
+python fm_class.py --name 'BigECS_1xNKA' --solve --write -b --freeparams 'tfinal=150' 'tstart=20' 'tend=60' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
+
+python fm_class.py --name 'SmallECS_3xNKA' --solve --write -s --freeparams 'tfinal=150' 'tstart=20' 'tend=60' 'pumpScaleNeuron = 3' 'pumpScaleAst = 3' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
+python fm_class.py --name 'MedECS_3xNKA' --solve --write -m --freeparams 'tfinal=150' 'tstart=20' 'tend=60' 'pumpScaleNeuron = 3' 'pumpScaleAst = 3' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
+python fm_class.py --name 'BigECS_3xNKA' --solve --write -b --freeparams 'tfinal=150' 'tstart=20' 'tend=60' 'pumpScaleNeuron = 3' 'pumpScaleAst = 3'  --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
+
+python fm_class.py --name 'SmallECS_8xNKA' --solve --write -s --freeparams 'tfinal=150' 'tstart=20' 'tend=60' 'pumpScaleNeuron = 8' 'pumpScaleAst = 8' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
+python fm_class.py --name 'MedECS_8xNKA' --solve --write -m --freeparams 'tfinal=150' 'tstart=20' 'tend=60' 'pumpScaleNeuron = 8' 'pumpScaleAst = 8' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
+python fm_class.py --name 'BigECS_8xNKA' --solve --write -b --freeparams 'tfinal=150' 'tstart=20' 'tend=60' 'pumpScaleNeuron = 8' 'pumpScaleAst = 8'  --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
+

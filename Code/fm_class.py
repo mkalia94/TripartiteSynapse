@@ -105,12 +105,12 @@ elif args.b:
     alphae0 = 0.98
 
 # Generate class instance
-initvals = [NaCi0,KCi0,ClCi0,CaCi0,GluCi0,NaCe0,KCe0,ClCe0,CaCc0,GluCc0,NaCg0,KCg0,\
+initvals_temp = [NaCi0,KCi0,ClCi0,CaCi0,GluCi0,NaCe0,KCe0,ClCe0,CaCc0,GluCc0,NaCg0,KCg0,\
 ClCg0,CaCg0,GluCg0,Wi0,Wg0,VolPreSyn,VolPAP,Volc]
 testparams = [blockerScaleAst, blockerScaleNeuron, \
 pumpScaleAst, pumpScaleNeuron, \
 nkccScale, kirScale,gltScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend,nkccblock_after,kirblock_after,alphae0,choicee,astroblock]
-sm = smclass(initvals,testparams)
+sm = smclass(initvals_temp,testparams)
 testparamlist = ['blockerScaleAst', 'blockerScaleNeuron', \
 'pumpScaleAst', 'pumpScaleNeuron', \
 'nkccScale', 'kirScale','gltScale', 'beta1', 'beta2', 'perc', 'tstart', 'tend']
