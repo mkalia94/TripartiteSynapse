@@ -2,7 +2,7 @@ from numpy import *
 from scipy import signal
 
 def model(t,y,p,**kwargs):
-   casevec = [0,0,0,0]
+   casevec = [0,0,0,0,0]
    if size(shape(y))==2:
       NNa=y[:,0]
       NK=y[:,1]
@@ -61,6 +61,13 @@ def model(t,y,p,**kwargs):
          casevec[2] = 1
       if kwargs['astblock']:
          casevec[3] = 1    
+      if kwargs['nosynapse']:
+         casevec[4] = 1
+         
+   if casevec[4] = 1:
+      synapse_block = 0
+   else:
+      synapse_block = 1         
           
    # Ionic amounts and concentrations
    #ECS
@@ -93,8 +100,8 @@ def model(t,y,p,**kwargs):
    
    
    # Voltages
-   V=p.F/p.C*(NNa+NK+2*NCai-NGlui-NCl-p.NAi)
-   Vg = p.F/p.Cg*(NNag + NKg + p.NBg - p.NAg -NClg + 2*NCag - NGlug )
+   V=p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*NGlui-NCl-p.NAi)
+   Vg = p.F/p.Cg*(NNag + NKg + p.NBg - p.NAg -NClg + synapse_block*2*NCag - synapse_block*NGlug )
    
    #============================================================================================================
    #--------------------NEURON------------------------------------------------------
@@ -262,6 +269,8 @@ def model(t,y,p,**kwargs):
    else:
       astblock = 1
       
+
+         
       
    #==============================================================================================================
    #----------------------------RECOVERY EXPERIMENTS--------------------------------------------------------------
@@ -269,27 +278,27 @@ def model(t,y,p,**kwargs):
    
    # Final model
    ODEs=[ #Neuron
-   (-1/p.F*(INaG+INaL+3*Ipump))-3/p.F*INCXi + 3*fGLTi + IExcite,
-   (-1/p.F*(IKG+IKL-2*Ipump)-JKCl-fGLTi), \
+   (-1/p.F*(INaG+INaL+3*Ipump))-synapse_block*3/p.F*INCXi + synapse_block*3*fGLTi + IExcite,
+   (-1/p.F*(IKG+IKL-2*Ipump)-JKCl-synapse_block*fGLTi), \
    (1/p.F*(IClG+IClL)-JKCl), \
    alpham*(1-m)-betam*m,\
    alphah*(1-h)-betah*h,\
    alphan*(1-n)-betan*n,\
-   -1/p.F*(ICaG+ICaL) + 1/p.F*INCXi,\
+   synapse_block*(-1/p.F*(ICaG+ICaL) + 1/p.F*INCXi),\
    # GLUTAMATE RECYCLING
-   k1*ND-(p.kmin1+k2)*NN+kmin2*NR,\
-   k2*NN-(kmin2+3*p.k3*CaCi)*NR + p.kmin3*NR1,\
-   3*p.k3*CaCi*NR-(p.kmin3+2*p.k3*CaCi)*NR1+2*p.kmin3*NR2,\
-   2*p.k3*CaCi*NR1-(2*p.kmin3+p.k3*CaCi)*NR2+3*p.kmin3*NR3,\
-   p.k3*CaCi*NR2-(3*p.kmin3+p.k4)*NR3,\
-   p.k4*NR3 - fGLTi - astblock*fGLTg - astblock*fRelGlu - fRelGlui,\
-   - NI/p.trec + fGLTi + fRelGlui,\
-   NI/p.trec-k1*ND+p.kmin1*NN,\
+   (k1*ND-(p.kmin1+k2)*NN+kmin2*NR),\
+   (k2*NN-(kmin2+3*p.k3*CaCi)*NR + p.kmin3*NR1),\
+   (3*p.k3*CaCi*NR-(p.kmin3+2*p.k3*CaCi)*NR1+2*p.kmin3*NR2),\
+   (2*p.k3*CaCi*NR1-(2*p.kmin3+p.k3*CaCi)*NR2+3*p.kmin3*NR3),\
+   (p.k3*CaCi*NR2-(3*p.kmin3+p.k4)*NR3),\
+   (p.k4*NR3 - fGLTi - astblock*fGLTg - astblock*fRelGlu - fRelGlui),\
+   (- NI/p.trec + fGLTi + fRelGlui),\
+   (NI/p.trec-k1*ND+p.kmin1*NN),\
    #ASTROCYTE
-   astblock*(-3*fActive + fRelNa + fNKCC1-3/p.F*INCXg + 3*fGLTg),\
-   astblock*(IKir + 2*fActive + fRelK + fNKCC1-fGLTg), \
+   astblock*(-3*fActive + fRelNa + fNKCC1-synapse_block*3/p.F*INCXg + synapse_block*3*fGLTg),\
+   astblock*(IKir + 2*fActive + fRelK + fNKCC1-synapse_block*fGLTg), \
    astblock*(2*fNKCC1 + fRelCl), \
-   astblock*(1/(p.F)*INCXg - fRelCa),\
+   synapse_block*astblock*(1/(p.F)*INCXg - fRelCa),\
    #POSTSYN
    0,#1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
    0,#p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\

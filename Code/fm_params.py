@@ -1,5 +1,10 @@
 from numpy import *
-def parameters(p,testparams,initvals):
+def parameters(p,testparams,initvals,nosynapse):
+    
+    if nosynapse == 1:
+        block_synapse = 0
+    if nosynapse == 0:
+        block_synapse = 1
     
     #============================================================================
     #-----------------------KNOWN PARAMETERS------------------------------------
@@ -131,11 +136,11 @@ def parameters(p,testparams,initvals):
     
     
     # Impermeants and conserved quantities
-    p.NAi = 2*p.NCai0 - p.NCli0 - p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F
-    p.NAe = (p.Cg*p.Vg0*p.Wi0 + p.C*p.Vi0*(-p.We0 + p.Wi0) + p.F*(2*p.NCai0*p.We0 - p.NGlui0*p.We0 + 2*p.NKi0*p.We0 + 2*p.NNai0*p.We0 + 2*p.NCac0*p.Wi0 - 2*p.NCle0*p.Wi0 - p.NGluc0*p.Wi0))/(2*p.F*p.Wi0)
-    p.NBe = -((p.Cg*p.Vg0*p.Wi0 + p.C*p.Vi0*(p.We0 + p.Wi0) + p.F*(-2*p.NCai0*p.We0 + p.NGlui0*p.We0 - 2*p.NKi0*p.We0 - 2*p.NNai0*p.We0 + 2*p.NCac0*p.Wi0 - p.NGluc0*p.Wi0 + 2*p.NKe0*p.Wi0 + 2*p.NNae0*p.Wi0))/(2*p.F*p.Wi0))
-    p.NAg = -((p.C*p.Vi0*p.Wg0 + p.Cg*p.Vg0*p.Wi0 + p.F*(-2*p.NCai0*p.Wg0 + p.NGlui0*p.Wg0 - 2*p.NKi0*p.Wg0 - 2*p.NNai0*p.Wg0 - 2*p.NCag0*p.Wi0 + 2*p.NClg0*p.Wi0 + p.NGlug0*p.Wi0))/(2*p.F*p.Wi0))
-    p.NBg = (-p.C*p.Vi0*p.Wg0 + p.Cg*p.Vg0*p.Wi0 + p.F*(2*p.NCai0*p.Wg0 - p.NGlui0*p.Wg0 + 2*p.NKi0*p.Wg0 + 2*p.NNai0*p.Wg0 - 2*p.NCag0*p.Wi0 + p.NGlug0*p.Wi0 - 2*p.NKg0*p.Wi0 - 2*p.NNag0*p.Wi0))/(2*p.F*p.Wi0)
+    p.NAi = block_synapse*2*p.NCai0 - p.NCli0 - block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F
+    p.NAe = (p.Cg*p.Vg0*p.Wi0 + p.C*p.Vi0*(-p.We0 + p.Wi0) + p.F*(block_synapse*2*p.NCai0*p.We0 - block_synapse*p.NGlui0*p.We0 + 2*p.NKi0*p.We0 + 2*p.NNai0*p.We0 + block_synapse*2*p.NCac0*p.Wi0 - 2*p.NCle0*p.Wi0 - block_synapse*p.NGluc0*p.Wi0))/(2*p.F*p.Wi0)
+    p.NBe = -((p.Cg*p.Vg0*p.Wi0 + p.C*p.Vi0*(p.We0 + p.Wi0) + p.F*(-block_synapse*2*p.NCai0*p.We0 + block_synapse*p.NGlui0*p.We0 - 2*p.NKi0*p.We0 - 2*p.NNai0*p.We0 + block_synapse*2*p.NCac0*p.Wi0 - block_synapse*p.NGluc0*p.Wi0 + 2*p.NKe0*p.Wi0 + 2*p.NNae0*p.Wi0))/(2*p.F*p.Wi0))
+    p.NAg = -((p.C*p.Vi0*p.Wg0 + p.Cg*p.Vg0*p.Wi0 + p.F*(-block_synapse*2*p.NCai0*p.Wg0 + block_synapse*p.NGlui0*p.Wg0 - 2*p.NKi0*p.Wg0 - 2*p.NNai0*p.Wg0 - block_synapse*2*p.NCag0*p.Wi0 + 2*p.NClg0*p.Wi0 + block_synapse*p.NGlug0*p.Wi0))/(2*p.F*p.Wi0))
+    p.NBg = (-p.C*p.Vi0*p.Wg0 + p.Cg*p.Vg0*p.Wi0 + p.F*(block_synapse*2*p.NCai0*p.Wg0 - block_synapse*p.NGlui0*p.Wg0 + 2*p.NKi0*p.Wg0 + 2*p.NNai0*p.Wg0 - block_synapse*2*p.NCag0*p.Wi0 + block_synapse*p.NGlug0*p.Wi0 - 2*p.NKg0*p.Wi0 - 2*p.NNag0*p.Wi0))/(2*p.F*p.Wi0)
     
     
     # If we ignore charge conservation and thus remove NBe (this might be useful
@@ -174,8 +179,8 @@ def parameters(p,testparams,initvals):
     p.fRelGlui0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vi0*((p.GluCi0-p.GluCc0*exp((p.F*p.Vi0)/(p.R*p.T)))/(1-exp((p.F*p.Vi0)/(p.R*p.T)))) 
 
     
-    p.PNaL = (-p.INaG0 - 3*p.neurPump - 3*p.INCXi0 + 3*p.F*p.fGLTi0)/p.INaL0             # Estimated sodium leak conductance in neuron
-    p.PKL = (-p.IKG0 + 2*p.neurPump - p.F*p.JKCl0 - p.F*p.fGLTi0)/p.IKL0    # Estimated K leak conductance in neuron 
+    p.PNaL = (-p.INaG0 - 3*p.neurPump - block_synapse*3*p.INCXi0 + block_synapse*3*p.F*p.fGLTi0)/p.INaL0             # Estimated sodium leak conductance in neuron
+    p.PKL = (-p.IKG0 + 2*p.neurPump - p.F*p.JKCl0 - block_synapse*p.F*p.fGLTi0)/p.IKL0    # Estimated K leak conductance in neuron 
     p.PClL = (p.F*p.JKCl0 - p.IClG0)/p.IClL0                 # Estimated Cl leak conducatance in neuron
     p.PCaL = (-p.ICaG0+p.INCXi0)/p.ICaL0
     
@@ -211,8 +216,8 @@ def parameters(p,testparams,initvals):
     p.kmin2catinit = p.k2cat*p.kmin20/p.k20   
     p.kmin2init = p.kmin20+p.gCainit*p.kmin2catinit
     
-    p.kRelNa = (3*p.fActive0 - p.fNKCC10+3/p.F*p.INCXg0 - 3*p.fGLTg0)/p.fRelNa0
-    p.kRelK = (-p.IKir0-2*p.fActive0-p.fNKCC10+p.fGLTg0)/p.fRelK0
+    p.kRelNa = (3*p.fActive0 - p.fNKCC10+block_synapse*3/p.F*p.INCXg0 - block_synapse*3*p.fGLTg0)/p.fRelNa0
+    p.kRelK = (-p.IKir0-2*p.fActive0-p.fNKCC10+block_synapse*p.fGLTg0)/p.fRelK0
     p.kRelCl = -2*p.fNKCC10/p.fRelCl0
     p.kRelCa = -1/p.F*p.INCXg0/p.fRelCa0
     #---------------------------------------------------------------------------------------------------------
