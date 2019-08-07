@@ -2,7 +2,7 @@ from numpy import *
 from scipy import signal
 
 def model(t,y,p,**kwargs):
-   casevec = [0,0,0,0,0]
+   casevec = [0,0,0,0,0,0]
    if size(shape(y))==2:
       NNa=y[:,0]
       NK=y[:,1]
@@ -63,11 +63,13 @@ def model(t,y,p,**kwargs):
          casevec[3] = 1    
       if kwargs['nosynapse']:
          casevec[4] = 1
+      if kwargs['nogates']:
+         casevec[5] = 1   
          
-   if casevec[4] = 1:
+   if casevec[4] == 1:
       synapse_block = 0
    else:
-      synapse_block = 1         
+      synapse_block = 1 
           
    # Ionic amounts and concentrations
    #ECS
@@ -115,6 +117,16 @@ def model(t,y,p,**kwargs):
    alphan = 0.016*(V+35)/(1-exp(-(V+35)/5))
    betan = 0.25*exp(-(V+50)/40)
 
+   if casevec[5] == 1:
+      gates_block = 0
+      m = alpham/(alpham + betam)
+      h = alphah/(alphah + betah)
+      n = alphan/(alphan + betan)
+   else:
+      gates_block = 1   
+   
+   
+   
    # Gated currents
    INaG = p.PNaG*(m**3)*(h)*(p.F**2)*(V)/(p.R*p.T)*((NaCi-NaCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-(p.F*V)/(p.R*p.T))))
    IKG = (p.PKG*(n**2))*(p.F**2)*(V)/(p.R*p.T)*((KCi-KCe*exp(-(p.F*V)/(p.R*p.T)))/(1-exp(-p.F*V/(p.R*p.T))))
@@ -281,9 +293,9 @@ def model(t,y,p,**kwargs):
    (-1/p.F*(INaG+INaL+3*Ipump))-synapse_block*3/p.F*INCXi + synapse_block*3*fGLTi + IExcite,
    (-1/p.F*(IKG+IKL-2*Ipump)-JKCl-synapse_block*fGLTi), \
    (1/p.F*(IClG+IClL)-JKCl), \
-   alpham*(1-m)-betam*m,\
-   alphah*(1-h)-betah*h,\
-   alphan*(1-n)-betan*n,\
+   gates_block*(alpham*(1-m)-betam*m),\
+   gates_block*(alphah*(1-h)-betah*h),\
+   gates_block*(alphan*(1-n)-betan*n),\
    synapse_block*(-1/p.F*(ICaG+ICaL) + 1/p.F*INCXi),\
    # GLUTAMATE RECYCLING
    (k1*ND-(p.kmin1+k2)*NN+kmin2*NR),\

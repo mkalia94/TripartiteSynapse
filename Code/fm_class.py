@@ -26,6 +26,7 @@ arg.add_argument('--block',type=json.loads)
 arg.add_argument('--excite',nargs=2,type=float)
 arg.add_argument('--astblock',nargs=2,type=float)
 arg.add_argument('--nosynapse',action='store_true')
+arg.add_argument('--nogates',action='store_true')
 args = arg.parse_args()
 
 # Model class
@@ -115,7 +116,7 @@ nkccScale, kirScale,gltScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend,nkcc
 if args.nosynapse:
     sm = smclass(initvals_temp,testparams,1)
 else:
-    sm = smclass(initvals_temp,testparams,0)
+    sm = smclass(initvals_temp,testparams,0)    
     
 testparamlist = ['blockerScaleAst', 'blockerScaleNeuron', \
 'pumpScaleAst', 'pumpScaleNeuron', \
@@ -130,9 +131,9 @@ sm.NR10,sm.NR20,sm.NR30,sm.NF0,sm.NI0,sm.ND0,sm.NNag0,sm.NKg0,sm.NClg0,sm.NCag0,
     
 def modelfunc(t,y,*retvar):
     if retvar:
-        return sm.model(t,y,block = args.block, excite = args.excite, astblock = args.astblock, ret = retvar[0],nosynapse = args.nosynapse)
+        return sm.model(t,y,block = args.block, excite = args.excite, astblock = args.astblock, ret = retvar[0],nosynapse = args.nosynapse, nogates = args.nogates )
     else:
-        return sm.model(t,y,block = args.block, excite = args.excite, astblock = args.astblock, ret = None, nosynapse = args.nosynapse)
+        return sm.model(t,y,block = args.block, excite = args.excite, astblock = args.astblock, ret = None, nosynapse = args.nosynapse, nogates = args.nogates)
         
     
 
