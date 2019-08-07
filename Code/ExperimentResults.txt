@@ -145,3 +145,7 @@ Experiment: ['BigECS_BlockNaAstrocyte'], V[0] = -65.500, V[end] = -30.684
 Experiment: ['BigECS_BlockCl'], V[0] = -65.500, V[end] = -30.686 
 Experiment: ['EquilibriumUnhealthy'], V[0] = -65.500, V[end] = -3.759 
 Experiment: ['EquilibriumUnhealthy'], V[0] = -65.500, V[end] = -3.759 
+Experiment: ['OrigSmallECS_BlockNaAstrocyte'], V[0] = -65.500, V[end] = -31.479 
+Experiment: ['OrigSmallECS_BlockCl'], V[0] = -65.500, V[end] = -31.482 
+Experiment: ['OrigBigECS_BlockNaAstrocyte'], V[0] = -65.500, V[end] = -30.684 
+Experiment: ['OrigBigECS_BlockCl'], V[0] = -65.500, V[end] = -30.686 
