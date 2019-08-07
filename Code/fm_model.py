@@ -158,7 +158,7 @@ def model(t,y,p,**kwargs):
    (1+p.ksatNCX*exp((p.eNCX-1)*p.F*V/p.R/p.T))
    
    # EAAT
-   fGLTi = p.kGLT*p.R*p.T/p.F*log(NaCe**3/NaCi**3*KCi/KCe*p.HeOHa*GluCc/GluCi)
+   fGLTi = p.kGLTi*p.R*p.T/p.F*log(NaCe**3/NaCi**3*KCi/KCe*p.HeOHa*GluCc/GluCi)
    
    #============================================================================================================
    #----------------------------------CLEFT---------------------------------------------------------------------
@@ -203,7 +203,7 @@ def model(t,y,p,**kwargs):
       IKir = blockerExp_NKCC1*IKir 
       
    # GLT-1
-   fGLTg = p.kGLT*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe*p.HeOHa*GluCc/GluCg)   
+   fGLTg = p.kGLTg*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe*p.HeOHa*GluCc/GluCg)   
    
    # NCX
    INCXg = p.kNCXg*(NaCe**3)/(p.alphaNaNCX**3+NaCe**3)*(CaCc/(p.alphaCaNCX+CaCc))* \

@@ -27,12 +27,13 @@ arg.add_argument('--excite',nargs=2,type=float)
 arg.add_argument('--astblock',nargs=2,type=float)
 arg.add_argument('--nosynapse',action='store_true')
 arg.add_argument('--nogates',action='store_true')
+arg.add_argument('--ChargeCIgnore',action='store_true')
 args = arg.parse_args()
 
 # Model class
 class smclass:
-   def __init__(self,initvals,testparams,nosynapse):
-      paramfile.parameters(self,testparams,initvals,nosynapse)
+   def __init__(self,initvals,testparams,nosynapse,noChargeCons):
+      paramfile.parameters(self,testparams,initvals,nosynapse,noChargeCons)
    def model(self,t,y,**args):
       if args:
         return(modelfile.model(t,y,self,**args))
@@ -75,6 +76,7 @@ pumpScaleNeuron = 1;
 nkccScale = 10;
 kirScale = 1
 gltScale = 1
+ncxScale = 1
 nka_na = 13
 nka_k = 0.2
 nkccblock_after = 0
@@ -111,16 +113,21 @@ initvals_temp = [NaCi0,KCi0,ClCi0,CaCi0,GluCi0,NaCe0,KCe0,ClCe0,CaCc0,GluCc0,NaC
 ClCg0,CaCg0,GluCg0,Wi0,Wg0,VolPreSyn,VolPAP,Volc]
 testparams = [blockerScaleAst, blockerScaleNeuron, \
 pumpScaleAst, pumpScaleNeuron, \
-nkccScale, kirScale,gltScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend,nkccblock_after,kirblock_after,alphae0,choicee,astroblock]
+nkccScale, kirScale,gltScale,ncxScale, nka_na,nka_k,beta1, beta2, perc, tstart, tend,nkccblock_after,kirblock_after,alphae0,choicee,astroblock]
 
 if args.nosynapse:
-    sm = smclass(initvals_temp,testparams,1)
+    if args.ChargeCIgnore:
+        sm = smclass(initvals_temp,testparams,1,1)
+    else:
+        m = smclass(initvals_temp,testparams,1,0)    
+elif args.ChargeCIgnore:
+    sm = smclass(initvals_temp,testparams,0,1)
 else:
-    sm = smclass(initvals_temp,testparams,0)    
+    sm = smclass(initvals_temp,testparams,0,0)        
     
 testparamlist = ['blockerScaleAst', 'blockerScaleNeuron', \
 'pumpScaleAst', 'pumpScaleNeuron', \
-'nkccScale', 'kirScale','gltScale', 'beta1', 'beta2', 'perc', 'tstart', 'tend']
+'nkccScale', 'kirScale','gltScale', 'ncxScale','beta1', 'beta2', 'perc', 'tstart', 'tend']
 initvallist =['NNai0','NKi0','NCli0','NNag0','NKg0','NClg0','Wi0','Wg0']
 
 
@@ -186,7 +193,7 @@ def plotter(expname,fignum,t,y,*str):
     
     fig.tight_layout()
     plotfilename = 'Images/{a}_{b}.pdf'.format(a=expname[0],b=plotname)
-    plt.legend()
+    plt.legend(loc = 'upper right')
     plt.savefig(plotfilename,format='pdf',bbox_inches='tight')
 
     
@@ -249,7 +256,8 @@ dict = {'C':sm.C,
         'alphaCaNCX' : sm.alphaCaNCX, # in mM, from Oschmann 2017
         'eNCX' : sm.eNCX, # in mM, from Oschmann 2017
         'ksatNCX' : sm.ksatNCX, # in mM, from Oschmann 2017
-        'kGLT' : sm.kGLT, # Take max current of 0.67pA/microm^2 from Oschmann, compute avg : (.)/6
+        'kGLTi' : sm.kGLTi, # Take max current of 0.67pA/microm^2 from Oschmann, compute avg : (.)/6
+        'kGLTg' : sm.kGLTi, # Take max current of 0.67pA/microm^2 from Oschmann, compute avg : (.)/6
         'HeOHa' : sm.HeOHa, # from Breslin, Wade sodium microdomains..
         'Nv' : sm.Nv,# Naomi
         'Gv' : sm.Gv, # Naomi
@@ -280,6 +288,7 @@ dict = {'C':sm.C,
         'nkccScale' : sm.nkccScale,              # factor NKCC1 flux rate
         'kirScale' : sm.kirScale,               # factor Kir conductance
         'gltScale' : sm.gltScale,
+        'ncxScale' : sm.ncxScale,
         'nka_na' : sm.nka_na,
         'nka_k' : sm.nka_k,
         'beta1' : sm.beta1,                  # sigmoidal rate NKA blockade onset
@@ -292,7 +301,6 @@ dict = {'C':sm.C,
         'alphae0' : sm.alphae0,
         'choice' : sm.choice,
         'astroblock' : sm.astroblock,
-        'kGLT' : sm.kGLT,           # Take max current of 0.67pA/microm^2 from Oschmann, compute avg : (.)/6
         # Initial concentrations and volumes (baseline rest)
         'NaCi0' : sm.NaCi0,
         'KCi0' : sm.KCi0,

@@ -1,5 +1,5 @@
 from numpy import *
-def parameters(p,testparams,initvals,nosynapse):
+def parameters(p,testparams,initvals,nosynapse,noChargeCons):
     
     if nosynapse == 1:
         block_synapse = 0
@@ -28,7 +28,6 @@ def parameters(p,testparams,initvals,nosynapse):
     p.KCe_thres = 13        # Kir: Threshold for Kir gate
     p.kup2 = 0.1     # Kir: Rate of transition from low uptake to high uptake
     p.PCaG = 0.75*1e-5 # (from Naomi)
-    p.kNCXi = 54 # 1/10th of NKA strength, from Oschmann (2017), spatial separation..
     p.alphaNaNCX = 87.5 # in mM
     p.alphaCaNCX = 1.38 # in mM, from Oschmann 2017
     p.eNCX = 0.35 # in mM, from Oschmann 2017
@@ -50,7 +49,6 @@ def parameters(p,testparams,initvals,nosynapse):
     p.trec = 800 # Naomi
     p.tpost = 50 # Naomi
     p.Vpost0 = -65.5 # Emperical
-    p.kNCXg = p.kNCXi  
     p.gAMPA = 0.035 # Tewari Majumdar
     p.VAMPA = 0 # Tewari Majumdar
     p.Rm = 0.79 # Tewari Majumdar
@@ -65,19 +63,23 @@ def parameters(p,testparams,initvals,nosynapse):
     p.nkccScale = testparams[4]              # factor NKCC1 flux rate
     p.kirScale = testparams[5]               # factor Kir conductance
     p.gltScale = testparams[6]
-    p.nka_na = testparams[7]
-    p.nka_k = testparams[8]
-    p.beta1 = testparams[9]                  # sigmoidal rate NKA blockade onset
-    p.beta2 = testparams[10]                  # sigmoidal rate NKA blockade offset
-    p.perc = testparams[11]                   # Perc of baseline blocked NKA
-    p.tstart = testparams[12]                 # Start blockade
-    p.tend = testparams[13]                  # End blockade
-    p.nkccblock_after = testparams[14]
-    p.kirblock_after = testparams[15]
-    p.alphae0 = testparams[16]
-    p.choice = testparams[17]
-    p.astroblock = testparams[18]
-    p.kGLT = p.gltScale*1e-5 # Take max current of 0.67pA/microm^2 from Oschmann, compute avg = (.)/6
+    p.ncxScale = testparams[7]
+    p.nka_na = testparams[8]
+    p.nka_k = testparams[9]
+    p.beta1 = testparams[10]                  # sigmoidal rate NKA blockade onset
+    p.beta2 = testparams[11]                  # sigmoidal rate NKA blockade offset
+    p.perc = testparams[12]                   # Perc of baseline blocked NKA
+    p.tstart = testparams[13]                 # Start blockade
+    p.tend = testparams[14]                  # End blockade
+    p.nkccblock_after = testparams[15]
+    p.kirblock_after = testparams[16]
+    p.alphae0 = testparams[17]
+    p.choice = testparams[18]
+    p.astroblock = testparams[19]
+    p.kGLTi = p.gltScale*1e-5 # Take max current of 0.67pA/microm^2 from Oschmann, compute avg = (.)/6
+    p.kGLTg = p.kGLTi*1
+    p.kNCXi = p.ncxScale*54 # 1/10th of NKA strength, from Oschmann (2017), spatial separation..
+    p.kNCXg = p.kNCXi
 
     
     # Initial concentrations and volumes (baseline rest)
@@ -145,8 +147,9 @@ def parameters(p,testparams,initvals,nosynapse):
     
     # If we ignore charge conservation and thus remove NBe (this might be useful
     # to adjust baseline equilibria)
-    # p.NAe = -((p.C*p.Vi0*p.We0 + p.F*(-2*p.NCai0*p.We0 + p.NGlui0*p.We0 - 2*p.NKi0*p.We0 - 2*p.NNai0*p.We0 + p.NCle0*p.Wi0+ p.NKe0*p.Wi0 + p.NNae0*p.Wi0))/(p.F*p.Wi0))
-    # p.NBe = 0
+    if noChargeCons == 1:
+        p.NAe = -((p.C*p.Vi0*p.We0 + p.F*(-2*p.NCai0*p.We0 + p.NGlui0*p.We0 - 2*p.NKi0*p.We0 - 2*p.NNai0*p.We0 + p.NCle0*p.Wi0+ p.NKe0*p.Wi0 + p.NNae0*p.Wi0))/(p.F*p.Wi0))
+        p.NBe = 0
 
     # Gates    
     p.alpham0 = 0.32*(p.Vi0+52)/(1-exp(-(p.Vi0+52)/4))
@@ -173,7 +176,7 @@ def parameters(p,testparams,initvals,nosynapse):
     p.INCXi0 = p.kNCXi*(p.NaCe0**3)/(p.alphaNaNCX**3+p.NaCe0**3)*(p.CaCc0/(p.alphaCaNCX+p.CaCc0))* \
    (p.NaCi0**3/p.NaCe0**3*exp(p.eNCX*p.F*p.Vi0/p.R/p.T)-p.CaCi0/p.CaCc0*exp((p.eNCX-1)*p.F*p.Vi0/p.R/p.T))/\
    (1+p.ksatNCX*exp((p.eNCX-1)*p.F*p.Vi0/p.R/p.T))
-    p.fGLTi0 = p.kGLT*p.R*p.T/p.F*log(p.NaCe0**3/p.NaCi0**3*p.KCi0/p.KCe0*p.HeOHa*p.GluCc0/p.GluCi0)
+    p.fGLTi0 = p.kGLTi*p.R*p.T/p.F*log(p.NaCe0**3/p.NaCi0**3*p.KCi0/p.KCe0*p.HeOHa*p.GluCc0/p.GluCi0)
     p.ICaG0 = p.PCaG*p.m0**2*p.h0*4*p.F/(p.R*p.T)*p.Vi0*((p.CaCi0-p.CaCc0*exp(-2*(p.F*p.Vi0)/(p.R*p.T)))/(1-exp(-2*(p.F*p.Vi0)/(p.R*p.T))))
     p.ICaL0 = 4*(p.F**2)/(p.R*p.T)*p.Vi0*((p.CaCi0-p.CaCc0*exp((-2*p.F*p.Vi0)/(p.R*p.T)))/(1-exp((-2*p.F*p.Vi0)/(p.R*p.T))))
     p.fRelGlui0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vi0*((p.GluCi0-p.GluCc0*exp((p.F*p.Vi0)/(p.R*p.T)))/(1-exp((p.F*p.Vi0)/(p.R*p.T)))) 
@@ -205,7 +208,7 @@ def parameters(p,testparams,initvals,nosynapse):
     p.IKir0 = p.GKir*minfty0*p.KCe0/(p.KCe0+p.KCe_thres)*(p.Vg0-Vkg0)
     p.fRelGlu0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.GluCg0-p.GluCc0*exp((p.F*p.Vg0)/(p.R*p.T)))/(1-exp((p.F*p.Vg0)/(p.R*p.T)))) 
     p.fRelCa0 = 4/p.F*p.F**2/(p.R*p.T)*p.Vg0*((p.CaCg0-p.CaCc0*exp((-2*p.F*p.Vg0)/(p.R*p.T)))/(1-exp((-2*p.F*p.Vg0)/(p.R*p.T))))
-    p.fGLTg0 = p.kGLT*p.R*p.T/p.F*log(p.NaCe0**3/p.NaCg0**3*p.KCg0/p.KCe0*p.HeOHa*p.GluCc0/p.GluCg0)
+    p.fGLTg0 = p.kGLTg*p.R*p.T/p.F*log(p.NaCe0**3/p.NaCg0**3*p.KCg0/p.KCe0*p.HeOHa*p.GluCc0/p.GluCg0)
     p.INCXg0 = p.kNCXg*(p.NaCe0**3)/(p.alphaNaNCX**3+p.NaCe0**3)*(p.CaCc0/(p.alphaCaNCX+p.CaCc0))* \
    (p.NaCg0**3/p.NaCe0**3*exp(p.eNCX*p.F*p.Vg0/p.R/p.T)-p.CaCg0/p.CaCc0*exp((p.eNCX-1)*p.F*p.Vg0/p.R/p.T))/\
    (1+p.ksatNCX*exp((p.eNCX-1)*p.F*p.Vg0/p.R/p.T))
