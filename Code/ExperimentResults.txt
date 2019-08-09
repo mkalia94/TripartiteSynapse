@@ -149,3 +149,7 @@ Experiment: ['OrigSmallECS_BlockNaAstrocyte'], V[0] = -65.500, V[end] = -31.479
 Experiment: ['OrigSmallECS_BlockCl'], V[0] = -65.500, V[end] = -31.482 
 Experiment: ['OrigBigECS_BlockNaAstrocyte'], V[0] = -65.500, V[end] = -30.684 
 Experiment: ['OrigBigECS_BlockCl'], V[0] = -65.500, V[end] = -30.686 
+Experiment: ['OrigSmallECS_BlockNaLeaks'], V[0] = -65.500, V[end] = -31.479 
+Experiment: ['OrigSmallECS_BlockClLeaks'], V[0] = -65.500, V[end] = -31.482 
+Experiment: ['OrigBigECS_BlockNaLeaks'], V[0] = -65.500, V[end] = -30.684 
+Experiment: ['OrigBigECS_BlockClLeaks'], V[0] = -65.500, V[end] = -30.686 

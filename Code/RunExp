@@ -24,7 +24,7 @@ python fm_class.py --name 'OrigBigECS_BlockClLeaks' --solve --write -b --block '
 # Changed pathological Na 
 
 #PathNaChanged
-python -i fm_class.py  --ChargeCIgnore --solve -s --name 'PathNaChanged'  --freeparams 'tstart=20' 'tend = 25' 'tfinal = 50' 'nkccScale=10' 'gltScale=2' 'ncxScale=1' 'pumpScaleAst = 2' 'pumpScaleNeuron=2' --plot 'NaCg' 'KCg' 'ClCg' 'NaCi' 'KCi' 'ClCi'
+python fm_class.py  --ChargeCIgnore --solve -s --name 'PathNaChanged'  --freeparams 'tstart=20' 'tend = 25' 'tfinal = 50' 'nkccScale=10' 'gltScale=2' 'ncxScale=1' 'pumpScaleAst = 2' 'pumpScaleNeuron=2' --plot 'NaCg' 'KCg' 'ClCg' 'NaCi' 'KCi' 'ClCi'
 
 #HyperNKA
 python fm_class.py --ChargeCIgnore --name 'SmallECS_1xNKA' --solve --write -s --freeparams 'tfinal=150' 'tstart=20' 'tend=60' 'gltScale=2' 'pumpScaleAst = 2' 'pumpScaleNeuron=2' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'GluCc' 'KCe'
