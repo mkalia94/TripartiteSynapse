@@ -3,15 +3,15 @@
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Selective blockade 2
 
-python fm_class.py --name 'OrigSmallECS_BlockNaAstrocyte' --solve --write -s --block '{"fNKCC1":[70,120], "fGLTg":[70,120],"INCXg":[70,120]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
-python fm_class.py --name 'OrigSmallECS_BlockCl' --solve --write -s --block '{"fNKCC1":[70,120], "IClG":[70,120], "JKCl":[70,120]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+#python fm_class.py --name 'OrigSmallECS_BlockNaAstrocyte' --solve --write -s --block '{"fNKCC1":[70,120], "fGLTg":[70,120],"INCXg":[70,120]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+#python fm_class.py --name 'OrigSmallECS_BlockCl' --solve --write -s --block '{"fNKCC1":[70,120], "IClG":[70,120], "JKCl":[70,120]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
 
-python fm_class.py --name 'OrigBigECS_BlockNaAstrocyte' --solve --write -b --block '{"fNKCC1":[70,120], "fGLTg":[70,120],"INCXg":[70,120]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
-python fm_class.py --name 'OrigBigECS_BlockCl' --solve --write -b --block '{"fNKCC1":[70,120], "IClG":[70,120], "JKCl":[70,120]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+#python fm_class.py --name 'OrigBigECS_BlockNaAstrocyte' --solve --write -b --block '{"fNKCC1":[70,120], "fGLTg":[70,120],"INCXg":[70,120]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+#python fm_class.py --name 'OrigBigECS_BlockCl' --solve --write -b --block '{"fNKCC1":[70,120], "IClG":[70,120], "JKCl":[70,120]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
 
-git add -A
-git commit -m SelectiveBlockade2
-git push
+#git add -A
+#git commit -m SelectiveBlockade2
+#git push
 
 # Block leaks
 python fm_class.py --name 'OrigSmallECS_BlockNaLeaks' --solve --write -s --block '{"fNKCC1":[70,120], "fGLTg":[70,120]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
