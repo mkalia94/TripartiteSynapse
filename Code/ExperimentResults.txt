@@ -197,3 +197,15 @@ Experiment: ['BigECS_BlockClLeaks'], V[0] = -65.500, V[end] = -36.226
 Experiment: ['SmallECS_BlockNaAstrocyte'], V[0] = -65.500, V[end] = -36.424 
 Experiment: ['SmallECS_BlockCl'], V[0] = -65.500, V[end] = -36.416 
 Experiment: ['BigECS_BlockCl'], V[0] = -65.500, V[end] = -36.226 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -31.466 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -31.466 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -31.466 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -34.499 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -63.243 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -34.499 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -34.499 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -34.499 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -34.499 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -34.499 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -34.499 
+Experiment: ['Test1'], V[0] = -65.500, V[end] = -34.499 

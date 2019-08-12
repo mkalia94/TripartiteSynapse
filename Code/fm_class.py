@@ -119,7 +119,7 @@ if args.nosynapse:
     if args.ChargeCIgnore:
         sm = smclass(initvals_temp,testparams,1,1)
     else:
-        m = smclass(initvals_temp,testparams,1,0)    
+        sm = smclass(initvals_temp,testparams,1,0)    
 elif args.ChargeCIgnore:
     sm = smclass(initvals_temp,testparams,0,1)
 else:
@@ -164,21 +164,32 @@ def plotter(expname,fignum,t,y,*str):
     plt.locator_params(axis='x', nbins=3)
     fig = plt.figure(fignum)
     ax = fig.add_subplot(111)
-    plt.axvspan(sm.tstart, sm.tend, color='0.7', alpha=0.5, lw=0,label=r"ED: {d}%".format(d=int(modelfunc(array(t),y,'1-min(blockerExp)')*100)))
+    tnew = arange(t0,tfinal,1e-2)
+    tnew = tile(tnew,(2,1))
+    blockerExp = 1/(1+exp(sm.beta1*(tnew-sm.tstart))) + 1/(1+exp(-sm.beta2*(tnew-sm.tend)))
+    blockerExp = sm.perc + (1-sm.perc)*blockerExp
+    plt.imshow(1-blockerExp,extent=[t0,tfinal,-1e4,1e4],cmap='Greys',alpha=0.5)
+    plt.axvspan(0, 0, color='0.7', alpha=0.5, lw=0,label=r"ED: {d}%".format(d=int(modelfunc(array(t),y,'1-min(blockerExp)')*100)))
     if args.excite:
-        val = args.excite
+        val = args.excite    
         plt.axvspan(val[0], val[1], color='red', alpha=0.5, lw=0,label='Neuron excited')
     if args.astblock:
         val = args.astblock
-        plt.axvspan(val[0], val[1], color='orange', alpha=0.5, lw=0,label='Ast. blocked')    
+        blockOther = 1/(1+exp(sm.beta1*(tnew-val[0]))) + 1/(1+exp(-sm.beta2*(tnew-val[1])))
+        plt.imshow(1-blockOther,extent=[t0,tfinal,-1e4,1e4],cmap='Oranges',alpha=0.5)
+        plt.axvspan(0, 0, color='orange', alpha=0.5, lw=0,label='Ast. blocked')    
     if args.block:
         dict = args.block
         for key in dict:
                 val = dict[key]
                 if key in plotnamedict:
-                    plt.axvspan(val[0], val[1], color='forestgreen', alpha=0.5, lw=0,label=r"{a}".format(a=plotnamedict[key]))
+                    blockOther = 1/(1+exp(sm.beta1*(tnew-val[0]))) + 1/(1+exp(-sm.beta2*(tnew-val[1])))
+                    plt.imshow(1-blockOther,extent=[t0,tfinal,-1e4,1e4],cmap='Greens',alpha=0.5)
+                    plt.axvspan(0,0,color='forestgreen',alpha=0.5,lw=0,label=r"{a} blocked".format(a=plotnamedict[key]))
                 else:
-                     plt.axvspan(val[0], val[1], color='forestgreen', alpha=0.5, lw=0,label=r"{a}".format(a=key))   
+                    blockOther = 1/(1+exp(sm.beta1*(tnew-val[0]))) + 1/(1+exp(-sm.beta2*(tnew-val[1])))
+                    plt.imshow(1-blockOther,extent=[t0,tfinal,-1e4,1e4],cmap='Greens',alpha=0.5)
+                    plt.axvspan(0,0,color='forestgreen',alpha=0.5,lw=0,label=r"{a} blocked".format(a=key))
     for plotname in str[0]:
         t1 = array(t)
         ploty = modelfunc(t1,y,plotname)
@@ -190,8 +201,13 @@ def plotter(expname,fignum,t,y,*str):
             plt.plot(t1,ploty,label = r"{d}".format(d=plotname))
         plt.xlabel("t (min.)")
     plt.xlim(t0,tfinal)
-    
+    plt.ylim(min(ploty),max(ploty))
+    xleft, xright = ax.get_xlim()
+    ybottom, ytop = ax.get_ylim()
+    ratio=0.5
+    plt.axes().set_aspect(aspect=abs((xright-xleft)/(ybottom-ytop))*ratio)
     fig.tight_layout()
+    #plt.axes().set_aspect(aspect=0.5)
     plotfilename = 'Images/{a}_{b}.pdf'.format(a=expname[0],b=plotname)
     plt.legend(loc = 'upper right')
     plt.savefig(plotfilename,format='pdf',bbox_inches='tight')
