@@ -1,116 +1,27 @@
 from numpy import *
-def parameters(p,testparams,initvals,nosynapse,noChargeCons):
+def parameters(p,dict_):
     
-    if nosynapse == 1:
+    p.__dict__.update(dict_)        
+    
+    if p.nosynapse == 1:
         block_synapse = 0
-    if nosynapse == 0:
+    if p.nosynapse == 0:
         block_synapse = 1
-    
-    #============================================================================
-    #-----------------------KNOWN PARAMETERS------------------------------------
-    #============================================================================
-    p.C = 20                # Neuron membrane capacitance
-    p.F = 96485.333         # Faraday's constant 
-    p.R = 8314.4598         # Gas constant
-    p.T = 310               # Temperature
-    p.PNaG = 80*1e-5        # permeability of gated Na current
-    p.PNaL_base = 0.2*1e-5  
-    p.PKG = 40*1e-5         # permbeability of gated K current
-    p.PKL_base = 2*1e-5 
-    p.PClG = 1.95*1e-5      # permeability of gated Cl current
-    p.PClL_base = 0.25*1e-5
-    p.UKCl = 13*1e-7        # flux rate of KCl cotransporter
-    p.LH20i = 2*1e-14       # Osmotic permeability in the neuron
-    p.Qpump = 54.5          # Baseline neuronal pump strength
-    p.Cg = 20               # Astrocyte membrane capacitance 
-    p.Vg0 = -80            # Fix initial glial membrane potential
-    p.Vi0 = -65.5           # Fix initial neuronal membrane potential 
-    p.KCe_thres = 13        # Kir: Threshold for Kir gate
-    p.kup2 = 0.1     # Kir: Rate of transition from low uptake to high uptake
-    p.PCaG = 0.75*1e-5 # (from Naomi)
-    p.alphaNaNCX = 87.5 # in mM
-    p.alphaCaNCX = 1.38 # in mM, from Oschmann 2017
-    p.eNCX = 0.35 # in mM, from Oschmann 2017
-    p.ksatNCX = 0.1 # in mM, from Oschmann 2017
-    p.HeOHa = 0.66 # from Breslin, Wade sodium microdomains..
-    p.Nv = 1.5*1e4 # Naomi
-    p.Gv = 2 # Naomi
-    p.k1max = 1 # Naomi
-    p.KM = 0.0023 # Naomi
-    p.KDV = 0.1 # Naomi
-    p.k20 = 0.021*1e-3 # Naomi
-    p.k2cat = 20*1e-3 # Naomi
-    p.kmin20 = 0.017*1e-3 # Naomi
-    p.kmin1 = 0.05*1e-3 # Naomi
-    p.k3 = 4.4 # Naomi
-    p.kmin3 = 56*1e-3 # Naomi
-    p.k4 = 1.450 # Naomi
-    p.tinact = 3 # Naomi
-    p.trec = 800 # Naomi
-    p.tpost = 50 # Naomi
-    p.Vpost0 = -65.5 # Emperical
-    p.gAMPA = 0.035 # Tewari Majumdar
-    p.VAMPA = 0 # Tewari Majumdar
-    p.Rm = 0.79 # Tewari Majumdar
-    p.alphaAMPA = 1.1 # Segev and Koch chap 1
-    p.betaAMPA = 0.19 # Segev and Koch chap 1
-    
-    
-    p.blockerScaleAst = testparams[0]        # How much more should you block astrocyte pump?
-    p.blockerScaleNeuron = testparams[1]     # How much more should you block neuronal pump?
-    p.pumpScaleAst = testparams[2]           # baseline astrocyte pump strength factor
-    p.pumpScaleNeuron = testparams[3]        # baseline neuron pump strength factor
-    p.nkccScale = testparams[4]              # factor NKCC1 flux rate
-    p.kirScale = testparams[5]               # factor Kir conductance
-    p.gltScale = testparams[6]
-    p.ncxScale = testparams[7]
-    p.nka_na = testparams[8]
-    p.nka_k = testparams[9]
-    p.beta1 = testparams[10]                  # sigmoidal rate NKA blockade onset
-    p.beta2 = testparams[11]                  # sigmoidal rate NKA blockade offset
-    p.perc = testparams[12]                   # Perc of baseline blocked NKA
-    p.tstart = testparams[13]                 # Start blockade
-    p.tend = testparams[14]                  # End blockade
-    p.nkccblock_after = testparams[15]
-    p.kirblock_after = testparams[16]
-    p.alphae0 = testparams[17]
-    p.choice = testparams[18]
-    p.astroblock = testparams[19]
+    if p.s:
+        p.alphae0 = 0.2
+    if p.m:
+        p.alphae0 = 0.5
+    if p.b:
+        p.alphae0 = 0.98    
+
     p.kGLTi = p.gltScale*1e-5 # Take max current of 0.67pA/microm^2 from Oschmann, compute avg = (.)/6
     p.kGLTg = p.kGLTi*1
     p.kNCXi = p.ncxScale*54 # 1/10th of NKA strength, from Oschmann (2017), spatial separation..
     p.kNCXg = p.kNCXi
-
-    
-    # Initial concentrations and volumes (baseline rest)
-    
-    p.NaCi0 = initvals[0]
-    p.KCi0 = initvals[1]
-    p.ClCi0 = initvals[2]
-    p.CaCi0 = initvals[3]
-    p.GluCi0 = initvals[4]
-    p.NaCe0 = initvals[5]
-    p.KCe0 = initvals[6]
-    p.ClCe0 = initvals[7]
-    p.CaCc0 = initvals[8]
-    p.GluCc0 = initvals[9] 
-    p.NaCg0 = initvals[10]
-    p.KCg0 = initvals[11]
-    p.ClCg0 = initvals[12]
-    p.CaCg0 = initvals[13]
-    p.GluCg0 = initvals[14]
-    p.Wi0 = initvals[15]
-    p.Wg0 = initvals[16]
-    p.VolPreSyn = initvals[17]
-    p.VolPAP = initvals[18]
-    p.Volc = initvals[19]
-    
     p.NF0 = p.GluCc0*p.Volc
     p.NGlui0 = p.GluCi0*p.VolPreSyn
     p.NGluc0 = p.NF0
-    
     p.We0 = p.alphae0*(p.Wi0 + p.Wg0)/(1-p.alphae0)
-    
     p.NNai0 = p.NaCi0*p.Wi0
     p.NKi0 = p.KCi0*p.Wi0
     p.NCli0 = p.ClCi0*p.Wi0
@@ -124,18 +35,11 @@ def parameters(p,testparams,initvals,nosynapse,noChargeCons):
     p.NClg0 = p.ClCg0*p.Wg0
     p.NCag0 = p.CaCg0*p.VolPAP
     p.NGlug0 = p.GluCg0*p.VolPAP
-    
     p.CNa = p.NNai0 + p.NNae0 + p.NNag0
     p.CK = p.NKi0 + p.NKe0 + p.NKg0
     p.CCl = p.NCli0 + p.NCle0 + p.NClg0
     p.CCa = p.NCai0 + p.NCac0 + p.NCag0
     p.Wtot = p.Wi0 + p.We0 + p.Wg0
-    
-    #============================================================================
-    #-----------------------DERIVED QUANTITIES------------------------------------
-    #============================================================================
-    
-    
     
     # Impermeants and conserved quantities
     p.NAi = block_synapse*2*p.NCai0 - p.NCli0 - block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F
@@ -144,10 +48,9 @@ def parameters(p,testparams,initvals,nosynapse,noChargeCons):
     p.NAg = -((p.C*p.Vi0*p.Wg0 + p.Cg*p.Vg0*p.Wi0 + p.F*(-block_synapse*2*p.NCai0*p.Wg0 + block_synapse*p.NGlui0*p.Wg0 - 2*p.NKi0*p.Wg0 - 2*p.NNai0*p.Wg0 - block_synapse*2*p.NCag0*p.Wi0 + 2*p.NClg0*p.Wi0 + block_synapse*p.NGlug0*p.Wi0))/(2*p.F*p.Wi0))
     p.NBg = (-p.C*p.Vi0*p.Wg0 + p.Cg*p.Vg0*p.Wi0 + p.F*(block_synapse*2*p.NCai0*p.Wg0 - block_synapse*p.NGlui0*p.Wg0 + 2*p.NKi0*p.Wg0 + 2*p.NNai0*p.Wg0 - block_synapse*2*p.NCag0*p.Wi0 + block_synapse*p.NGlug0*p.Wi0 - 2*p.NKg0*p.Wi0 - 2*p.NNag0*p.Wi0))/(2*p.F*p.Wi0)
     
-    
     # If we ignore charge conservation and thus remove NBe (this might be useful
     # to adjust baseline equilibria)
-    if noChargeCons == 1:
+    if p.nochargecons == 1:
         p.NAe = -((p.C*p.Vi0*p.We0 + p.F*(-2*p.NCai0*p.We0 + p.NGlui0*p.We0 - 2*p.NKi0*p.We0 - 2*p.NNai0*p.We0 + p.NCle0*p.Wi0+ p.NKe0*p.Wi0 + p.NNae0*p.Wi0))/(p.F*p.Wi0))
         p.NBe = 0
 

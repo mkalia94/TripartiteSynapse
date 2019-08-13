@@ -19,9 +19,13 @@ dict_ = {#
         'perc' : 0.0,                   # Perc of baseline blocked NKA
         'tstart' : 20,                # Start blockade
         'tend' : 80,                  # End blockade
+        't0':0,
+        'tfinal': 150,
         'alphae0' : 0.98,
         'nosynapse' : 0,
-        'nogates': 0,
+        'nochargecons': 0,
+        'name': 'test',
+        'saveloc': None,
         #
         #-----------------------------------------------
         #---------FIXED PARAMETERS----------------------
@@ -34,6 +38,9 @@ dict_ = {#
         'PNaG' : 80*1e-5,        # permeability of gated Na current
         'PKG' : 40*1e-5,      # permbeability of gated K current
         'PClG' : 1.95*1e-5,      # permeability of gated Cl current
+        'PNaL_base': 0.2*1e-5,
+        'PKL_base': 2*1e-5,
+        'PClL_base': 0.25*1e-5,
         'UKCl' : 13*1e-7,       # flux rate of KCl cotransporter
         'LH20i' : 2*1e-14 ,       # Osmotic permeability in the neuron
         'Qpump' : 54.5,

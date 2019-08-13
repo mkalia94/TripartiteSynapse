@@ -1,8 +1,7 @@
 from numpy import *
 from scipy import signal
 
-def model(t,y,p,**kwargs):
-   casevec = [0,0,0,0,0,0]
+def model(t,y,p,*args):
    if size(shape(y))==2:
       NNa=y[:,0]
       NK=y[:,1]
@@ -51,22 +50,8 @@ def model(t,y,p,**kwargs):
       mAMPA =  y[20]
       Wi = y[21]
       Wg = y[22]
-   
-   for key in kwargs:
-      if kwargs['ret']:
-         casevec[0] = 1
-      if kwargs['block']:
-         casevec[1] = 1
-      if kwargs['excite']:
-         casevec[2] = 1
-      if kwargs['astblock']:
-         casevec[3] = 1    
-      if kwargs['nosynapse']:
-         casevec[4] = 1
-      if kwargs['nogates']:
-         casevec[5] = 1   
-         
-   if casevec[4] == 1:
+
+   if p.nosynapse == 1:
       synapse_block = 0
    else:
       synapse_block = 1 
@@ -117,7 +102,7 @@ def model(t,y,p,**kwargs):
    alphan = 0.016*(V+35)/(1-exp(-(V+35)/5))
    betan = 0.25*exp(-(V+50)/40)
 
-   if casevec[5] == 1:
+   if 'nogates' in p.__dict__.keys():
       gates_block = 0
       m = alpham/(alpham + betam)
       h = alphah/(alphah + betah)
@@ -191,16 +176,12 @@ def model(t,y,p,**kwargs):
    blockerExp_NKCC1 = 1/(1+exp(p.beta1*(t-p.tend))) + 1/(1+exp(-p.beta2*(t-p.tend - 5)))
    blockerExp_NKCC1 = 0.3 + (1-0.3)*blockerExp_NKCC1
    fNKCC1 = p.gNKCC1*p.R*p.T/p.F*(log(KCe) + log(NaCe) + 2*log(ClCe) - log(KCg) - log(NaCg) - 2*log(ClCg))
-   if p.nkccblock_after == 1:
-      fNKCC1 = blockerExp_NKCC1*fNKCC1
       
    # Kir4.1
    Vkg = p.R*p.T/p.F*log(KCe/KCg) 
    minfty = 1/(2+exp(1.62*(p.F/p.R/p.T)*(Vg-Vkg)))
    IKir = p.GKir*minfty*KCe/(KCe+p.KCe_thres)*(Vg-Vkg)
    # IKir = p.GKir*(Vg-Vkg)*sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
-   if p.kirblock_after == 1:
-      IKir = blockerExp_NKCC1*IKir 
       
    # GLT-1
    fGLTg = p.kGLTg*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe*p.HeOHa*GluCc/GluCg)   
@@ -232,10 +213,10 @@ def model(t,y,p,**kwargs):
    #----------------------------INTERVENTIONS--------------------------------------------------------------
    #==============================================================================================================
    
-   if casevec[1] == 1:
-      dict = kwargs['block']
-      for key in dict:
-         value = dict[key]
+   if 'block' in p.__dict__.keys():
+      dict_ = p.block
+      for key in dict_:
+         value = dict_[key]
          blockOther = 1/(1+exp(p.beta1*(t-value[0]))) + 1/(1+exp(-p.beta2*(t-value[1])))
          if key == 'INaG':
             INaG = INaG*blockOther
@@ -266,27 +247,23 @@ def model(t,y,p,**kwargs):
          elif key == 'Waterg':
             fluxg = fluxg*blockOther                   
             
-   if casevec[2] == 1:
-      arg_excite = kwargs['excite']
+   if 'excite' in p.__dict__.keys():
+      arg_excite = p.excite
       blocker_Excite = 1 - 1/(1+exp(100*(t-arg_excite[0]))) - 1/(1+exp(-100*(t-arg_excite[1])))  
       IExcite = blocker_Excite*5/p.F*(1-signal.square(array(100*t)))
    else:
       IExcite = 0
       
-   if casevec[3] == 1:
-      arg_astblock = kwargs['astblock']
+   if 'astblock' in p.__dict__.keys():
+      arg_astblock = p.astblock
       astblock =  1/(1+exp(p.beta1*(t-arg_astblock[0]))) + 1/(1+exp(-p.beta2*(t-arg_astblock[1])))  
    else:
       astblock = 1
-      
 
-         
-      
    #==============================================================================================================
-   #----------------------------RECOVERY EXPERIMENTS--------------------------------------------------------------
-   #==============================================================================================================      
+   #----------------------------FINAL MODEL--------------------------------------------------------------
+   #==============================================================================================================
    
-   # Final model
    ODEs=[ #Neuron
    (-1/p.F*(INaG+INaL+3*Ipump))-synapse_block*3/p.F*INCXi + synapse_block*3*fGLTi + IExcite,
    (-1/p.F*(IKG+IKL-2*Ipump)-JKCl-synapse_block*fGLTi), \
@@ -317,8 +294,8 @@ def model(t,y,p,**kwargs):
    astblock*fluxg]    
    ODEs = array(ODEs)*60*1e3
       
-   if casevec[0]==1:
-      return eval(kwargs['ret'])
+   if args:
+      return eval(args[0])
    else:
       return ODEs
       
