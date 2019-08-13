@@ -1,6 +1,7 @@
 from numpy import *
 import fm_model as modelfile
 import fm_params as paramfile
+from fm_dict import dict_ as paramdict
 import argparse
 import timeit
 from assimulo.solvers import CVode
@@ -99,16 +100,18 @@ tfinal = 170
 #-------------------------------------------------------------------------------
 
 # Change parameters as per args
-if args.freeparams:
-    argdict = args.freeparams    
-    for i in argdict:
-        exec(i)
+
 if args.s:
     alphae0 = 0.2
 elif args.m:
     alphae0 = 0.5
 elif args.b:
     alphae0 = 0.98
+
+if args.freeparams:
+    argdict = args.freeparams    
+    for i in argdict:
+        exec(i)
 
 # Generate class instance
 initvals_temp = [NaCi0,KCi0,ClCi0,CaCi0,GluCi0,NaCe0,KCe0,ClCe0,CaCc0,GluCc0,NaCg0,KCg0,\
@@ -160,6 +163,7 @@ def solver(t0,tfinal,initvals):
     return t,y
     
 def plotter(expname,fignum,t,y,*str):  
+    plt.rc('text',usetex=True)
     plt.rc('font',size=20)
     plt.rc('axes',titlesize=20)
     plt.locator_params(axis='y', nbins=6)
@@ -211,7 +215,7 @@ def plotter(expname,fignum,t,y,*str):
     fig.tight_layout()
     #plt.axes().set_aspect(aspect=0.5)
     if args.saveloc:
-        directory = 'Images/{a}'.format(a=args.saveloc)
+        directory = 'Images/{a}'.format(a=args.saveloc[0])
         if not os.path.exists(directory):
             os.makedirs(directory)
         plotfilename = 'Images/{c}/{a}_{b}.pdf'.format(a=expname[0],b=plotname,c=args.saveloc)
@@ -257,9 +261,30 @@ if args.solve:
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 
+dict_ = {}
+for var in ['fdfs', 'C']:
+	dict_[var] = Na
+for var in ['param1', 'param2']:
+	dict_[var] = args.var
+
+
+# Model class
+class smclass:
+   def __init__(self, params_dict):
+	self.__dict__.update(params_dict)
+      
+   def model(self,t,y,**args):
+      if args:
+        return(modelfile.model(t,y,self,**args))
+      else:
+        return(modelfile.model(t,y,self))
+
+
+smt_inst = smtclass(dict_)
+
 ## SAVE DICTIONARY
 
-dict = {'C':sm.C,
+dict_ = {'C':sm.C,
         'F' : sm.F,     # Faraday's constant
         'R' : sm.R,        # Gas constant
         'T' : sm.T,            # Temperature
@@ -444,6 +469,7 @@ dict = {'C':sm.C,
         'kRelGlui' : sm.kRelGlui,
         'kRelGlu' : sm.kRelGlu,
         'CGlu' : sm.CGlu}
+	
 
 paramName = 'Images/{a}_params.mat'.format(a=args.name[0])
-sio.savemat(paramName,dict)
+sio.savemat(paramName,dict_)

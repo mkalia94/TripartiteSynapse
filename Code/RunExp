@@ -45,7 +45,7 @@ git push
 
 #SelectiveBlockade
 #Selective blockade experiments
-python fm_class.py --name 'SmallECS_BlockINaG' --solve --write -s --block '{"INaG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' 'gltScale=2' 'pumpScaleAst = 2' 'pumpScaleNeuron=2' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
+python fm_class.py --name 'SmallECS_BlockINaG' --solve --write -s --block '{"INaG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' 'gltScale=2' 'pumpScaleAst = 2' 'pumpScaleNeuron=2'n  --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
 python fm_class.py --name 'SmallECS_BlockIKG' --solve --write -s --block '{"IKG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' 'gltScale=2' 'pumpScaleAst = 2' 'pumpScaleNeuron=2' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
 python fm_class.py --name 'SmallECS_BlockIClG' --solve --write -s --block '{"IClG":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' 'gltScale=2' 'pumpScaleAst = 2' 'pumpScaleNeuron=2' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
 python fm_class.py --name 'SmallECS_BlockJKCl' --solve --write -s --block '{"JKCl":[70,90]}' --freeparams 'tfinal=150' 'tstart=20' 'tend=40' 'gltScale=2' 'pumpScaleAst = 2' 'pumpScaleNeuron=2' --plot 'V' 'Vg' 'NaCi' 'NaCg' 'GluCi' 'GluCg' 'KCe'
