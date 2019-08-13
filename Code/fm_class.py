@@ -10,6 +10,7 @@ from plotdict import *
 from scipy.integrate import odeint
 import scipy.io as sio
 import json
+import os # to create directory if it doesn't exist
 
 
 # ARGUMENT PARSING AND MODEL CLASS
@@ -28,6 +29,7 @@ arg.add_argument('--astblock',nargs=2,type=float)
 arg.add_argument('--nosynapse',action='store_true')
 arg.add_argument('--nogates',action='store_true')
 arg.add_argument('--ChargeCIgnore',action='store_true')
+arg.add_argument('--saveloc',nargs=1)
 args = arg.parse_args()
 
 # Model class
@@ -208,7 +210,13 @@ def plotter(expname,fignum,t,y,*str):
     plt.axes().set_aspect(aspect=abs((xright-xleft)/(ybottom-ytop))*ratio)
     fig.tight_layout()
     #plt.axes().set_aspect(aspect=0.5)
-    plotfilename = 'Images/{a}_{b}.pdf'.format(a=expname[0],b=plotname)
+    if args.saveloc:
+        directory = 'Images/{a}'.format(a=args.saveloc)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        plotfilename = 'Images/{c}/{a}_{b}.pdf'.format(a=expname[0],b=plotname,c=args.saveloc)
+    else:
+        plotfilename = 'Images/{a}_{b}.pdf'.format(a=expname[0],b=plotname)
     plt.legend(loc = 'upper right')
     plt.savefig(plotfilename,format='pdf',bbox_inches='tight')
 
