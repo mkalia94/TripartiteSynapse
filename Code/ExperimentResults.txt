@@ -289,3 +289,16 @@ Experiment: SmallECS, V[0] = -65.500, V[end] = -36.203
 Experiment: BigECS, V[0] = -65.500, V[end] = -36.203 
 Experiment: MedECS, V[0] = -65.500, V[end] = -36.203 
 Experiment: MedECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: SmallECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: SmallECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: BigECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: MedECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: SmallECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: BigECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: MedECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: SmallECS, V[0] = -65.500, V[end] = -36.212 
+Experiment: BigECS, V[0] = -65.500, V[end] = -36.212 
+Experiment: MedECS, V[0] = -65.500, V[end] = -36.212 
+Experiment: SmallECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: BigECS, V[0] = -65.500, V[end] = -36.202 
+Experiment: MedECS, V[0] = -65.500, V[end] = -36.202 

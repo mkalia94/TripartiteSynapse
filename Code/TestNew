@@ -1,19 +1,20 @@
 #!/bin/bash
-
 declare -A ECSsizes
 ECSsizes=( ["-s"]="SmallECS"
            ["-m"]="MedECS"
            ["-b"]="BigECS")
 
 declare -A Experiments
-Experiments=( ["SwellingRatio"]=" --tstart 20 --tend 30 --perc 0.1 --tfinal 60 --nogates --gltScale 2 --pumpScaleAst 2 --pumpScaleNeuron 2 --nochargecons ")
+Experiments=( ["SwellingRatio"]="--tstart 20
+                                 --tend 30 --perc 0.1 --tfinal 60 --excite 0 0.5 --nogates"
+              ["HyperNKA"]="--tstart 20 --tend 60 --tfinal 120 --nogates")
 
-echo ${Experiments[SwellingRatio]}
 
 for name_ in "${!Experiments[@]}"; do
   for size_ in "${!ECSsizes[@]}"; do
     python fm_class.py \
-    --name "${ECSsizes[$size_]}" \	
+    --gltScale 2 --pumpScaleAst 2 --pumpScaleNeuron 2  --nochargecons \
+    --name "${ECSsizes[$size_]}" \
     ${Experiments[$name_]} \
     $size \
     --solve \

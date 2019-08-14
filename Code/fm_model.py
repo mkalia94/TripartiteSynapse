@@ -103,7 +103,7 @@ def model(t,y,p,*args):
    alphan = 0.016*(V+35)/(1-exp(-(V+35)/5))
    betan = 0.25*exp(-(V+50)/40)
 
-   if fm.nogates:
+   if p.nogates:
       gates_block = 0
       m = alpham/(alpham + betam)
       h = alphah/(alphah + betah)
