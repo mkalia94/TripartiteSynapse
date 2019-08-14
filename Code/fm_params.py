@@ -50,7 +50,7 @@ def parameters(p,dict_):
     
     # If we ignore charge conservation and thus remove NBe (this might be useful
     # to adjust baseline equilibria)
-    if p.nochargecons == 1:
+    if fm.nochargecons:
         p.NAe = -((p.C*p.Vi0*p.We0 + p.F*(-2*p.NCai0*p.We0 + p.NGlui0*p.We0 - 2*p.NKi0*p.We0 - 2*p.NNai0*p.We0 + p.NCle0*p.Wi0+ p.NKe0*p.Wi0 + p.NNae0*p.Wi0))/(p.F*p.Wi0))
         p.NBe = 0
 

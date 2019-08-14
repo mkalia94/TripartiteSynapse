@@ -88,6 +88,7 @@ def model(t,y,p,*args):
    
    # Voltages
    V=p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*NGlui-NCl-p.NAi)
+   Vi = V
    Vg = p.F/p.Cg*(NNag + NKg + p.NBg - p.NAg -NClg + synapse_block*2*NCag - synapse_block*NGlug )
    
    #============================================================================================================
@@ -102,7 +103,7 @@ def model(t,y,p,*args):
    alphan = 0.016*(V+35)/(1-exp(-(V+35)/5))
    betan = 0.25*exp(-(V+50)/40)
 
-   if 'nogates' in p.__dict__.keys():
+   if fm.nogates:
       gates_block = 0
       m = alpham/(alpham + betam)
       h = alphah/(alphah + betah)

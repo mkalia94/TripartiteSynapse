@@ -4,37 +4,33 @@ dict_ = {#
         #--------FREE PARAMETERS-----------------------
         #----------------------------------------------
         #
-        'blockerScaleAst' : 1,       # How much more should you block astrocyte pump?
-        'blockerScaleNeuron' : 1,     # How much more should you block neuronal pump?
-        'pumpScaleAst' : 1,           # baseline astrocyte pump strength factor
-        'pumpScaleNeuron' : 1,        # baseline neuron pump strength factor
+        'blockerScaleAst' : 1.0,       # How much more should you block astrocyte pump?
+        'blockerScaleNeuron' : 1.0,     # How much more should you block neuronal pump?
+        'pumpScaleAst' : 1.0,           # baseline astrocyte pump strength factor
+        'pumpScaleNeuron' : 1.0,        # baseline neuron pump strength factor
         'nkccScale' : 10,              # factor NKCC1 flux rate
-        'kirScale' : 1,               # factor Kir conductance
-        'gltScale' : 1,
-        'ncxScale' : 1,
-        'nka_na' : 13,
+        'kirScale' : 1.0,               # factor Kir conductance
+        'gltScale' : 1.0,
+        'ncxScale' : 1.0,
+        'nka_na' : 13.0,
         'nka_k' : 0.2,
         'beta1' : 1.1,                  # sigmoidal rate NKA blockade onset
         'beta2' : 1.1,                  # sigmoidal rate NKA blockade offset
         'perc' : 0.0,                   # Perc of baseline blocked NKA
-        'tstart' : 20,                # Start blockade
-        'tend' : 80,                  # End blockade
-        't0':0,
+        'tstart' : 20.0,                # Start blockade
+        'tend' : 80.0,                  # End blockade
+        't0':0.0,
         'tfinal': 150,
         'alphae0' : 0.98,
-        'nosynapse' : 0,
-        'nochargecons': 0,
-        'name': 'test',
-        'saveloc': None,
-        #
+        'nosynapse' : 0.0,        #
         #-----------------------------------------------
         #---------FIXED PARAMETERS----------------------
         #-----------------------------------------------
         #
-        'C': 20,                # Neuron membrane capacitance
+        'C': 20.0,                # Neuron membrane capacitance
         'F' : 96485.333,     # Faraday's constant
         'R' : 8314.4598,        # Gas constant
-        'T' : 310,            # Temperature
+        'T' : 310.0,            # Temperature
         'PNaG' : 80*1e-5,        # permeability of gated Na current
         'PKG' : 40*1e-5,      # permbeability of gated K current
         'PClG' : 1.95*1e-5,      # permeability of gated Cl current
@@ -44,10 +40,10 @@ dict_ = {#
         'UKCl' : 13*1e-7,       # flux rate of KCl cotransporter
         'LH20i' : 2*1e-14 ,       # Osmotic permeability in the neuron
         'Qpump' : 54.5,
-        'Cg' : 20,               # Astrocyte membrane capacitance
-        'Vg0' : -80,            # Fix initial glial membrane potential
+        'Cg' : 20.0,               # Astrocyte membrane capacitance
+        'Vg0' : -80.0,            # Fix initial glial membrane potential
         'Vi0' : -65.5,           # Fix initial neuronal membrane potential
-        'KCe_thres' : 13,        # Kir: Threshold for Kir gate
+        'KCe_thres' : 13.0,        # Kir: Threshold for Kir gate
         'kup2' : 0.1,     # Kir: Rate of transition from low uptake to high uptake
         'PCaG' : 0.75*1e-5, # (from Naomi)
         'kNCXi' : 0, # 1/10th of NKA strength, from Oschmann (2017), spatial separation..
@@ -200,4 +196,4 @@ dict_ = {#
         'kRelGlui' : 0,
         'kRelGlu' : 0,
         'CGlu' : 0}
-	
+
