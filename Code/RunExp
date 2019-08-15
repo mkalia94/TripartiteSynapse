@@ -26,7 +26,7 @@ Experiments=( ["IClGblock"]="--tstart 20 --tend 40  --tfinal 180 --block {\"IClG
 for name_ in "${!Experiments[@]}"; do
   for size_ in "${!ECSsizes[@]}"; do
     python fm_class.py \
-    --gltScale 2 --pumpScaleAst 2 --pumpScaleNeuron 2 --nogates \
+    --gltScale 2 --pumpScaleAst 2 --pumpScaleNeuron 2 \
     --name "${ECSsizes[$size_]}" \
     ${Experiments[$name_]} \
     $size_ \
