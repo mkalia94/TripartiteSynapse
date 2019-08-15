@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings("ignore")
 from numpy import *
 import fm_model as modelfile
 import fm_params as paramfile
@@ -48,6 +50,11 @@ class fmclass:
     def model(self,t,y,*args):
         return(modelfile.model(t,y,self,*args))
 
+if 'saveloc' in paramdict.keys():
+    disp('------{a}------'.format(a=paramdict['saveloc']))
+else:
+    disp('------Test------')
+
 fm = fmclass(paramdict)    
 
 #---------------------------------------------------------------------------
@@ -63,12 +70,14 @@ def solver(t0,tfinal,initvals):
     sim = CVode(mod)
     sim.atol = 1e-11
     sim.rtol = 1e-11
+    sim.verbosity = 50
     # sim.iter = 'Newton'
     # sim.discr = 'BDF'
     # sim.linear_solver = 'SPGMR'
     # sim.report_continuously = True
     # sim.verbosity = 10
     t, y = sim.simulate(tfinal)
+    disp('Simulation Done...')
     return t,y
     
 def plotter(expname,filename_,title_,fignum,t,y,*str):  
@@ -163,7 +172,7 @@ if fm.solve:
         file_ = open('ExperimentResults.txt','r+')
         file_.seek(0,2)
         if 'name' in fm.__dict__.keys():
-            file_.write('Experiment: %s, V[0] = %2.3f, V[end] = %2.3f \n'%(fm.name,V[0],V[-1]))
+            file_.write('Experiment: %s, V[0] = %2.3f, V[end] = %2.3f \n'%(fm.saveloc ,V[0],V[-1]))
             file_.close()
         else:
             file_.write('Experiment: %s, V[0] = %2.3f, V[end] = %2.3f \n'%('test',V[0],V[-1]))
@@ -180,3 +189,4 @@ if fm.solve:
         for keys in dict_:	
             plotter(expname,keys,titledic_[keys],ctr,t,y,dict_[keys])
             ctr = ctr + 1
+        disp('Plotting Done...')

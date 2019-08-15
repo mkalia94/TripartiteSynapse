@@ -1,5 +1,0 @@
-#!/bin/bash
-declare -A animals
-animals=( ["-s"]="'asd'" 
-	["woof"]="dog")
-echo "${animals[-s]}"
