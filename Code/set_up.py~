@@ -1,0 +1,39 @@
+from tps import *
+arg = argparse.ArgumentParser()
+for key in paramdict:
+    arg.add_argument('--{a}'.format(a=key), type=float)
+arg.add_argument('-s', action='store_true')
+arg.add_argument('-b', action='store_true')
+arg.add_argument('-m', action='store_true')
+arg.add_argument('--solve', action='store_true')
+arg.add_argument('--write', action='store_true')
+arg.add_argument('--plot', type=json.loads)
+arg.add_argument('--titles', type=json.loads)
+arg.add_argument('--block', type=json.loads)
+arg.add_argument('--excite', nargs=2, type=float)
+arg.add_argument('--astblock', nargs=2, type=float)
+arg.add_argument('--nogates', action='store_true')
+arg.add_argument('--nochargecons', action='store_true')
+arg.add_argument('--saveloc', type=str)
+arg.add_argument('--name', type=str)
+args = arg.parse_args()
+
+for key in args.__dict__:
+    if args.__dict__[key] is not None:
+        paramdict[key] = args.__dict__[key]
+
+
+class fmclass:
+    def __init__(self, dict_):
+        paramfile.parameters(self, dict_)
+
+    def model(self, t, y, *args):
+        return(modelfile.model(t, y, self, *args))
+
+
+if 'saveloc' in paramdict.keys():
+    disp('------{a}------'.format(a=paramdict['saveloc']))
+else:
+    disp('------Test------')
+
+fm = fmclass(paramdict)

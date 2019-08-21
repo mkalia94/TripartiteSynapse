@@ -1,7 +1,0 @@
-#!/bin/bash
-
-#Astblock experiments
-python fm_class.py --name 'SmallECS_AstBlockFromHealthy' --solve --write -s --astblock 40.0 200.0 --freeparams 'tfinal=100' 'tstart = 500' 'tend=501' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCc' 'GluCg' 'Wi' 'Wg'
-python fm_class.py --name 'Small_ECSAstBlockUnhealthy' --solve --write -s --astblock 100.0 150.0 --freeparams 'tfinal=150' 'tstart = 20' 'tend=40' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCc' 'GluCg' 'Wi' 'Wg'
-python fm_class.py --name 'BigECS_AstBlockFromHealthy' --solve --write -b --astblock 40.0 200.0 --freeparams 'tfinal=100' 'tstart = 500' 'tend=501' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCc' 'GluCg' 'Wi' 'Wg'
-python fm_class.py --name 'BigECS_AstBlockUnhealthy' --solve --write -b --astblock 100.0 150.0 --freeparams 'tfinal=150' 'tstart = 20' 'tend=40' --plot 'KCe' 'NaCg' 'NaCi' 'V' 'Vg' 'GluCi' 'GluCc' 'GluCg' 'Wi' 'Wg'
