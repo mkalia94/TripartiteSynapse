@@ -1,0 +1,3 @@
+Experiment: NoGates/SmallECS, V[0] = -65.500, V[end] = -36.468 
+Experiment: NoGates/BigECS, V[0] = -65.500, V[end] = -36.219 
+Experiment: NoGates/MedECS, V[0] = -65.500, V[end] = -36.369 
