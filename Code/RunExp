@@ -1,8 +1,8 @@
 #!/bin/bash
 declare -A ECSsizes
-ECSsizes=( ["-s"]="SmallECS")
+ECSsizes=( ["-s"]="SmallECS"
 #           ["-m"]="MedECS"
-#          ["-b"]="BigECS")
+          ["-b"]="BigECS")
 
 declare -A Experiments
 Experiments=(# ["IClGblock"]="--tstart 20 --tend 40  --tfinal 180 --block {\"IClG\":[100,120]}"
@@ -15,14 +15,15 @@ Experiments=(# ["IClGblock"]="--tstart 20 --tend 40  --tfinal 180 --block {\"ICl
 #              ["NKCC1block"]="--tstart 20 --tend 40 --block {\"fNKCC1\":[100,120]} --tfinal 180"
 #              ["SwellingRatio"]="--tstart 20 --tend 30 --perc 0.1 --tfinal 60"
 #       	      ["Calibration"]="--tstart 20 --tend 21.7 --perc 0.2 --tfinal 40"
-#              ["HyperNKA"]="--tstart 20 --tend 45 --tfinal 120"
+#              ["UnhealthyResponseExtreme"]="--tstart 10 --tend 30  --excite 45 46 --tfinal 50")
     #	          ["HyperNKA1_5x"]="--pumpScaleAst 2.7 --pumpScaleNeuron 2.7 --tstart 20 --tend 45 --tfinal 120"
+    ["MildIschemia"]="--tstart 20 --tend 45 --perc 0.5 --tfinal 60")
     #	          ["HyperNKA2x"]="--pumpScaleAst 3.6 --pumpScaleNeuron 3.6 --tstart 20 --tend 45 --tfinal 120"
 #     ["AstKnockHealthy"]="--tstart 500 --tend 600 --tfinal 3 --excite 1 2 --astblock 0.8 2.2")
 #              ["HealthyResponse"]="--tstart 500 --tend 600 --tfinal 3 --excite 1 2")
 #             ["HealthyResponseShort"]="--tstart 500 --tend 600 --tfinal 2 --excite 0 10"  )
          
-              ["UnhealthyResponse"]="--tstart 10 --tend 20 --perc 0.5 --tfinal 50 --excite 40 41")
+ #             ["UnhealthyResponse"]="--tstart 10 --tend 20 --perc 0.5 --tfinal 50 --excite 40 41")
   #           ["AstKnockUnhealthy"]="--tstart 10 --tend 20  --tfinal 50 --perc 0.5 --excite 40 41 --astblock 40 41")
 
 # declare -A Intensity
@@ -79,5 +80,5 @@ for name_ in "${!Experiments[@]}"; do
   done; 
 done
 
-python recovery_short.py
+#python recovery_short.py
 #python recovery_long.py

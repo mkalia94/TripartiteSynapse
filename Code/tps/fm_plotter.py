@@ -75,7 +75,7 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
     plt.ylim(ylim_min - 0.15*diff_, ylim_max + 0.15*diff_)
     xleft, xright = ax.get_xlim()
     ybottom, ytop = ax.get_ylim()
-    ratio = 0.5
+    ratio = 0.25
     #plt.axes().set_aspect(aspect=abs((xright-xleft)/(ybottom-ytop))*ratio)
     fig.tight_layout()
     # plt.axes().set_aspect(aspect=0.5)
