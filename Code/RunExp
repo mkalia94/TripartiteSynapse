@@ -1,0 +1,83 @@
+#!/bin/bash
+declare -A ECSsizes
+ECSsizes=( ["-s"]="SmallECS")
+#           ["-m"]="MedECS"
+#          ["-b"]="BigECS")
+
+declare -A Experiments
+Experiments=(# ["IClGblock"]="--tstart 20 --tend 40  --tfinal 180 --block {\"IClG\":[100,120]}"
+#	          ["IKGblock"]="--tstart 20 --tend 40 --block {\"IKG\":[100,120]} --tfinal 180"	
+#	          ["INaGblock"]="--tstart 20 --tend 40 --block {\"INaG\":[100,120]} --tfinal 180"
+#              ["INCXiblock"]="--tstart 20 --tend 40 --block {\"INCXi\":[100,120]} --tfinal 180"
+#              ["INCXgGblock"]="--tstart 20 --tend 40 --block {\"INCXg\":[100,120]} --tfinal 180"
+#              ["JKClblock"]="--tstart 20 --tend 40 --block {\"JKCl\":[100,120]} --tfinal 180"
+#             ["GLTgblock"]="--tstart 20 --tend 40 --block {\"fGLTg\":[100,120]} --tfinal 180"
+#              ["NKCC1block"]="--tstart 20 --tend 40 --block {\"fNKCC1\":[100,120]} --tfinal 180"
+#              ["SwellingRatio"]="--tstart 20 --tend 30 --perc 0.1 --tfinal 60"
+#       	      ["Calibration"]="--tstart 20 --tend 21.7 --perc 0.2 --tfinal 40"
+#              ["HyperNKA"]="--tstart 20 --tend 45 --tfinal 120"
+    #	          ["HyperNKA1_5x"]="--pumpScaleAst 2.7 --pumpScaleNeuron 2.7 --tstart 20 --tend 45 --tfinal 120"
+    #	          ["HyperNKA2x"]="--pumpScaleAst 3.6 --pumpScaleNeuron 3.6 --tstart 20 --tend 45 --tfinal 120"
+#     ["AstKnockHealthy"]="--tstart 500 --tend 600 --tfinal 3 --excite 1 2 --astblock 0.8 2.2")
+#              ["HealthyResponse"]="--tstart 500 --tend 600 --tfinal 3 --excite 1 2")
+#             ["HealthyResponseShort"]="--tstart 500 --tend 600 --tfinal 2 --excite 0 10"  )
+         
+              ["UnhealthyResponse"]="--tstart 10 --tend 20 --perc 0.5 --tfinal 50 --excite 40 41")
+  #           ["AstKnockUnhealthy"]="--tstart 10 --tend 20  --tfinal 50 --perc 0.5 --excite 40 41 --astblock 40 41")
+
+# declare -A Intensity
+# Intensity=( ["Lev1"]="0.3"
+# 	    ["Lev2"]="0.35"
+# 	    ["Lev3"]="0.4"
+# 	    ["Lev4"]="0.45"
+# 	    ["Lev5"]="0.5"
+# 	    ["Lev6"]="0.55"
+# 	    ["Lev7"]="0.6"
+# 	    ["Lev8"]="0.65"
+# 	    ["Lev9"]="0.7"
+# 	    ["Lev10"]="0.75"
+# 	    ["Lev11"]="0.8"
+# 	    ["Lev12"]="0.85")
+
+# declare -A Duration
+# Duration=( ["2min"]="22.0"
+# 	   ["4min"]="24.0"
+# 	   ["6min"]="26.0"
+# 	   ["8min"]="28.0"
+# 	   ["10min"]="30.0")
+	    
+# for intensity_ in "${!Intensity[@]}"; do
+#   for duration_ in "${!Duration[@]}"; do
+#     python set_up.py \
+#     --gltScale 2 \
+#     --name "$intensity_" \
+#     --perc ${Intensity[$intensity_]} \
+#     -s \
+#     --tstart 20 --tend ${Duration[$duration_]} --tfinal 60 \
+#     --solve \
+#     --write \
+#     --plot '{"MemPot":["Vi","Vg"],"Na":["NaCi","NaCg"],"Glu1":["GluCi","GluCg"],"Glu2":["GluCc"],"Ca":["CaCi","CaCc","CaCg"]}' \
+#     --titles '{"MemPot":"Membrane potential (in mV)","Na":"$[Na^+]$ (in mM)","W": "Volume (in pL)", "Glu1": "[Glu] (in mM)","Glu2":"[Glu] (in mM)","Ca":"$[Ca^{2+}]$ (in mM)" }' \
+#     --saveloc "$intensity_/$duration_"
+#   done; 
+# done
+
+
+
+for name_ in "${!Experiments[@]}"; do
+  for size_ in "${!ECSsizes[@]}"; do
+    python set_up.py \
+    --gltScale 2 --pumpScaleNeuron 1.8 --pumpScaleAst 1.8\
+    --name "${ECSsizes[$size_]}" \
+    ${Experiments[$name_]} \
+    $size_ \
+    --solve \
+    --write \
+    --plot '{"MemPot":["Vi","Vg"],"Na":["NaCi","NaCg"],"Glu1":["GluCi","GluCg"],"Glu2":["GluCc"],"Ca":["CaCi","CaCc","CaCg"]}' \
+    --titles '{"MemPot":"Membrane potential (in mV)","Na":"$[Na^+]$ (in mM)","W": "Volume (in pL)", "Glu1": "[Glu] (in mM)","Glu2":"[Glu] (in mM)","Ca":"$[Ca^{2+}]$ (in mM)" }' \
+    --saveloc "$name_/${ECSsizes[$size_]}"
+  done; 
+done
+
+python recovery_short.py
+#python recovery_long.py
