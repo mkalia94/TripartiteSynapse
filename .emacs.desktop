@@ -1,0 +1,115 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Thu Aug 22 18:25:16 2019
+;; Desktop file format version 208
+;; Emacs version 26.2
+
+;; Global section:
+(setq desktop-saved-frameset [frameset 1 (23902 49644 302478 860000) (desktop . "208") "manu@manu" nil nil ((((minibuffer . t) (undecorated) (override-redirect) (font-backend xft x) (font . "-PfEd-DejaVu Sans Mono-normal-normal-normal-*-13-*-*-*-m-0-iso10646-1") (font-parameter . "Monospace 10") (border-width . 0) (internal-border-width . 0) (right-divider-width . 0) (bottom-divider-width . 0) (vertical-scroll-bars . right) (horizontal-scroll-bars) (foreground-color . "#ffffff") (background-color . "#263238") (mouse-color . "black") (border-color . "#37474f") (screen-gamma) (line-spacing) (left-fringe . 8) (right-fringe . 8) (no-special-glyphs) (scroll-bar-foreground) (scroll-bar-background) (menu-bar-lines . 1) (tool-bar-lines . 1) (title) (wait-for-wm . t) (tool-bar-position . top) (inhibit-double-buffering) (icon-type . t) (auto-raise) (auto-lower) (cursor-type . box) (scroll-bar-width . 16) (scroll-bar-height . 0) (alpha) (no-focus-on-map) (no-accept-focus) (fullscreen . maximized) (visibility . t) (skip-taskbar) (z-group) (display-type . color) (background-mode . dark) (cursor-color . "#ff9800") (sticky) (environment) (frameset--id . "AB96-DEDA-0E98-07BF") (frameset--mini t . t) (modeline . t) (unsplittable) (icon-name) (display . ":0.0") (explicit-name) (height . 62) (width . 236) (left . 1920) (top . 0)) ((min-height . 8) (min-width . 20) (min-height-ignore . 4) (min-width-ignore . 17) (min-height-safe . 2) (min-width-safe . 4) (min-pixel-height . 136) (min-pixel-width . 160) (min-pixel-height-ignore . 68) (min-pixel-width-ignore . 136) (min-pixel-height-safe . 34) (min-pixel-width-safe . 32)) hc (pixel-width . 1920) (pixel-height . 1046) (total-width . 240) (total-height . 62) (normal-height . 1.0) (normal-width . 1.0) (combination-limit) (vc (pixel-width . 960) (pixel-height . 1046) (total-width . 120) (total-height . 62) (normal-height . 1.0) (normal-width . 0.5) (combination-limit) (leaf (pixel-width . 960) (pixel-height . 672) (total-width . 120) (total-height . 40) (normal-height . 0.6462715105162521) (normal-width . 1.0) (buffer "RunExp2" (selected) (hscroll . 0) (fringes 8 8 nil) (margins 2) (scroll-bars nil 2 t nil 0 t) (vscroll . 0) (dedicated) (point . 3614) (start . 2820))) (leaf (last . t) (pixel-width . 960) (pixel-height . 374) (total-width . 120) (total-height . 22) (normal-height . 0.3537284894837474) (normal-width . 1.0) (buffer "*shell*" (selected . t) (hscroll . 0) (fringes 8 8 nil) (margins 1) (scroll-bars nil 2 t nil 0 t) (vscroll . 0) (dedicated) (point . 41) (start . 1)))) (vc (last . t) (pixel-width . 960) (pixel-height . 1046) (total-width . 120) (total-height . 62) (normal-height . 1.0) (normal-width . 0.5) (combination-limit) (leaf (pixel-width . 960) (pixel-height . 527) (total-width . 120) (total-height . 31) (normal-height . 0.5116279069767442) (normal-width . 1.0) (buffer "fm_plotter.py" (selected) (hscroll . 0) (fringes 8 8 nil) (margins 2) (scroll-bars nil 2 t nil 0 t) (vscroll . 0) (dedicated) (point . 1087) (start . 1087))) (leaf (last . t) (pixel-width . 960) (pixel-height . 519) (total-width . 120) (total-height . 31) (normal-height . 0.4883720930232558) (normal-width . 1.0) (buffer "fm_model.py" (selected) (hscroll . 0) (fringes 8 8 nil) (margins 3) (scroll-bars nil 2 t nil 0 t) (vscroll . 0) (dedicated) (point . 5118) (start . 5118))))))])
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring nil)
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history '("~/Documents/Work/TriSyn" "~/Documents/Work/TriSyn/" "~/Documents/Work/TriSyn/Code/tps/fm_model.py" "~/Documents/Work/TriSyn/Code/RunExp2" "~/Documents/Work/TriSyn/Code/RunExp" "~/Documents/Work/TriSyn/Code/set_up.py" "~/Documents/Work/TriSyn/Code/tps/fm_plottwoaxes.py" "~/Documents/Work/TriSyn/Code/tps/__init__.py" "~/Documents/Work/TriSyn/Code/tps/fm_plotter.py" "~/Documents/Work/TriSyn/Code/tps/fm_plotter" "~/Documents/Work/TriSyn/Code/tps/fm_plottwoaxes.py" "~/Documents/Work/TriSyn/Code/tps/fm_plotter.py" "~/Documents/Work/TriSyn/Code/RunExp" "~/Documents/Work/TriSyn/Code/tps/fm_model.py" "~/Documents/Work/TriSyn/Code/tps/fm_plotter.py" "~/Documents/Work/TriSyn/Code/set_up.py" "~/Documents/Work/TriSyn/Code/tps/__init__.py" "~/Documents/Work/TriSyn/Code/set_up.py" "~/Documents/Work/TriSyn/Code/tps/set_up.py" "~/Documents/Work/TriSyn/Code/tps/fm_model.py" "~/Documents/Work/TriSyn/Code/tps/fm_plotter.py" "~/Documents/Work/TriSyn/Code/tps/plotdict.py" "~/Documents/Work/TriSyn/Code/RunExp"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 208
+  "/home/manu/Documents/Work/TriSyn/Code/RunExp2"
+  "RunExp2"
+  'sh-mode
+  '(linum-mode override-global-mode TeX-PDF-mode)
+  3614
+  '(3325 nil)
+  nil
+  nil
+  '((buffer-display-time 23902 49635 574237 166000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (698 1332 1063 1047 1128 968 1047 3608 3599 3556 3358 3325 3325 3325 1047 3614))))
+
+(desktop-create-buffer 208
+  "/home/manu/Documents/Work/TriSyn/Code/tps/fm_model.py"
+  "fm_model.py"
+  'python-mode
+  '(eldoc-mode linum-mode elpy-mode company-mode flymake-mode highlight-indentation-mode yas-minor-mode override-global-mode TeX-PDF-mode)
+  5118
+  '(11823 nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 23902 49635 574239 462000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (11814 11805 11796 11787 11780 11779 10750 10794 11707 1874 1909 1870 11707 1875 10405 444))))
+
+(desktop-create-buffer 208
+  "/home/manu/Documents/Work/TriSyn/Code/RunExp"
+  "RunExp"
+  'sh-mode
+  '(linum-mode override-global-mode TeX-PDF-mode)
+  3570
+  '(1069 nil)
+  nil
+  nil
+  '((buffer-display-time 23902 48249 34897 346000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (61 2118 1291 1415 1476 1400 1580 1400 1400 1889 1400 1706 1400 1400 1400 3570))))
+
+(desktop-create-buffer 208
+  "/home/manu/Documents/Work/TriSyn/Code/tps/fm_plottwoaxes.py"
+  "fm_plottwoaxes.py"
+  'python-mode
+  '(eldoc-mode linum-mode elpy-mode company-mode flymake-mode highlight-indentation-mode yas-minor-mode override-global-mode TeX-PDF-mode)
+  923
+  '(647 nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 23902 47216 208133 925000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (657 357 357 357 357 357 314 357 357 357 357 357 783 538 177 923))))
+
+(desktop-create-buffer 208
+  "/home/manu/Documents/Work/TriSyn/Code/set_up.py"
+  "set_up.py"
+  'python-mode
+  '(eldoc-mode linum-mode elpy-mode company-mode flymake-mode highlight-indentation-mode yas-minor-mode override-global-mode TeX-PDF-mode)
+  930
+  '(1682 nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 23902 43709 486824 436000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (1677 1009 1009 819 918 1621 1653 858))))
+
+(desktop-create-buffer 208
+  "/home/manu/Documents/Work/TriSyn/Code/tps/__init__.py"
+  "__init__.py"
+  'python-mode
+  '(eldoc-mode linum-mode elpy-mode company-mode flymake-mode highlight-indentation-mode yas-minor-mode override-global-mode TeX-PDF-mode)
+  655
+  '(470 nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 23902 43702 706640 631000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (302 505 567 486 522 548 470 655))))
+
+(desktop-create-buffer 208
+  "/home/manu/Documents/Work/TriSyn/Code/tps/fm_plotter.py"
+  "fm_plotter.py"
+  'python-mode
+  '(eldoc-mode linum-mode elpy-mode company-mode flymake-mode highlight-indentation-mode yas-minor-mode override-global-mode TeX-PDF-mode)
+  1087
+  '(323 nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 23902 49635 574239 124000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (1023 851 394 179 86 3533 3533 3605 3628 778 2888 1844 648 1843 2447 2293))))
+
+(desktop-create-buffer 208
+  "/home/manu/Documents/Work/TriSyn/Code/tps/plotdict.py"
+  "plotdict.py"
+  'python-mode
+  '(eldoc-mode linum-mode elpy-mode company-mode flymake-mode highlight-indentation-mode yas-minor-mode override-global-mode TeX-PDF-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode) (buffer-display-time 23902 49603 277746 619000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring nil)))
+

@@ -13,7 +13,7 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
         + 1/(1+exp(-fm.beta2*(tnew-fm.tend)))
     blockerExp = fm.perc + (1-fm.perc)*blockerExp
     plt.imshow(1-blockerExp, extent=[fm.t0, fm.tfinal, -1e4, 1e4],
-               cmap='Greys', alpha=0.5)
+               cmap='Greys', alpha=0.5, aspect = "auto")
     plt.axvspan(0, 0, color='0.7', alpha=0.5, lw=0,
                 label=r"Energy avail.: {d}\%".format(d=int(
                     fm.model(array(t), y, 'min(blockerExp)')*100)))
@@ -23,10 +23,10 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
                     alpha=0.5, lw=0, label='Neuron excited')
     if 'astblock' in fm.__dict__.keys():
         val = fm.astblock
-        blockOther = 1/(1+exp(fm.beta1*(tnew-val[0]))) \
-            + 1/(1+exp(-fm.beta2*(tnew-val[1])))
+        blockOther = 1/(1+exp(500*(tnew-val[0]))) \
+            + 1/(1+exp(-500*(tnew-val[1])))
         plt.imshow(1-blockOther, extent=[fm.t0, fm.tfinal, -1e4, 1e4],
-                   cmap='Oranges', alpha=0.5)
+                   cmap='Oranges', alpha=0.5, aspect = "auto")
         plt.axvspan(0, 0, color='orange', alpha=0.5, lw=0,
                     label='Ast. blocked')
     if 'block' in fm.__dict__.keys():
@@ -37,14 +37,14 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
                 blockOther = (1/(1+exp(fm.beta1*(tnew-val[0]))) +
                               1/(1+exp(-fm.beta2*(tnew-val[1]))))
                 plt.imshow(1-blockOther, extent=[fm.t0, fm.tfinal, -1e4, 1e4],
-                           cmap='Greens', alpha=0.5)
+                           cmap='Greens', alpha=0.5, aspect = "auto")
                 plt.axvspan(0, 0, color='forestgreen', alpha=0.5, lw=0,
                             label=r"{a} blocked".format(a=plotnamedict[key]))
             else:
                 blockOther = (1/(1+exp(fm.beta1*(tnew-val[0]))) +
                               1/(1+exp(-fm.beta2*(tnew-val[1]))))
                 plt.imshow(1-blockOther, extent=[fm.t0, fm.tfinal, -1e4, 1e4],
-                           cmap='Greens', alpha=0.5)
+                           cmap='Greens', alpha=0.5, aspect = "auto")
                 plt.axvspan(0, 0, color='forestgreen', alpha=0.5, lw=0,
                             label=r"{a} blocked".format(a=key))
     ylim_max = -1e8
@@ -76,7 +76,7 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
     xleft, xright = ax.get_xlim()
     ybottom, ytop = ax.get_ylim()
     ratio = 0.5
-    plt.axes().set_aspect(aspect=abs((xright-xleft)/(ybottom-ytop))*ratio)
+    #plt.axes().set_aspect(aspect=abs((xright-xleft)/(ybottom-ytop))*ratio)
     fig.tight_layout()
     # plt.axes().set_aspect(aspect=0.5)
     if 'saveloc' in fm.__dict__.keys():
@@ -86,8 +86,8 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
         plotfilename = 'Images/{c}/{a}_{b}.pdf'.format(a=expname,
                                                        b=filename_,
                                                        c=fm.saveloc)
-        # paramfilename = 'Images/{c}/{a}_params.mat'.format(a=expname,
-        #                                                   c=fm.saveloc)
+        save('Images/{a}/tfile.npy'.format(a=fm.saveloc),t)
+        save('Images/{a}/yfile.npy'.format(a=fm.saveloc),y)
     else:
         plotfilename = 'Images/{a}_{b}.pdf'.format(a=expname, b=filename_)
         # paramfilename = 'Images/{a}_params.mat'.format(a=expname)

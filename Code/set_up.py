@@ -28,20 +28,22 @@ if 'saveloc' in paramdict.keys():
 else:
     disp('------Test------')
 
-fm = fmclass(paramdict)
+fm = fmclass(paramdict)    
 
+fm.initvals = [fm.NNai0, fm.NKi0, fm.NCli0, fm.m0, fm.h0, fm.n0, fm.NCai0,
+            fm.NN0, fm.NR0, fm.NR10, fm.NR20, fm.NR30, fm.NF0, fm.NI0,
+               fm.ND0, fm.NNag0, fm.NKg0, fm.NClg0, fm.NCag0, fm.NGlug0, fm.Vpost0,
+            fm.Wi0, fm.Wg0]  
+
+    
 # ---------------------------------------------------------------------------
 #                  Solve ODE
 # ---------------------------------------------------------------------------
 
-initvals = [fm.NNai0, fm.NKi0, fm.NCli0, fm.m0, fm.h0, fm.n0, fm.NCai0,
-            fm.NN0, fm.NR0, fm.NR10, fm.NR20, fm.NR30, fm.NF0, fm.NI0,
-            fm.ND0, fm.NNag0, fm.NKg0, fm.NClg0, fm.NCag0, fm.Vpost0,
-            fm.mAMPA0, fm.Wi0, fm.Wg0]
-
 if fm.solve:
-    t, y = solver(fm, fm.t0, fm.tfinal, initvals)
+    t, y = solver(fm, fm.t0, fm.tfinal, fm.initvals)
     V = fm.model(array(t), y, 'V')
+    
 
     if fm.write:
         file_ = open('ExperimentResults.txt', 'r+')

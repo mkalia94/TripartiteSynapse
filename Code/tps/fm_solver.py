@@ -10,6 +10,9 @@ def solver(fm, t0, tfinal, initvals):
     # sim.linear_solver = 'SPGMR'
     # sim.report_continuously = True
     # sim.verbosity = 10
-    t, y = sim.simulate(tfinal)
+    if fm.nogates:
+        t, y = sim.simulate(tfinal)
+    else:
+        t, y = sim.simulate(tfinal ,fm.tfinal*6*1e3)
     disp('Simulation Done...')
     return t, y

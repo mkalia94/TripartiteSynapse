@@ -1,0 +1,27 @@
+from tps import *
+ecsratio = arange(0.1,0.9,0.1)
+perclist = arange(0.1,0.9,0.1)
+
+# ecsratio = [0.2]
+# perclist = [0.7]
+swellratio = zeros((size(ecsratio),size(perclist),3))
+
+for i in range(size(ecsratio)):
+    for j in range(size(perclist)):
+        paramdict['alphae0'] = ecsratio[i]
+        paramdict['perc'] = perclist[j]
+        paramdict['tstart'] = 20
+        paramdict['tend'] = 40
+        paramdict['tfinal'] = 120
+        fm = fmclass(paramdict)
+        fm.initvals = [fm.NNai0, fm.NKi0, fm.NCli0, fm.m0, fm.h0, fm.n0, fm.NCai0,
+            fm.NN0, fm.NR0, fm.NR10, fm.NR20, fm.NR30, fm.NF0, fm.NI0,
+            fm.ND0, fm.NNag0, fm.NKg0, fm.NClg0, fm.NCag0, fm.Vpost0,
+            fm.mAMPA0, fm.Wi0, fm.Wg0]  
+        t, y = solver(fm,fm.t0,fm.tfinal,fm.initvals)
+        Wi = fm.model(array(t),y,'Wi')
+        swellratio[i,j,:] = (ecsratio[i],perclist[j],Wi[-1]/Wi[0]*100)
+        
+plt.imshow(swellratio[:,:,3])
+plt.show()        
+        

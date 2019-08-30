@@ -20,8 +20,8 @@ def model(t, y, p, *args):
         NKg = y[:, 16]
         NClg = y[:, 17]
         NCag = y[:, 18]
-        Vpost = y[:, 19]
-        mAMPA = y[:, 20]
+        NGlug = y[:,19]
+        Vpost = y[:, 20]
         Wi = y[:, 21]
         Wg = y[:, 22]
     else:
@@ -44,8 +44,8 @@ def model(t, y, p, *args):
         NKg = y[16]
         NClg = y[17]
         NCag = y[18]
-        Vpost = y[19]
-        mAMPA = y[20]
+        NGlug = y[19]
+        Vpost = y[20]
         Wi = y[21]
         Wg = y[22]
 
@@ -63,11 +63,6 @@ def model(t, y, p, *args):
     NaCe = NNae/We
     KCe = NKe/We
     ClCe = NCle/We
-    # Cleft
-    NCac = p.CCa - NCai - NCag
-    NGluc = NF
-    CaCc = NCac/p.Volc
-    GluCc = NGluc/p.Volc
     # Neuron
     NGlui = NI + NN + NR + NR1 + NR2 + NR3 + ND
     NaCi = NNa/Wi
@@ -76,15 +71,22 @@ def model(t, y, p, *args):
     CaCi = NCai/p.VolPreSyn
     GluCi = NGlui/p.VolPreSyn
     # Astrocyte
-    NGlug = p.CGlu - NGlui - NGluc
     NaCg = NNag/Wg
     KCg = NKg/Wg
     ClCg = NClg/Wg
     GluCg = NGlug/p.VolPAP
     CaCg = NCag/p.VolPAP
-
+    # Cleft
+    NCac = p.CCa - NCai - NCag
+    NGluc = p.CGlu - NGlui - NGlug
+    CaCc = NCac/p.Volc
+    GluCc = NGluc/p.Volc
+    
     # Voltages
-    V = p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*NGlui-NCl-p.NAi)
+    if 'excite' in p.__dict__.keys():
+        V = Vpost
+    else:
+        V = p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*NGlui-NCl-p.NAi)
     Vi = V
     Vg = p.F/p.Cg*(NNag + NKg + p.NBg - p.NAg - NClg +
                    synapse_block*2*NCag - synapse_block*NGlug)
@@ -260,7 +262,7 @@ def model(t, y, p, *args):
     # ----------------------------POSTSYNAPTIC RESPONSE------------------------
     # =========================================================================
 
-    IAMPA = p.gAMPA*mAMPA*(Vpost-p.VAMPA)
+   # IAMPA = p.gAMPA*mAMPA*(Vpost-p.VAMPA)
 
     # ==========================================================================
     # ----------------------------INTERVENTIONS---------------------------------
@@ -269,22 +271,44 @@ def model(t, y, p, *args):
     if 'block' in p.__dict__.keys():
         dict_ = p.block
         for key in dict_:
-            value = dict_[key]
-            blockOther = (1/(1+exp(p.beta1*(t-value[0]))) +
-                          1/(1+exp(-p.beta2*(t-value[1]))))
-            locals()[key] = locals()[key]*blockOther
+            val_ = dict_[key]
+            blockOther = (1/(1+exp(p.beta1*(t-val_[0]))) +
+                          1/(1+exp(-p.beta2*(t-val_[1]))))
+            if key == 'INaG':
+                INaG = INaG*blockOther
+            elif key == 'IKG':
+                IKG = IKG*blockOther
+            elif key == 'IClG':
+                IClG = IClG*blockOther
+            elif key == 'JKCl':
+                JKCl = JKCl*blockOther
+            elif key == 'ICaG':
+                ICaG = ICaG*blockOther
+            elif key == 'INCXi':
+                INCXi = INCXi*blockOther
+            elif key == 'fGLTi':
+                fGLTi = fGLTi*blockOther
+            elif key == 'IKir':
+                IKir = IKir*blockOther
+            elif key == 'fNKCC1':
+                fNKCC1 = fNKCC1*blockOther
+            elif key == 'fGLTg':
+                fGLTg = fGLTg*blockOther
+            elif key == 'INCXg':
+                INCXg = INCXg*blockOther
     if 'excite' in p.__dict__.keys():
         arg_excite = p.excite
         blocker_Excite = 1 - (1/(1+exp(100*(t-arg_excite[0]))) +
                               1/(1+exp(-100*(t-arg_excite[1]))))
-        IExcite = blocker_Excite*5/p.F*(1-signal.square(array(100*t)))
+        IExcite = blocker_Excite*20/p.F*(1-signal.square(array(100*t)))
+        #IExcite = blocker_Excite*4.5/p.F
     else:
         IExcite = 0
 
     if 'astblock' in p.__dict__.keys():
         arg_astblock = p.astblock
-        astblock = (1/(1+exp(p.beta1*(t-arg_astblock[0]))) +
-                    1/(1+exp(-p.beta2*(t-arg_astblock[1]))))
+        astblock = (1/(1+exp(500*(t-arg_astblock[0]))) +
+                    1/(1+exp(-500*(t-arg_astblock[1]))))
     else:
         astblock = 1
 
@@ -294,7 +318,7 @@ def model(t, y, p, *args):
 
     ODEs = [  # Neuron
        ((-1/p.F*(INaG+INaL+3*Ipump))-synapse_block*3/p.F*INCXi +
-        synapse_block*3*fGLTi + IExcite),
+        synapse_block*3*fGLTi ),
        (-1/p.F*(IKG+IKL-2*Ipump)-JKCl-synapse_block*fGLTi),
        (1/p.F*(IClG+IClL)-JKCl),
        gates_block*(alpham*(1-m)-betam*m),
@@ -318,11 +342,15 @@ def model(t, y, p, *args):
        astblock*(2*fNKCC1 + fRelCl),
        synapse_block*astblock*(1/(p.F)*INCXg - fRelCa),
        # POSTSYN
-       0,  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
+       astblock*fGLTg + astblock*fRelGlu,  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
        0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\
        # WATER
        fluxi, \
        astblock*fluxg]
+
+    if 'excite' in p.__dict__.keys():
+        ODEs[20] =  p.F/p.C*(ODEs[0]+ODEs[1]+synapse_block*2*ODEs[6]-synapse_block*(ODEs[7]+ODEs[8]+ODEs[9]+ODEs[10]+ODEs[11]+ODEs[13]+ODEs[14])-ODEs[2] + IExcite)
+    
     ODEs = array(ODEs)*60*1e3
 
     if args:

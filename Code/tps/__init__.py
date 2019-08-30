@@ -14,7 +14,8 @@ import tps.fm_params as paramfile
 from tps.fm_dict import dict_ as paramdict
 from tps.fm_solver import solver
 from tps.fm_plotter import plotter
-
+from tps.fm_plottwoaxes import plottwoaxes
+mpl.use('Qt4Agg')
 
 
 mpl.rcParams['text.usetex'] = True
@@ -26,6 +27,6 @@ class fmclass:
         paramfile.parameters(self, dict_)
 
     def model(self, t, y, *args):
-        return(modelfile.model(t, y, self, *args))
+        return(modelfile.model(t, y, self, *args))  
 
 print("Model imported..")    
