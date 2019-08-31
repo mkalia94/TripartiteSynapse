@@ -5,7 +5,7 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
     plt.rc('axes', titlesize=20)
     plt.locator_params(axis='y', nbins=6)
     plt.locator_params(axis='x', nbins=3)
-    fig = plt.figure(fignum)
+    fig = plt.figure(fignum,figsize=(6.4,2.4))
     ax = fig.add_subplot(111)
     tnew = arange(fm.t0, fm.tfinal, 1e-2)
     tnew = tile(tnew, (2, 1))

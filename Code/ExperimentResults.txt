@@ -5,3 +5,11 @@ Experiment: UnhealthyResponseExtreme/SmallECS, V[0] = -65.500, V[end] = -34.504
 Experiment: UnhealthyResponseExtreme/SmallECS, V[0] = -65.500, V[end] = -34.493 
 Experiment: MildIschemia/SmallECS, V[0] = -65.500, V[end] = -35.950 
 Experiment: MildIschemia/BigECS, V[0] = -65.500, V[end] = -65.490 
+Experiment: MildIschemiaSmall/SmallECS, V[0] = -65.500, V[end] = -35.950 
+Experiment: MildIschemiaMed/SmallECS, V[0] = -65.500, V[end] = -65.714 
+Experiment: MildIschemiaSmall/SmallECS, V[0] = -65.500, V[end] = -35.953 
+Experiment: MildIschemiaMed/SmallECS, V[0] = -65.500, V[end] = -35.707 
+Experiment: MildIschemiaMed/SmallECS, V[0] = -65.500, V[end] = -65.584 
+Experiment: HealthyResponse/SmallECS, V[0] = -65.500, V[end] = -62.748 
+Experiment: MildIschemiaMed/SmallECS, V[0] = -65.500, V[end] = -35.696 
+Experiment: MildIschemiaSmall/SmallECS, V[0] = -65.500, V[end] = -35.953 

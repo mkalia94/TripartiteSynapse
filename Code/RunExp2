@@ -1,8 +1,8 @@
 #!/bin/bash
 declare -A ECSsizes
-ECSsizes=(# ["-s"]="SmallECS")
+ECSsizes=( ["-s"]="SmallECS")
 #           ["-m"]="MedECS"
-           ["-b"]="BigECS")
+#            ["-b"]="BigECS")
 
 declare -A Experiments
 Experiments=( #["IClGblock"]="--tstart 20 --tend 40  --tfinal 180 --block {\"IClG\":[100,120]}"
@@ -17,9 +17,9 @@ Experiments=( #["IClGblock"]="--tstart 20 --tend 40  --tfinal 180 --block {\"ICl
 #       	      ["Calibration"]="--tstart 20 --tend 40 --perc 0.0 --tfinal 100")
 #                  ["HyperNKA"]="--pumpScaleAst 2 --pumpScaleNeuron 2 --tstart 20 --tend 30 --tfinal 120")
 #	          ["HyperNKAhalfx"]="--pumpScaleAst 1.8 --pumpScaleNeuron 1.8 --tstart 20 --tend 45 --tfinal 120")
-	          ["HyperNKA3x"]="--pumpScaleAst 3 --pumpScaleNeuron 3 --tstart 20 --tend 35 --tfinal 120")
+#	          ["HyperNKA3x"]="--pumpScaleAst 3 --pumpScaleNeuron 3 --tstart 20 --tend 35 --tfinal 120")
 #                  ["HyperNKA3xlonger"]="--pumpScaleAst 3 --pumpScaleNeuron 3 --tstart 20 --tend 45  --tfinal 120")
-#              ["HealthyResponseOldParams"]="--tstart 500 --tend 600 --tfinal 5 --excite 0 5")
+              ["HealthyResponse"]="--tstart 500 --tend 600 --tfinal 3 --excite 1 2")
 #              ["HealthyResponseShort"]="--tstart 500 --tend 600 --tfinal 2 --excite 0 10"  )
 #              ["AstKnockHealthy"]="--tstart 500 --tend 600 --tfinal 30 --excite 0 20 --astblock 10 30"
 #              ["UnhealthyResponse"]="--tstart 20 --tend 40 --tfinal 100 --excite 60 80"

@@ -3,7 +3,7 @@ ecsratio = arange(0.1,0.9,0.1)
 perclist = arange(0.1,0.9,0.1)
 
 # ecsratio = [0.2]
-# perclist = [0.7]
+perclist = [0.9]
 swellratio = zeros((size(ecsratio),size(perclist),4))
 
 for i in range(size(ecsratio)):
@@ -37,7 +37,7 @@ plt.rc('font',size=20)
 swellratio_temp = flip(swellratio[:,:,2],0)
 plt.imshow(swellratio_temp,cmap='hot',extent=(0.1,0.8,0.1,0.8))
 plt.colorbar()
-plt.savefig('swellratio_short.pdf', format='pdf', bbox_inches='tight')
+plt.savefig('swellratio_short_2.pdf', format='pdf', bbox_inches='tight')
         
-save('swellratio_short.npy',swellratio)        
+save('swellratio_short_2.npy',swellratio)        
         

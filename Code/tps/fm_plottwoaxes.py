@@ -15,7 +15,7 @@ def plottwoaxes(fm,t,y,y1name,y2name,title1,title2):
         y1 = fm.model(array(t),y,plotname)
         ax1 .set_xlabel('time (in min)')
         if plotname[-1] == 'i':
-            ax1.plot(t, y1, label="Neuron")
+            ax1.plot(t, y1,color='tab:blue', label="Neuron")
             ax1.set_ylabel(title1, color='blue')
             ax1.tick_params(axis='y', labelcolor='blue')
         elif plotname[-1] == 'e':
@@ -31,7 +31,7 @@ def plottwoaxes(fm,t,y,y1name,y2name,title1,title2):
             ax1.set_ylabel(title1, color='forestgreen')
             ax1.tick_params(axis='y', labelcolor='forestgreen')
         else:
-            ax1.plot(t,y1)
+            ax1.plot(t,y1,color='black')
 
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
