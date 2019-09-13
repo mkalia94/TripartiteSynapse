@@ -1,9 +1,9 @@
 from tps import *
-ecsratio = arange(0.2,0.65,0.05)
-perclist = arange(0.3,0.65,0.05)
+ecsratio = arange(0.1,1,0.1)
+perclist = arange(0.1,1,0.1)
 
-#ecsratio = [0.2,0.6,0.9]
-#perclist = [0.1,0.5,0.8]
+ecsratio = [0.2,0.6,0.9]
+perclist = [0.1,0.5,0.8]
 swellratio = zeros((size(ecsratio),size(perclist),4))
 
 for i in range(size(ecsratio)):
@@ -19,8 +19,8 @@ for i in range(size(ecsratio)):
         paramdict['pumpScaleAst'] = 1.8
         paramdict['gltScale'] = 2
         paramdict['tstart'] = 20
-        paramdict['tend'] = 35
-        paramdict['tfinal'] = 120
+        paramdict['tend'] = 140
+        paramdict['tfinal'] = 250
         fm = fmclass(paramdict)
         fm.initvals = [fm.NNai0, fm.NKi0, fm.NCli0, fm.m0, fm.h0, fm.n0, fm.NCai0,
             fm.NN0, fm.NR0, fm.NR10, fm.NR20, fm.NR30, fm.NF0, fm.NI0,
@@ -35,9 +35,9 @@ plt.figure()
 plt.rc('text',usetex=True)
 plt.rc('font',size=20)
 swellratio_temp = flip(swellratio[:,:,2],0)
-plt.imshow(swellratio_temp,extent=(0.2,0.65,0.3,0.65))
+plt.imshow(swellratio_temp,extent=(0.2,0.9,0.1,0.8))
 plt.colorbar()
-plt.savefig('swellratio15_zoom.pdf', format='pdf', bbox_inches='tight')
+plt.savefig('swellratio120', format='pdf', bbox_inches='tight')
         
-save('swellratio15_zoom.npy',swellratio)        
+save('swellratio120.npy',swellratio)        
         

@@ -3,8 +3,8 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
     plt.rc('text', usetex=True)
     plt.rc('font', size=20)
     plt.rc('axes', titlesize=20)
-    plt.locator_params(axis='y', nbins=6)
-    plt.locator_params(axis='x', nbins=3)
+    plt.locator_params(axis='y', nbins=4)
+    plt.locator_params(axis='x', nbins=4)
     fig = plt.figure(fignum,figsize=(6.4,2.4))
     ax = fig.add_subplot(111)
     tnew = arange(fm.t0, fm.tfinal, 1e-2)
@@ -69,7 +69,7 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
         if min(ploty) < ylim_min:
             ylim_min = min(ploty)
     plt.ylabel(r"{a}".format(a=title_))
-    plt.xlabel("t (min.)")
+    #plt.xlabel("t (min.)")
     plt.xlim(fm.t0, fm.tfinal)
     diff_ = ylim_max - ylim_min
     plt.ylim(ylim_min - 0.15*diff_, ylim_max + 0.15*diff_)
@@ -91,7 +91,7 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
     else:
         plotfilename = 'Images/{a}_{b}.pdf'.format(a=expname, b=filename_)
         # paramfilename = 'Images/{a}_params.mat'.format(a=expname)
-    plt.legend(loc='upper right')
+    #plt.legend(loc='upper right')
     plt.savefig(plotfilename, format='pdf', bbox_inches='tight')
     # paramdict.update(fm.__dict__)
     # sio.savemat(paramfilename,paramdict)

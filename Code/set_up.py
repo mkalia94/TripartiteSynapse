@@ -69,3 +69,12 @@ if fm.solve:
             plotter(fm, expname, keys, titledic_[keys], ctr, t, y, dict_[keys])
             ctr = ctr + 1
         disp('Plotting Done...')
+
+
+pdict_= {}
+for key in fm.__dict__:
+    if type(fm.__dict__[key]).__name__ in ['int','int64','float','float64']:
+        pdict_[key]= float(fm.__dict__[key])
+
+sio.savemat('params.mat',pdict_)        
+sio.savemat('initval.mat',mdict={'initvals':fm.initvals})

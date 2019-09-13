@@ -4,7 +4,7 @@ from assimulo.solvers import CVode
 from assimulo.problem import Explicit_Problem
 import matplotlib.pyplot as plt
 from tps.plotdict import plotnamedict
-# import scipy.io as sio
+import scipy.io as sio
 import json
 import os  # to create directory if it doesn't exist
 import matplotlib as mpl

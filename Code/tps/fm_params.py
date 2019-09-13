@@ -219,7 +219,7 @@ def parameters(p, dict_):
     # -------------------------------------------------------------------------------
     
     # Glutamate recycling initial conditions
-    NI0inv = (6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*(
+    p.NI0inv = (6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*(
         p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV) +
               6*p.CaCi0**3*p.k1max*p.k20*p.k3**2*(
                   p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*(
@@ -228,7 +228,7 @@ def parameters(p, dict_):
                   3*p.CaCi0*p.k20*p.k3*(p.CaCi0 + p.KDV) +
                   p.CaCi0*(p.k20 + p.k2cat)*p.kmin20 +
                   p.k20*p.KDV*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**3) + (p.CaCi0 + p.KM)*(2*p.CaCi0**2*p.k3**2*p.k4*(3*p.CaCi0*p.k20*p.k3*(p.KDV*(p.k20 + p.kmin1) + p.CaCi0*(p.k20 + p.k2cat + p.kmin1)) + (p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**3) + 3*p.CaCi0**2*p.k1max*p.k20*p.k3*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*(p.CaCi0*p.k3*p.k4 + 2*p.kmin3*(p.k4 + 3*p.kmin3)) + p.CaCi0*p.k1max*p.k20*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*(2*p.CaCi0**2*p.k3**2*p.k4 + p.CaCi0*p.k3*p.k4*p.kmin3 + 2*p.kmin3**2*(p.k4 + 3*p.kmin3)) + 6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec)/(6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec)
-    p.NI0 = p.NGlui0/NI0inv
+    p.NI0 = p.NGlui0/p.NI0inv
     p.ND0 = ((p.CaCi0 + p.KM)*(2*p.CaCi0**2*p.k3**2*p.k4*(3*p.CaCi0*p.k20*p.k3*(p.KDV*(p.k20 + p.kmin1) + p.CaCi0*(p.k20 + p.k2cat + p.kmin1)) + (p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**3)*p.NI0)/(6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec)
     p.NN0 = (1/(6*p.CaCi0**3*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec))*(2*p.CaCi0**2*p.k3**2*p.k4*(3*p.CaCi0*p.k20*p.k3*(p.CaCi0 + p.KDV) + p.CaCi0*(p.k20 + p.k2cat)*p.kmin20 + p.k20*p.KDV*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**3)*p.NI0
     p.NR0 = ((2*p.CaCi0**2*p.k3**2*p.k4 + p.CaCi0*p.k3*p.k4*p.kmin3 + 2*p.kmin3**2*(p.k4 + 3*p.kmin3))*p.NI0)/(6*p.CaCi0**3*p.k3**3*p.k4*p.trec)
