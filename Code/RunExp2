@@ -19,7 +19,10 @@ Experiments=( #["IClGblock"]="--tstart 20 --tend 40  --tfinal 180 --block {\"ICl
 #	          ["HyperNKAhalfx"]="--pumpScaleAst 1.8 --pumpScaleNeuron 1.8 --tstart 20 --tend 45 --tfinal 120")
 #	          ["HyperNKA3x"]="--pumpScaleAst 3 --pumpScaleNeuron 3 --tstart 20 --tend 35 --tfinal 120")
 #                  ["HyperNKA3xlonger"]="--pumpScaleAst 3 --pumpScaleNeuron 3 --tstart 20 --tend 45  --tfinal 120")
-              ["HealthyResponse"]="--tstart 500 --tend 600 --tfinal 3 --excite 1 2")
+    ["HealthyResponse1x"]="--tstart 500 --tend 600 --tfinal 3 --gltScale 1e-3 --excite 1 2")
+    # ["HealthyResponse2x"]="--tstart 500 --tend 600 --tfinal 3 --gltScale 5e-4  --excite 1 2"
+    # ["HealthyResponse3x"]="--tstart 500 --tend 600 --tfinal 3 --gltScale 1e-4  --excite 1 2"
+    # ["HealthyResponse4x"]="--tstart 500 --tend 600 --tfinal 3 --gltScale 5e-5  --excite 1 2")
 #              ["HealthyResponseShort"]="--tstart 500 --tend 600 --tfinal 2 --excite 0 10"  )
 #              ["AstKnockHealthy"]="--tstart 500 --tend 600 --tfinal 30 --excite 0 20 --astblock 10 30"
 #              ["UnhealthyResponse"]="--tstart 20 --tend 40 --tfinal 100 --excite 60 80"
@@ -67,7 +70,6 @@ Experiments=( #["IClGblock"]="--tstart 20 --tend 40  --tfinal 180 --block {\"ICl
 for name_ in "${!Experiments[@]}"; do
   for size_ in "${!ECSsizes[@]}"; do
     python set_up.py \
-    --gltScale 2 --pumpScaleNeuron 2 --pumpScaleAst 2 \
     --name "${ECSsizes[$size_]}" \
     ${Experiments[$name_]} \
     $size_ \

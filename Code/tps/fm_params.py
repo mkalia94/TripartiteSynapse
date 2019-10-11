@@ -1,4 +1,6 @@
 from tps import *
+
+
 def parameters(p, dict_):
     p.__dict__.update(dict_)
 
@@ -13,16 +15,16 @@ def parameters(p, dict_):
     if p.b:
         p.alphae0 = 0.98
 
-    p.kGLTi = p.gltScale*1e-5   # Take max current
+    p.kGLTg = 0.9*p.gltScale*1e-5   # Take max current
     #                             0.67pA/microm^2 from Oschmann,
     #                             compute avg = (.)/6
-    p.kGLTg = p.kGLTi*1
+    p.kGLTi = 0.1*p.gltScale*1e-5
     p.kNCXi = p.ncxScale*54  # 1/10th of NKA strength,
     #                          from Oschmann (2017),
     #                          spatial separation..
     p.kNCXg = p.kNCXi
     p.NF0 = p.GluCc0*p.Volc
-    p.NGlui0 = p.GluCi0*p.VolPreSyn
+    # p.NGlui0 = p.GluCi0*p.VolPreSyn
     p.NGluc0 = p.NF0
     p.We0 = p.alphae0*(p.Wi0 + p.Wg0)/(1-p.alphae0)
     p.NNai0 = p.NaCi0*p.Wi0
@@ -33,6 +35,7 @@ def parameters(p, dict_):
     p.NKe0 = p.KCe0*p.We0
     p.NCle0 = p.ClCe0*p.We0
     p.NCac0 = p.CaCc0*p.Volc
+    p.NGluc0 = p.NF0
     p.NNag0 = p.NaCg0*p.Wg0
     p.NKg0 = p.KCg0*p.Wg0
     p.NClg0 = p.ClCg0*p.Wg0
@@ -43,6 +46,40 @@ def parameters(p, dict_):
     p.CCl = p.NCli0 + p.NCle0 + p.NClg0
     p.CCa = p.NCai0 + p.NCac0 + p.NCag0
     p.Wtot = p.Wi0 + p.We0 + p.Wg0
+
+    #-------------------------------------------------------------
+    # Glutamate recycling initial conditions
+    # -----------------------------------------------------------
+
+    # p.NI0 = p.NGlui0
+    # p.NR30 = p.NI0/p.trec/p.k4
+    # p.NR20 = p.NR30*(3*p.kmin3+p.k4)/(p.k3*p.CaCi0)
+    # p.NR10 = ((2*p.kmin3+p.k3*p.CaCi0)*p.NR20-3*p.kmin3*p.NR30)/(2*p.k3*p.CaCi0)
+    # p.NR0 = ((p.kmin3+2*p.k3*p.CaCi0)*p.NR10-2*p.kmin3*p.NR20)/(3*p.k3*p.CaCi0)
+    # p.NN0 = ((p.kmin2init + 3*p.k3*p.CaCi0)*p.NR0-p.kmin3*p.NR10)/p.k2init
+    # p.ND0 = ((p.kmin1+p.k2init)*p.NN0-p.kmin2init*p.NR0)/p.k1init 
+    
+    # p.CGlu  = p.NI0+p.NF0+p.ND0+p.NR0+p.NR10+p.NR20+p.NR30+p.NN0+p.NGlug0
+
+    # p.kRelGlui = (p.NI0/p.trec - p.fGLTi0)/p.fRelGlui0
+    # p.kRelGlu   = -p.fGLTg0/p.fRelGlug0
+
+    p.k1init = p.k1max*p.CaCi0/(p.CaCi0+p.KM)
+    p.gCainit = p.CaCi0/(p.CaCi0+p.KDV)
+    p.k2init = p.k20+p.gCainit*p.k2cat
+    p.kmin2catinit = p.k2cat*p.kmin20/p.k20
+    p.kmin2init = p.kmin20+p.gCainit*p.kmin2catinit    
+    
+    NGluitot = p.GluCi0*p.VolPreSyn
+    p.CGlu = NGluitot + p.NGluc0 + p.NGlug0
+    p.ND0 =  (p.CGlu*(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**3*p.k1init*p.k2init*p.k3**3*p.k4*p.trec - p.NGluc0*(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - p.NGlug0*(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3))/(6*p.CaCi0**3*p.k1init*p.k2init*p.k3**3 + 6*p.CaCi0**3*p.k1init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 11*p.CaCi0**2*p.k1init*p.k2init*p.k3**2*p.k4 + 18*p.CaCi0**2*p.k1init*p.k2init*p.k3**2*p.kmin3 + 2*p.CaCi0**2*p.k1init*p.k3**2*p.k4*p.kmin2init + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + 7*p.CaCi0*p.k1init*p.k2init*p.k3*p.k4*p.kmin3 + 18*p.CaCi0*p.k1init*p.k2init*p.k3*p.kmin3**2 + p.CaCi0*p.k1init*p.k3*p.k4*p.kmin2init*p.kmin3 + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k1init*p.k2init*p.k4*p.kmin3**2 + 6*p.k1init*p.k2init*p.kmin3**3 + 2*p.k1init*p.k4*p.kmin2init*p.kmin3**2 + 6*p.k1init*p.kmin2init*p.kmin3**3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
+    p.NI0 = 6*p.CaCi0**3*p.k1init*p.k2init*p.k3**3*p.k4*p.trec/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
+    p.NN0 = (-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init)/p.kmin1
+    p.NR0 = (-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.k2init*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init)
+    p.NR10 = (-18*p.CaCi0**4*p.ND0*p.k1init*p.k2init*p.k3**4*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1*p.kmin2init/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + 3*p.CaCi0*p.k2init*p.k3*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init*p.kmin3)
+    p.NR20 = (-18*p.CaCi0**5*p.ND0*p.k1init*p.k2init*p.k3**5*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**4*p.ND0*p.k1init*p.k2init*p.k3**4*p.k4*p.kmin1*p.kmin2init/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 3*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1*p.kmin2init*p.kmin3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + 3*p.CaCi0**2*p.k2init*p.k3**2*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init*p.kmin3**2)
+    p.NR30 = 6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
+    p.NGlui0 = NGluitot
     
     # Impermeants and conserved quantities
     p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
@@ -86,6 +123,9 @@ def parameters(p, dict_):
                         p.NCle0*p.Wi0 + p.NKe0*p.Wi0 +
                         p.NNae0*p.Wi0))/(p.F*p.Wi0))
         p.NBe = 0
+
+    p.NGlui0 = p.NI0
+    p.GluCi0 = p.NGlui0/p.VolPreSyn
 
     # Gates    
     p.alpham0 = 0.32*(p.Vi0+52)/(1-exp(-(p.Vi0+52)/4))
@@ -136,7 +176,7 @@ def parameters(p, dict_):
                 p.CaCi0/p.CaCc0*exp((p.eNCX-1)*p.F*p.Vi0/p.R/p.T))/(
                     1+p.ksatNCX*exp((p.eNCX-1)*p.F*p.Vi0/p.R/p.T))
     p.fGLTi0 = p.kGLTi*p.R*p.T/p.F*log(
-        p.NaCe0**3/p.NaCi0**3*p.KCi0/p.KCe0*p.HeOHa*p.GluCc0/p.GluCi0)
+        p.NaCe0**3/p.NaCi0**3*p.KCi0/p.KCe0*p.HeOHai*p.GluCc0/p.GluCi0)
     p.ICaG0 = p.PCaG*p.m0**2*p.h0*4*p.F/(p.R*p.T)*p.Vi0*((
         p.CaCi0-p.CaCc0*exp(-2*(p.F*p.Vi0)/(p.R*p.T)))/(
             1-exp(-2*(p.F*p.Vi0)/(p.R*p.T))))
@@ -187,9 +227,6 @@ def parameters(p, dict_):
     p.GKir = p.kirScale*3.7*6*10**3/p.F/p.F
     minfty0 = 1/(2+exp(1.62*(p.F/p.R/p.T)*(p.Vg0-Vkg0)))
     p.IKir0 = p.GKir*minfty0*p.KCe0/(p.KCe0+p.KCe_thres)*(p.Vg0-Vkg0)
-    p.fRelGlu0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((
-        p.GluCg0-p.GluCc0*exp((p.F*p.Vg0)/(p.R*p.T)))/(
-            1-exp((p.F*p.Vg0)/(p.R*p.T))))
     p.fRelCa0 = 4/p.F*p.F**2/(p.R*p.T)*p.Vg0*((
         p.CaCg0-p.CaCc0*exp((-2*p.F*p.Vg0)/(p.R*p.T)))/(
             1-exp((-2*p.F*p.Vg0)/(p.R*p.T))))
@@ -200,14 +237,10 @@ def parameters(p, dict_):
             p.NaCg0**3/p.NaCe0**3*exp(p.eNCX*p.F*p.Vg0/p.R/p.T) -
             p.CaCg0/p.CaCc0*exp((p.eNCX-1)*p.F*p.Vg0/p.R/p.T))/(
                 1+p.ksatNCX*exp((p.eNCX-1)*p.F*p.Vg0/p.R/p.T))
-    p.fRelGlu0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((
+    p.fRelGlug0 = 1/p.F*p.F**2/(p.R*p.T)*p.Vg0*((
         p.GluCg0-p.GluCc0*exp((p.F*p.Vg0)/(p.R*p.T)))/(
             1-exp((p.F*p.Vg0)/(p.R*p.T))))
-    p.k1init = p.k1max*p.CaCi0/(p.CaCi0+p.KM)
-    p.gCainit = p.CaCi0/(p.CaCi0+p.KDV)
-    p.k2init = p.k20+p.gCainit*p.k2cat
-    p.kmin2catinit = p.k2cat*p.kmin20/p.k20
-    p.kmin2init = p.kmin20+p.gCainit*p.kmin2catinit
+
 
     p.kRelNa = (3*p.fActive0 - p.fNKCC10 +
                 block_synapse*3/p.F*p.INCXg0 -
@@ -218,42 +251,24 @@ def parameters(p, dict_):
     p.kRelCa = -1/p.F*p.INCXg0/p.fRelCa0
     # -------------------------------------------------------------------------------
     
-    # Glutamate recycling initial conditions
-    p.NI0inv = (6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*(
-        p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV) +
-              6*p.CaCi0**3*p.k1max*p.k20*p.k3**2*(
-                  p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*(
-                      p.k4 + 3*p.kmin3) +
-              p.CaCi0*p.k1max*(2*p.CaCi0**2*p.k3**2*p.k4*(
-                  3*p.CaCi0*p.k20*p.k3*(p.CaCi0 + p.KDV) +
-                  p.CaCi0*(p.k20 + p.k2cat)*p.kmin20 +
-                  p.k20*p.KDV*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**3) + (p.CaCi0 + p.KM)*(2*p.CaCi0**2*p.k3**2*p.k4*(3*p.CaCi0*p.k20*p.k3*(p.KDV*(p.k20 + p.kmin1) + p.CaCi0*(p.k20 + p.k2cat + p.kmin1)) + (p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**3) + 3*p.CaCi0**2*p.k1max*p.k20*p.k3*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*(p.CaCi0*p.k3*p.k4 + 2*p.kmin3*(p.k4 + 3*p.kmin3)) + p.CaCi0*p.k1max*p.k20*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*(2*p.CaCi0**2*p.k3**2*p.k4 + p.CaCi0*p.k3*p.k4*p.kmin3 + 2*p.kmin3**2*(p.k4 + 3*p.kmin3)) + 6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec)/(6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec)
-    p.NI0 = p.NGlui0/p.NI0inv
-    p.ND0 = ((p.CaCi0 + p.KM)*(2*p.CaCi0**2*p.k3**2*p.k4*(3*p.CaCi0*p.k20*p.k3*(p.KDV*(p.k20 + p.kmin1) + p.CaCi0*(p.k20 + p.k2cat + p.kmin1)) + (p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin1*p.kmin20*p.kmin3**3)*p.NI0)/(6*p.CaCi0**4*p.k1max*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec)
-    p.NN0 = (1/(6*p.CaCi0**3*p.k20*p.k3**3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.trec))*(2*p.CaCi0**2*p.k3**2*p.k4*(3*p.CaCi0*p.k20*p.k3*(p.CaCi0 + p.KDV) + p.CaCi0*(p.k20 + p.k2cat)*p.kmin20 + p.k20*p.KDV*p.kmin20) + p.CaCi0*p.k3*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3 + 2*p.k4*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**2 + 6*(p.CaCi0*(p.k20 + p.k2cat) + p.k20*p.KDV)*p.kmin20*p.kmin3**3)*p.NI0
-    p.NR0 = ((2*p.CaCi0**2*p.k3**2*p.k4 + p.CaCi0*p.k3*p.k4*p.kmin3 + 2*p.kmin3**2*(p.k4 + 3*p.kmin3))*p.NI0)/(6*p.CaCi0**3*p.k3**3*p.k4*p.trec)
-    p.NR10 = ((p.CaCi0*p.k3*p.k4 + 2*p.kmin3*(p.k4 + 3*p.kmin3))*p.NI0)/(2*p.CaCi0**2*p.k3**2*p.k4*p.trec)
-    p.NR20 = ((p.k4 + 3*p.kmin3)*p.NI0)/(p.CaCi0*p.k3*p.k4*p.trec)
-    p.NR30 = p.NI0/(p.k4*p.trec)
-    p.kRelGlui = (p.NI0/(p.trec)-p.fGLTi0)/p.fRelGlui0
-    p.kRelGlu = (-p.fGLTg0 - p.fGLTi0 - p.kRelGlui*p.fRelGlui0 + p.k4*p.NR30)/p.fRelGlu0
-    
-    p.CGlu = p.NI0+p.NF0+p.ND0+p.NR0+p.NR10+p.NR20+p.NR30+p.NN0+p.NGlug0
-    
-    # Postsynaptic parameters
-    p.mAMPA0 = p.alphaAMPA*p.GluCc0/(p.betaAMPA+p.alphaAMPA*p.GluCc0)
+    # Glu parameters
+    p.kRelGlui = (p.NI0*p.ND0/p.trec - p.fGLTi0)/p.fRelGlui0
+    p.kRelGlu   = -p.fGLTg0/p.fRelGlug0
     
     
+
     #================================================================================
     #    CHECKS CHECKS CHECKS CHECKS CHECKS
     #=============================================================================
     
     ctr = 0
+    p.err = 0
     
     if (p.NAi>0) & (p.NAe>0) & (p.NAg>0) & (p.NBe>=0) & (p.NBg>0):
         disp('Quantity of impermeants....OK')
     else:
         disp('ERROR: Quantity of an impermeant is nonpositive')
+        p.err = 10
         
     if (p.kRelGlu>0) & (p.kRelNa<0) & (p.kRelK<0) & (p.kRelCl>0) & (p.kRelCa>0):
         disp('Leak cond. in astrocytes....OK')
@@ -265,6 +280,7 @@ def parameters(p, dict_):
         disp('kRelCl (>0): {}'.format(p.kRelCl))
         disp('kRelCa (>0): {}'.format(p.kRelCa))
         disp('----------------------------------')
+        p.err = 10
     
     if (p.kRelGlui>0) & (p.PNaL>0) & (p.PKL>0) & (p.PClL>0) & (p.PCaL>0):
         disp('Leak cond. in neurons....OK')
@@ -276,3 +292,4 @@ def parameters(p, dict_):
         disp('PClL (>0): {}'.format(p.PClL))
         disp('PCaL (>0): {}'.format(p.PCaL))
         disp('----------------------------------')
+        p.err = 10

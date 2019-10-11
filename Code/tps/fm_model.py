@@ -13,17 +13,16 @@ def model(t, y, p, *args):
         NR1 = y[:, 9]
         NR2 = y[:, 10]
         NR3 = y[:, 11]
-        NF = y[:, 12]
-        NI = y[:, 13]
-        ND = y[:, 14]
-        NNag = y[:, 15]
-        NKg = y[:, 16]
-        NClg = y[:, 17]
-        NCag = y[:, 18]
-        NGlug = y[:,19]
-        Vpost = y[:, 20]
-        Wi = y[:, 21]
-        Wg = y[:, 22]
+        NI = y[:, 12]
+        ND = y[:, 13]
+        NNag = y[:, 14]
+        NKg = y[:, 15]
+        NClg = y[:, 16]
+        NCag = y[:, 17]
+        NGlug = y[:,18]
+        Vtemp = y[:, 19]
+        Wi = y[:, 20]
+        Wg = y[:, 21]
     else:
         NNa = y[0]
         NK = y[1]
@@ -37,17 +36,16 @@ def model(t, y, p, *args):
         NR1 = y[9]
         NR2 = y[10]
         NR3 = y[11]
-        NF = y[12]
-        NI = y[13]
-        ND = y[14]
-        NNag = y[15]
-        NKg = y[16]
-        NClg = y[17]
-        NCag = y[18]
-        NGlug = y[19]
-        Vpost = y[20]
-        Wi = y[21]
-        Wg = y[22]
+        NI = y[12]
+        ND = y[13]
+        NNag = y[14]
+        NKg = y[15]
+        NClg = y[16]
+        NCag = y[17]
+        NGlug = y[18]
+        Vtemp = y[19]
+        Wi = y[20]
+        Wg = y[21]
 
     if p.nosynapse == 1:
         synapse_block = 0
@@ -64,7 +62,7 @@ def model(t, y, p, *args):
     KCe = NKe/We
     ClCe = NCle/We
     # Neuron
-    NGlui = NI + NN + NR + NR1 + NR2 + NR3 + ND
+    NGlui = NI
     NaCi = NNa/Wi
     KCi = NK/Wi
     ClCi = NCl/Wi
@@ -78,16 +76,16 @@ def model(t, y, p, *args):
     CaCg = NCag/p.VolPAP
     # Cleft
     NCac = p.CCa - NCai - NCag
-    NGluc = p.CGlu - NGlui - NGlug
+    NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1- NR2 - NR3
     CaCc = NCac/p.Volc
     GluCc = NGluc/p.Volc
     
     # Voltages
     if 'excite' in p.__dict__.keys():
-        V = Vpost
+        V = Vtemp
     else:
-        V = p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*NGlui-NCl-p.NAi)
-    Vi = V
+        V = p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*(NGlui+NN+NR+NR1+NR2+NR3+ND)-NCl-p.NAi)
+    Vi = V # Needed for plotting
     Vg = p.F/p.Cg*(NNag + NKg + p.NBg - p.NAg - NClg +
                    synapse_block*2*NCag - synapse_block*NGlug)
 
@@ -159,8 +157,7 @@ def model(t, y, p, *args):
     sigmapump = 1/7*(exp(NaCe/67.3)-1)
     fpump = 1/(1+0.1245*exp(-0.1*p.F/p.R/p.T*V) +
                0.0365*sigmapump*exp(-p.F/p.R/p.T*V))
-    Ipump = (p.blockerScaleNeuron*blockerExp -
-             (p.blockerScaleNeuron-1))*p.pumpScaleNeuron*fpump*p.Qpump*(
+    Ipump = blockerExp*p.pumpScaleNeuron*fpump*p.Qpump*(
                 NaCi**(1.5)/(NaCi**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
 
     # KCl cotransport
@@ -175,7 +172,7 @@ def model(t, y, p, *args):
 
     # EAAT
     fGLTi = p.kGLTi*p.R*p.T/p.F*log(NaCe**3/NaCi**3 *
-                                    KCi/KCe*p.HeOHa*GluCc/GluCi)
+                                    KCi/KCe*p.HeOHai*GluCc/GluCi)
 
     # =========================================================================
     # ---------------------------------------------------------------------
@@ -195,8 +192,7 @@ def model(t, y, p, *args):
     sigmapumpA = 1/7*(exp(NaCe/67.3)-1)
     fpumpA = 1/(1+0.1245*exp(-0.1*p.F/p.R/p.T*Vg) +
                 0.0365*sigmapumpA*exp(-p.F/p.R/p.T*Vg))
-    fActive = (p.blockerScaleAst*blockerExp-(
-       p.blockerScaleAst-1))*p.kActive*fpumpA*(
+    fActive = blockerExp*p.kActive*fpumpA*(
           NaCg**(1.5)/(NaCg**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
 
     # Leak
@@ -222,9 +218,6 @@ def model(t, y, p, *args):
                         1-exp((-2*p.F*Vg)/(p.R*p.T))))
 
     # NKCC1
-    blockerExp_NKCC1 = 1/(1+exp(p.beta1*(t-p.tend)))
-    + 1/(1+exp(-p.beta2*(t-p.tend - 5)))
-    blockerExp_NKCC1 = 0.3 + (1-0.3)*blockerExp_NKCC1
     fNKCC1 = p.gNKCC1*p.R*p.T/p.F*(log(KCe) + log(NaCe)
                                    + 2*log(ClCe) - log(KCg)
                                    - log(NaCg) - 2*log(ClCg))
@@ -300,7 +293,7 @@ def model(t, y, p, *args):
         arg_excite = p.excite
         blocker_Excite = 1 - (1/(1+exp(100*(t-arg_excite[0]))) +
                               1/(1+exp(-100*(t-arg_excite[1]))))
-        IExcite = blocker_Excite*20/p.F*(1-signal.square(array(100*t)))
+        IExcite = blocker_Excite*12/p.F*(1-signal.square(array(100*t)))
         #IExcite = blocker_Excite*4.5/p.F
     else:
         IExcite = 0
@@ -331,9 +324,8 @@ def model(t, y, p, *args):
        (3*p.k3*CaCi*NR-(p.kmin3+2*p.k3*CaCi)*NR1+2*p.kmin3*NR2),
        (2*p.k3*CaCi*NR1-(2*p.kmin3+p.k3*CaCi)*NR2+3*p.kmin3*NR3),
        (p.k3*CaCi*NR2-(3*p.kmin3+p.k4)*NR3),
-       (p.k4*NR3 - fGLTi - astblock*fGLTg - astblock*fRelGlu - fRelGlui),
-       (- NI/p.trec + fGLTi + fRelGlui),
-       (NI/p.trec-k1*ND+p.kmin1*NN),
+       (- NI*ND/p.trec + fGLTi + fRelGlui),
+       (NI*ND/p.trec-k1*ND+p.kmin1*NN),
        # ASTROCYTE
        (astblock*(-3*fActive + fRelNa + fNKCC1 -
                   synapse_block*3/p.F*INCXg + synapse_block*3*fGLTg)),
@@ -349,7 +341,7 @@ def model(t, y, p, *args):
        astblock*fluxg]
 
     if 'excite' in p.__dict__.keys():
-        ODEs[20] =  p.F/p.C*(ODEs[0]+ODEs[1]+synapse_block*2*ODEs[6]-synapse_block*(ODEs[7]+ODEs[8]+ODEs[9]+ODEs[10]+ODEs[11]+ODEs[13]+ODEs[14])-ODEs[2] + IExcite)
+        ODEs[19] =  p.F/p.C*(ODEs[0]+ODEs[1]+synapse_block*2*(ODEs[6])-synapse_block*(ODEs[7]+ODEs[8]+ODEs[9]+ODEs[10]+ODEs[11]+ODEs[12]+ODEs[13])-ODEs[2] + IExcite)
     
     ODEs = array(ODEs)*60*1e3
 

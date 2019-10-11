@@ -50,6 +50,7 @@ if fm.solve:
         file_.seek(0, 2)
         if 'name' in fm.__dict__.keys():
             file_.write('Experiment: %s, V[0] = %2.3f, V[end] = %2.3f \n' % (
+
                 fm.saveloc, V[0], V[-1]))
             file_.close()
         else:

@@ -10,7 +10,7 @@ dict_ = {#
         'pumpScaleNeuron' : 1.8,        # baseline neuron pump strength factor
         'nkccScale' : 10,              # factor NKCC1 flux rate
         'kirScale' : 1.0,               # factor Kir conductance
-        'gltScale' : 2.0,
+        'gltScale' : 5e-6,
         'ncxScale' : 1.0,
         'nka_na' : 13.0,
         'nka_k' : 0.2,
@@ -21,7 +21,7 @@ dict_ = {#
         'tend' : 80.0,                  # End blockade
         't0':0.0,
         'tfinal': 150,
-        'alphae0' : 0.98,
+        'alphae0' : 0.2,
         'nosynapse' : 0.0,        #
         #-----------------------------------------------
         #---------FIXED PARAMETERS----------------------
@@ -54,6 +54,7 @@ dict_ = {#
         'kGLTi' : 0, # Take max current of 0.67pA/microm^2 from Oschmann, compute avg : (.)/6
         'kGLTg' : 0, # Take max current of 0.67pA/microm^2 from Oschmann, compute avg : (.)/6
         'HeOHa' : 0.66, # from Breslin, Wade sodium microdomains..
+        'HeOHai':0.66,
         'Nv' : 1.5*1e4,# Naomi
         'Gv' : 2, # Naomi
         'k1max' : 1,# Naomi
@@ -67,7 +68,7 @@ dict_ = {#
         'kmin3' : 56*1e-3, # Naomi
         'k4' : 1.45, # Naomi
         'tinact' : 3, # Naomi
-        'trec' : 800, # Naomi
+        'trec' : 10, # (instead of 800, as per Naomi) the change was made due to the new NI*ND term
         'tpost' : 50, # Naomi
         'Vpost0' : -65.5, # Emperical
         'kNCXg' : 0,
@@ -82,7 +83,7 @@ dict_ = {#
         'KCi0' : 145,
         'ClCi0' : 7,
         'CaCi0' : 0.1*1e-3, # Assumption based on Oschmann model
-        'GluCi0' : 3, # From 'Maintaining the presynaptic glutamate...Marx, Billups...2015'
+        'GluCi0' : 2 , # (instead of 3, which is in 'maintaining the presynaptic glutamate...Marx, Billups...2015)' note that this indicates total Glu, which includes all non-free states as well
         'NaCe0' : 152,
         'KCe0' : 3,
         'ClCe0' : 135,
