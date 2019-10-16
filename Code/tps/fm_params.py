@@ -15,10 +15,10 @@ def parameters(p, dict_):
     if p.b:
         p.alphae0 = 0.98
 
-    p.kGLTg = 0.9*p.gltScale*1e-5   # Take max current
+    p.kGLTg = p.gltScaleAst*1e-5   # Take max current
     #                             0.67pA/microm^2 from Oschmann,
     #                             compute avg = (.)/6
-    p.kGLTi = 0.1*p.gltScale*1e-5
+    p.kGLTi = p.gltScale*1e-5
     p.kNCXi = p.ncxScale*54  # 1/10th of NKA strength,
     #                          from Oschmann (2017),
     #                          spatial separation..

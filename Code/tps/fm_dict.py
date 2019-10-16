@@ -6,11 +6,12 @@ dict_ = {#
         #
         'blockerScaleAst' : 1.0,       # How much more should you block astrocyte pump?
         'blockerScaleNeuron' : 1.0,     # How much more should you block neuronal pump?
-        'pumpScaleAst' : 1.8,           # baseline astrocyte pump strength factor
-        'pumpScaleNeuron' : 1.8,        # baseline neuron pump strength factor
+        'pumpScaleAst' : 1,           # baseline astrocyte pump strength factor
+        'pumpScaleNeuron' : 1,        # baseline neuron pump strength factor
         'nkccScale' : 10,              # factor NKCC1 flux rate
         'kirScale' : 1.0,               # factor Kir conductance
         'gltScale' : 5e-6,
+        'gltScaleAst':5e-6,
         'ncxScale' : 1.0,
         'nka_na' : 13.0,
         'nka_k' : 0.2,

@@ -86,8 +86,8 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
         plotfilename = 'Images/{c}/{a}_{b}.pdf'.format(a=expname,
                                                        b=filename_,
                                                        c=fm.saveloc)
-        save('Images/{a}/tfile.npy'.format(a=fm.saveloc),t)
-        save('Images/{a}/yfile.npy'.format(a=fm.saveloc),y)
+        #save('Images/{a}/tfile.npy'.format(a=fm.saveloc),t)
+        #save('Images/{a}/yfile.npy'.format(a=fm.saveloc),y)
     else:
         plotfilename = 'Images/{a}_{b}.pdf'.format(a=expname, b=filename_)
         # paramfilename = 'Images/{a}_params.mat'.format(a=expname)

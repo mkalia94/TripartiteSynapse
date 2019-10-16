@@ -17,6 +17,7 @@ arg.add_argument('--nogates', action='store_true')
 arg.add_argument('--nochargecons', action='store_true')
 arg.add_argument('--saveloc', type=str)
 arg.add_argument('--name', type=str)
+arg.add_argument('--save',type=json.loads)
 args = arg.parse_args()
 
 for key in args.__dict__:
@@ -70,6 +71,21 @@ if fm.solve:
             ctr = ctr + 1
         disp('Plotting Done...')
 
+    if 'save' in fm.__dict__.keys():
+        dict_ = fm.save
+        for key_ in dict_:
+            y_ = fm.model(array(t),y,key_)
+            fname_  = 'Images/{a}/{b}.dat'.format(a=fm.saveloc,b=key_)
+            directory = 'Images/{a}'.format(a=fm.saveloc)
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            if dict_[key_] == 'full':
+                savetxt(fname_, array([array(t),y_]).T, fmt=['%.10f','%.10f'])
+            elif dict_[key_] == 'short':
+                factor_ = 1e2
+                tnew_ = t[0::factor_]
+                ynew_ = y_[0::factor_]
+                savetxt(fname_, array([array(t),y_]).T, fmt=['%.10f','%.10f'])   
 
 pdict_= {}
 for key in fm.__dict__:
