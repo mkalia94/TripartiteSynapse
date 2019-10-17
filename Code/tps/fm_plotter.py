@@ -92,6 +92,6 @@ def plotter(fm,expname, filename_, title_, fignum, t, y, *str):
         plotfilename = 'Images/{a}_{b}.pdf'.format(a=expname, b=filename_)
         # paramfilename = 'Images/{a}_params.mat'.format(a=expname)
     #plt.legend(loc='upper right')
-    plt.savefig(plotfilename, format='pdf', bbox_inches='tight')
+    #plt.savefig(plotfilename, format='pdf', bbox_inches='tight')
     # paramdict.update(fm.__dict__)
     # sio.savemat(paramfilename,paramdict)
