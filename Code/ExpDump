@@ -1,0 +1,30 @@
+#!/bin/bash
+declare -A Experiments
+Experiments=(
+    ["pED_IClGblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --tfinal 80 --block {\"IClG\":[20,50]}"
+    ["pED_INaGblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"INaG\":[20,50]} --tfinal 80"
+    ["pED_INCXiblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"INCXi\":[20,50]} --tfinal 80 "
+    ["pED_INCXgGblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"INCXg\":[20,50]} --tfinal 80"
+    ["pED_GLTgblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"fGLTg\":[20,50]} --tfinal 80"
+    ["PScale1_5_short_Small"]="--tstart 20 --tend 40 --tfinal 100 --perc 0.3 --alphae0 0.2 --pumpScaleNeuron 2.2 --pumpScaleAst 2.2"
+    ["PScale1_5_short_Big"]="--tstart 20 --tend 40 --tfinal 100 --perc 0.3 --alphae0 0.98 --pumpScaleNeuron 2.2 --pumpScaleAst 2.2"
+    ["PScale2_short_Big"]="--tstart 20 --tend 40 --tfinal 100 --perc 0.3 --alphae0 0.98 --pumpScaleNeuron 3 --pumpScaleAst 3"
+    ["PScale1_5_short_Small"]="--tstart 20 --tend 40 --tfinal 100 --perc 0.3 --alphae0 0.2 --pumpScaleNeuron 3 --pumpScaleAst 3"
+    ["pED_Kirblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"IKir\":[20,50]} --tfinal 80"
+    ["pED_KClblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"JKCl\":[20,50]} --tfinal 80"
+    ["pED_NKCC1block"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"fNKCC1\":[20,50]} --tfinal 80"
+    ["pED_ICaGblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"ICaG\":[20,50]} --tfinal 80"
+    ["pED_WaterNblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"WaterN\":[20,50]} --tfinal 80"
+    ["pED_WaterAblock"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --block {\"WaterA\":[20,50]} --tfinal 80"
+    ["NavBlock"]="--tstart 20 --tend 45 --tfinal 135 --alphae0 0.2  --block {\"INaG\":[80,100]}"
+    ["EDRef"]="--tstart 20 --tend 50 --perc 0.5 --alphae0 0.7 --tfinal 80")
+
+
+for name_ in "${!Experiments[@]}"; do
+    python set_up.py \
+    ${Experiments[$name_]} \
+    --solve \
+    --nogates \
+    --plotall \
+    --saveloc "PaperExp/$name_"
+done;

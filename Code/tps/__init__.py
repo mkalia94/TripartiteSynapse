@@ -13,12 +13,18 @@ import tps.fm_model as modelfile
 import tps.fm_params as paramfile
 from tps.fm_dict import dict_ as paramdict
 from tps.fm_solver import solver
-from tps.fm_plotter import plotter
+#from tps.fm_plotter import plotter
 from tps.fm_plottwoaxes import plottwoaxes
+from tps.fm_plotall import plotall
+from matplotlib import rc
+from tps.fm_labeloffset import label_offset
+from tps.fm_negcheck import negcheck
+from tps.fm_twocases import twocases
+#rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('font',**{'family':'sans-serif','sans-serif':['Arial']})
 mpl.use('Qt4Agg')
 
-
-mpl.rcParams['text.usetex'] = True
+#plt.rcParams['font.family'] = 'cursive'
 
 warnings.filterwarnings("ignore")
 
@@ -27,6 +33,9 @@ class fmclass:
         paramfile.parameters(self, dict_)
 
     def model(self, t, y, *args):
-        return(modelfile.model(t, y, self, *args))  
+        return(modelfile.model(t, y, self, *args))
+
+    def labeloffset(self,ax,axis_):
+        return(label_offset(ax,axis_))
 
 print("Model imported..")    

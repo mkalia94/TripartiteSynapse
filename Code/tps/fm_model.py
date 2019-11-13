@@ -251,6 +251,9 @@ def model(t, y, p, *args):
     delpig = p.R*p.T*(SCg-SCe)
     fluxg = p.LH20g*(delpig)
 
+    Voli = Wi/p.Wi0*100
+    Volg = Wg/p.Wg0*100
+
     # =========================================================================
     # ----------------------------POSTSYNAPTIC RESPONSE------------------------
     # =========================================================================
@@ -289,11 +292,15 @@ def model(t, y, p, *args):
                 fGLTg = fGLTg*blockOther
             elif key == 'INCXg':
                 INCXg = INCXg*blockOther
+            elif key == 'WaterN':
+                fluxi = fluxi*blockOther
+            elif key == 'WaterA':
+                fluxg = fluxg*blockOther
     if 'excite' in p.__dict__.keys():
         arg_excite = p.excite
         blocker_Excite = 1 - (1/(1+exp(100*(t-arg_excite[0]))) +
                               1/(1+exp(-100*(t-arg_excite[1]))))
-        IExcite = blocker_Excite*12/p.F*(1-signal.square(array(100*t)))
+        IExcite = blocker_Excite*10/p.F*(1-signal.square(array(5*t),duty=0.95))
         #IExcite = blocker_Excite*4.5/p.F
     else:
         IExcite = 0
@@ -308,7 +315,9 @@ def model(t, y, p, *args):
     # ==========================================================================
     # ----------------------------FINAL MODEL-----------------------------------
     # ==========================================================================
-
+    Ipumpi = Ipump
+    fActiveg = fActive
+    
     ODEs = [  # Neuron
        ((-1/p.F*(INaG+INaL+3*Ipump))-synapse_block*3/p.F*INCXi +
         synapse_block*3*fGLTi ),

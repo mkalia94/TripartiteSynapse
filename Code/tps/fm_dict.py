@@ -6,23 +6,23 @@ dict_ = {#
         #
         'blockerScaleAst' : 1.0,       # How much more should you block astrocyte pump?
         'blockerScaleNeuron' : 1.0,     # How much more should you block neuronal pump?
-        'pumpScaleAst' : 1,           # baseline astrocyte pump strength factor
-        'pumpScaleNeuron' : 1,        # baseline neuron pump strength factor
+        'pumpScaleAst' : 1.4,           # baseline astrocyte pump strength factor
+        'pumpScaleNeuron' : 1.4,        # baseline neuron pump strength factor
         'nkccScale' : 10,              # factor NKCC1 flux rate
         'kirScale' : 1.0,               # factor Kir conductance
-        'gltScale' : 5e-6,
-        'gltScaleAst':5e-6,
-        'ncxScale' : 1.0,
+        'gltScale' : 0.9,
+        'gltScaleAst':0.9,
+        'ncxScale' : 0.1,
         'nka_na' : 13.0,
         'nka_k' : 0.2,
-        'beta1' : 1.1,                  # sigmoidal rate NKA blockade onset
-        'beta2' : 1.1,                  # sigmoidal rate NKA blockade offset
+        'beta1' : 2.5,                  # sigmoidal rate NKA blockade onset
+        'beta2' : 2.5,                  # sigmoidal rate NKA blockade offset
         'perc' : 0.0,                   # Perc of baseline blocked NKA
         'tstart' : 20.0,                # Start blockade
         'tend' : 80.0,                  # End blockade
         't0':0.0,
         'tfinal': 150,
-        'alphae0' : 0.2,
+        'alphae0' : 0.0,
         'nosynapse' : 0.0,        #
         #-----------------------------------------------
         #---------FIXED PARAMETERS----------------------
@@ -69,7 +69,7 @@ dict_ = {#
         'kmin3' : 56*1e-3, # Naomi
         'k4' : 1.45, # Naomi
         'tinact' : 3, # Naomi
-        'trec' : 10, # (instead of 800, as per Naomi) the change was made due to the new NI*ND term
+        'trec' : 30, # (instead of 800, as per Naomi) the change was made due to the new NI*ND term
         'tpost' : 50, # Naomi
         'Vpost0' : -65.5, # Emperical
         'kNCXg' : 0,
@@ -84,7 +84,7 @@ dict_ = {#
         'KCi0' : 145,
         'ClCi0' : 7,
         'CaCi0' : 0.1*1e-3, # Assumption based on Oschmann model
-        'GluCi0' : 2 , # (instead of 3, which is in 'maintaining the presynaptic glutamate...Marx, Billups...2015)' note that this indicates total Glu, which includes all non-free states as well
+        'GluCi0' : 3 , # (instead of 3, which is in 'maintaining the presynaptic glutamate...Marx, Billups...2015)' note that this indicates total Glu, which includes all non-free states as well
         'NaCe0' : 152,
         'KCe0' : 3,
         'ClCe0' : 135,

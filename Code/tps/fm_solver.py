@@ -13,6 +13,6 @@ def solver(fm, t0, tfinal, initvals):
     if fm.nogates:
         t, y = sim.simulate(tfinal)
     else:
-        t, y = sim.simulate(tfinal)# ,fm.tfinal*6*1e3)
+        t, y = sim.simulate(tfinal ,fm.tfinal*5*1e3)
     disp('Simulation Done...')
     return t, y

@@ -8,12 +8,15 @@ def parameters(p, dict_):
         block_synapse = 0
     if p.nosynapse == 0:
         block_synapse = 1
-    if p.s:
-        p.alphae0 = 0.2
-    if p.m:
-        p.alphae0 = 0.5
-    if p.b:
-        p.alphae0 = 0.98
+    if p.alphae0 == 0:
+        if p.s:
+            p.alphae0 = 0.2
+        elif p.m:
+            p.alphae0 = 0.5
+        elif p.b:
+            p.alphae0 = 0.98
+        else:
+            p.alphae0 = 0.2
 
     p.kGLTg = p.gltScaleAst*1e-5   # Take max current
     #                             0.67pA/microm^2 from Oschmann,

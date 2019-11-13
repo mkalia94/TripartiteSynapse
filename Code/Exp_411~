@@ -1,0 +1,30 @@
+#!/bin/bash
+declare -A ECSsizes
+ECSsizes=( #["-s"]="SmallECS"
+#           ["-m"]="MedECS"
+            ["-b"]="BigECS")
+
+declare -A Experiments
+Experiments=(["Calibration"]="--tstart 20 --tend 24.5  --perc 0.5 --alphae0 0.7 --tfinal 50"
+	     ["CalibrationLong"]="--tstart 20 --tend 30  --perc 0.5 --alphae0 0.7 --tfinal 50")
+	     #["Calibration_GLTn"]="--tstart 20 --tend 24  --perc 0.4 --alphae0 0.7 --tfinal 50 --block {\"fGLTi\":[0,50]}"
+	     #["Calibration_GLTg"]="--tstart 20 --tend 24.5  --perc 0.5 --alphae0 0.7 --tfinal 50 --block {\"fGLTg\":[20,24.5]}"
+             
+   #["AstKnockHealthy"]="--tstart 500 --tend 600 --tfinal 3 --astblock 1 2 --excite 1 2  --alphae0 0.2"
+#["HealthyResponseShort"]="--tstart 500 --tend 600 --tfinal 3 --excite 1 2 --alphae0 0.7")
+
+											 
+	      #["LongED"]="--tstart 20 --tend 30  --perc 0.4 --alphae0 0.7 --tfinal 50")
+
+
+for name_ in "${!Experiments[@]}"; do
+  for size_ in "${!ECSsizes[@]}"; do
+    python set_up.py \
+    --name "${ECSsizes[$size_]}" \
+    $size_ \
+    ${Experiments[$name_]} \
+    --solve \
+    --saveloc "Section1/$name_/${ECSsizes[$size_]}" \
+    --plotall
+  done; 
+done
