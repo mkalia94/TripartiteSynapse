@@ -97,7 +97,7 @@ def plotall(fm,t,y,fig,spec,case):
         plottwoaxes(fm,t,y,['Vi','Vg'],[],"Mem. Potential (mV)",fig,ax40)
 
         ax41 = fig.add_subplot(spec[4,1])
-        plottwoaxes(fm,t,y,['p.F*fGLTi','p.F*fGLTg'],[],"forward EAAT current (pA)",fig,ax41)
+        plottwoaxes(fm,t,y,['p.F*fGLTi'],['p.F*fGLTg'],"forward EAAT current (pA)",fig,ax41)
 
         ax50 = fig.add_subplot(spec[5,0])
         plottwoaxes(fm,t,y,['-INCXi'],['-INCXg'],"forward NCX current (pA)",fig,ax50)

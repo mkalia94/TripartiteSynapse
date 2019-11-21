@@ -20,6 +20,9 @@ from matplotlib import rc
 from tps.fm_labeloffset import label_offset
 from tps.fm_negcheck import negcheck
 from tps.fm_twocases import twocases
+import autograd.numpy as np
+from tps.fm_model_autograd import model as jac_model
+from autograd import jacobian
 #rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('font',**{'family':'sans-serif','sans-serif':['Arial']})
 mpl.use('Qt4Agg')
@@ -37,5 +40,8 @@ class fmclass:
 
     def labeloffset(self,ax,axis_):
         return(label_offset(ax,axis_))
+
+    def num_model(self,y,p):
+        return(jac_model(0,y,self,p))
 
 print("Model imported..")    
