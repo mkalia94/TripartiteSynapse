@@ -4,7 +4,7 @@ perclist = arange(0.1,0.91,0.1)
 
 paramdict['tstart'] = 20
 paramdict['tend'] = 40
-
+paramdict['keepbranch'] = True
 # ecsratio = [0.2]
 # perclist = [0.7]
 swellratio = zeros((size(ecsratio),size(perclist),3))

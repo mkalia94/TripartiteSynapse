@@ -72,17 +72,31 @@ def parameters(p, dict_):
     p.k2init = p.k20+p.gCainit*p.k2cat
     p.kmin2catinit = p.k2cat*p.kmin20/p.k20
     p.kmin2init = p.kmin20+p.gCainit*p.kmin2catinit    
-    
-    p.NGluitot = p.GluCi0*p.VolPreSyn
-    p.CGlu = p.NGluitot + p.NGluc0 + p.NGlug0
-    p.ND0 =  (p.CGlu*(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**3*p.k1init*p.k2init*p.k3**3*p.k4*p.trec - p.NGluc0*(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - p.NGlug0*(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3))/(6*p.CaCi0**3*p.k1init*p.k2init*p.k3**3 + 6*p.CaCi0**3*p.k1init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 11*p.CaCi0**2*p.k1init*p.k2init*p.k3**2*p.k4 + 18*p.CaCi0**2*p.k1init*p.k2init*p.k3**2*p.kmin3 + 2*p.CaCi0**2*p.k1init*p.k3**2*p.k4*p.kmin2init + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + 7*p.CaCi0*p.k1init*p.k2init*p.k3*p.k4*p.kmin3 + 18*p.CaCi0*p.k1init*p.k2init*p.k3*p.kmin3**2 + p.CaCi0*p.k1init*p.k3*p.k4*p.kmin2init*p.kmin3 + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k1init*p.k2init*p.k4*p.kmin3**2 + 6*p.k1init*p.k2init*p.kmin3**3 + 2*p.k1init*p.k4*p.kmin2init*p.kmin3**2 + 6*p.k1init*p.kmin2init*p.kmin3**3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
-    p.NI0 = 6*p.CaCi0**3*p.k1init*p.k2init*p.k3**3*p.k4*p.trec/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
-    p.NN0 = (-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init)/p.kmin1
-    p.NR0 = (-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.k2init*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init)
-    p.NR10 = (-18*p.CaCi0**4*p.ND0*p.k1init*p.k2init*p.k3**4*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1*p.kmin2init/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + 3*p.CaCi0*p.k2init*p.k3*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init*p.kmin3)
-    p.NR20 = (-18*p.CaCi0**5*p.ND0*p.k1init*p.k2init*p.k3**5*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**4*p.ND0*p.k1init*p.k2init*p.k3**4*p.k4*p.kmin1*p.kmin2init/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 3*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1*p.kmin2init*p.kmin3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + 3*p.CaCi0**2*p.k2init*p.k3**2*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init*p.kmin3**2)
-    p.NR30 = 6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
-    p.NGlui0 = p.NGluitot
+
+    if p.keepbranch:
+        
+        p.NGluitot = p.GluCi0*p.VolPreSyn
+        p.CGlu = p.NGluitot + p.NGluc0 + p.NGlug0
+        p.ND0 =  (p.CGlu*(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**3*p.k1init*p.k2init*p.k3**3*p.k4*p.trec - p.NGluc0*(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - p.NGlug0*(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3))/(6*p.CaCi0**3*p.k1init*p.k2init*p.k3**3 + 6*p.CaCi0**3*p.k1init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 11*p.CaCi0**2*p.k1init*p.k2init*p.k3**2*p.k4 + 18*p.CaCi0**2*p.k1init*p.k2init*p.k3**2*p.kmin3 + 2*p.CaCi0**2*p.k1init*p.k3**2*p.k4*p.kmin2init + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + 7*p.CaCi0*p.k1init*p.k2init*p.k3*p.k4*p.kmin3 + 18*p.CaCi0*p.k1init*p.k2init*p.k3*p.kmin3**2 + p.CaCi0*p.k1init*p.k3*p.k4*p.kmin2init*p.kmin3 + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k1init*p.k2init*p.k4*p.kmin3**2 + 6*p.k1init*p.k2init*p.kmin3**3 + 2*p.k1init*p.k4*p.kmin2init*p.kmin3**2 + 6*p.k1init*p.kmin2init*p.kmin3**3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
+        p.NI0 = 6*p.CaCi0**3*p.k1init*p.k2init*p.k3**3*p.k4*p.trec/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
+        p.NN0 = (-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init)/p.kmin1
+        p.NR0 = (-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.k2init*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init)
+        p.NR10 = (-18*p.CaCi0**4*p.ND0*p.k1init*p.k2init*p.k3**4*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1*p.kmin2init/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + 3*p.CaCi0*p.k2init*p.k3*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init*p.kmin3)
+        p.NR20 = (-18*p.CaCi0**5*p.ND0*p.k1init*p.k2init*p.k3**5*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**4*p.ND0*p.k1init*p.k2init*p.k3**4*p.k4*p.kmin1*p.kmin2init/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 3*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1*p.kmin2init*p.kmin3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + 3*p.CaCi0**2*p.k2init*p.k3**2*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init*p.kmin3**2)
+        p.NR30 = 6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
+        p.NGlui0 = p.NGluitot
+    else:
+
+        p.NN0 = 0
+        p.ND0 = 0
+        p.NR0 = 0
+        p.NR10 = 0
+        p.NR20 = 0
+        p.NR30 = 0
+        p.NI0 = p.GluCi0*p.VolPreSyn
+        p.NGlui0 = p.NI0
+        p.CGlu = p.NI0 + p.NGlug0 + p.NGluc0
+        p.NGluitot = p.NGlui0
     
     # Impermeants and conserved quantities
     p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
@@ -127,8 +141,8 @@ def parameters(p, dict_):
                         p.NNae0*p.Wi0))/(p.F*p.Wi0))
         p.NBe = 0
 
-    p.NGlui0 = p.NI0
-    p.GluCi0 = p.NGlui0/p.VolPreSyn
+    # p.NGlui0 = p.NI0
+    # p.GluCi0 = p.NGlui0/p.VolPreSyn
 
     # Gates    
     p.alpham0 = 0.32*(p.Vi0+52)/(1-exp(-(p.Vi0+52)/4))
@@ -255,7 +269,10 @@ def parameters(p, dict_):
     # -------------------------------------------------------------------------------
     
     # Glu parameters
-    p.kRelGlui = (p.NI0*p.ND0/p.trec - p.fGLTi0)/p.fRelGlui0
+    if p.keepbranch:
+        p.kRelGlui = (p.NI0*p.ND0/p.trec - p.fGLTi0)/p.fRelGlui0
+    else:    
+        p.kRelGlui = (- p.fGLTi0)/p.fRelGlui0
     p.kRelGlu   = -p.fGLTg0/p.fRelGlug0
     
     

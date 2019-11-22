@@ -25,6 +25,7 @@ arg.add_argument('--casename',type=str)
 arg.add_argument('--tomatlab',action='store_true')
 arg.add_argument('--readbif',type=str)
 arg.add_argument('--readbiffull',type=str)
+arg.add_argument('--keepbranch',action='store_true')
 
 # arg.add_argument('--save',type=json.loads)
 # arg.add_argument('--write', action='store_true')
@@ -159,7 +160,7 @@ if fm.tomatlab:
 if 'casename' in fm.__dict__.keys():
     case1_ = fm.case1
     case2_ = fm.case2
-    twocases(fmclass,paramdict,case1_,case2_,'TestCase')
+    twocases(fmclass,paramdict,case1_,case2_,fm.casename)
     filename_ = "{a}/{b}.pdf".format(a=directory,b=fm.casename)
     plt.savefig(filename_,dpi=400,bbox_inches='tight',pad_inches=0)        
 

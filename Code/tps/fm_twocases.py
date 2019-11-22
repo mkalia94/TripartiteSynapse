@@ -18,6 +18,8 @@ def twocases(fmclass,pdict,dict1,dict2,name):
                fm.ND0, fm.NNag0, fm.NKg0, fm.NClg0, fm.NCag0, fm.NGlug0, fm.Vi0,
             fm.Wi0, fm.Wg0]  
     t1,y1 = solver(fm,fm.t0,fm.tfinal,fm.initvals)
+    save('Images/{a}/tfile.npy'.format(a=name),t)
+    save('Images/{a}/yfile.npy'.format(a=name),y)
     negcheck(fm,t1,y1)
     pdict_ = pdict
     pdict_['s'] = False
