@@ -33,4 +33,5 @@ for name_ in smallECS:
         x_ = xtemp[0:19]
         x_ = append(x_,-65)
         x_ = append(x_,xtemp[19:22])
-        Vm = fm.model()
+        Vm = fm.model(0,x_,'Vi')
+        
