@@ -149,9 +149,12 @@ def model(t, y, p, *args):
                        1-exp((p.F*V)/(p.R*p.T))))
 
     # Blockade
-    blockerExp = 1/(1+exp(p.beta1*(t-p.tstart))) + p.perc/(
+    blockerExp = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(
        1+exp(-p.beta2*(t-p.tend)))
-    #blockerExp = p.perc + (1-p.perc)*blockerExp
+    blockerExpAlt = 1/(1+exp(p.beta1*(t-p.tstart))) + p.perc/(
+       1+exp(-p.beta2*(t-p.tend)))
+    blockerExp = p.perc + (1-p.perc)*blockerExp
+    #blockerExp = blockerExpAlt
 
     # Na-K pump
     sigmapump = 1/7*(exp(NaCe/67.3)-1)

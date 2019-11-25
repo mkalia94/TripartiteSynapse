@@ -18,8 +18,13 @@ def twocases(fmclass,pdict,dict1,dict2,name):
                fm.ND0, fm.NNag0, fm.NKg0, fm.NClg0, fm.NCag0, fm.NGlug0, fm.Vi0,
             fm.Wi0, fm.Wg0]  
     t1,y1 = solver(fm,fm.t0,fm.tfinal,fm.initvals)
-    save('Images/{a}/tfile.npy'.format(a=name),t)
-    save('Images/{a}/yfile.npy'.format(a=name),y)
+    if fm.savenumpy:
+        save('{a}/tfile1.npy'.format(a=fm.directory),t1)
+        save('{a}/yfile1.npy'.format(a=fm.directory),y1)
+
+    if fm.savematlab:
+        sio.savemat('{a}/sim1.mat'.format(a=fm.directory),{'t':t1,'y':y1})
+        
     negcheck(fm,t1,y1)
     pdict_ = pdict
     pdict_['s'] = False
@@ -35,6 +40,12 @@ def twocases(fmclass,pdict,dict1,dict2,name):
                     fm2.ND0, fm2.NNag0, fm2.NKg0, fm2.NClg0, fm2.NCag0, fm2.NGlug0, fm2.Vi0,
                     fm2.Wi0, fm2.Wg0]
     t2,y2 = solver(fm2,fm2.t0,fm2.tfinal,fm2.initvals)
+    if fm.savenumpy:
+        save('{a}/tfile2.npy'.format(a=fm.directory),t2)
+        save('{a}/yfile2.npy'.format(a=fm.directory),y2)
+
+    if fm.savematlab:
+        sio.savemat('{a}/sim2.mat'.format(a=fm.directory),{'t':t2,'y':y2})
     negcheck(fm2,t2,y2)
     # Prepare figure
     widths = [1,1,1,1]

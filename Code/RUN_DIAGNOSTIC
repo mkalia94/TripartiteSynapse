@@ -1,0 +1,7 @@
+#!/bin/bash
+python set_up.py --tstart 20 --tend 30 --tfinal 50 --perc 0 -s --plotall --solve --nogates --saveloc 'Diag1' --savenumpy 
+python set_up.py --tfinal 2 --excite 0.5 1 30 --nogates --plotall --solve --saveloc 'Diag2' --savematlab
+python set_up.py --savematlabpar --tstart 20 --tend 30 --perc 0.5 --saveloc 'Diag3' --nogates
+python set_up.py --casename 'DiagCase' --tstart 20 --tend 30 --perc 0 --tfinal 50 --case1 '{"alphae0":0.2,"nogates":"True"}' --case2 '{"alphae0":0.98,"nogates":"True"}' --nogates
+python set_up.py --saveloc 'Diag4' --tstart 20 --tend 30 --perc 0 --tfinal 100 --nogates --block '{"INaG":[60,80]}' --plot '{"Mem Pot":["Vi","Vg"],"[$Ca^{2+}$]":["CaCi","CaCg","CaCc"]}' --solve
+python set_up.py --saveloc 'Diag5' --tstart 20 --tend 30 --perc 0 --tfinal 50 --nogates --astblock 20 30 --plot '{"Mem Pot":["Vi","Vg"],"[$Ca^{2+}$]":["CaCi","CaCg","CaCc"],"[Glu]":["GluCi","GluCc","GluCg"]'} --solve

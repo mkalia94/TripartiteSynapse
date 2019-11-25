@@ -10,11 +10,12 @@ arg.add_argument('-s', action='store_true')
 arg.add_argument('-b', action='store_true')
 arg.add_argument('-m', action='store_true')
 arg.add_argument('--solve', action='store_true')
-arg.add_argument('--datsave', action='store_true')
+arg.add_argument('--savenumpy', action='store_true')
+arg.add_argument('--savematlab', action='store_true')
 arg.add_argument('--plotall', action='store_true')
 arg.add_argument('--plot', type=json.loads)
 arg.add_argument('--block', type=json.loads)
-arg.add_argument('--excite', nargs=2, type=float)
+arg.add_argument('--excite', nargs=3, type=float)
 arg.add_argument('--astblock', nargs=2, type=float)
 arg.add_argument('--nogates', action='store_true')
 arg.add_argument('--nochargecons', action='store_true')
@@ -22,11 +23,9 @@ arg.add_argument('--saveloc', type=str)
 arg.add_argument('--case1', type=json.loads)
 arg.add_argument('--case2', type=json.loads)
 arg.add_argument('--casename',type=str)
-arg.add_argument('--tomatlab',action='store_true')
-arg.add_argument('--readbif',type=str)
-arg.add_argument('--readbiffull',type=str)
-arg.add_argument('--keepbranch',action='store_true')
-
+arg.add_argument('--savematlabpar',action='store_true')
+#arg.add_argument('--readbif',type=str)
+#arg.add_argument('--readbiffull',type=str)
 # arg.add_argument('--save',type=json.loads)
 # arg.add_argument('--write', action='store_true')
 # arg.add_argument('--titles', type=json.loads)
@@ -49,61 +48,6 @@ fm.initvals = [fm.NNai0, fm.NKi0, fm.NCli0, fm.m0, fm.h0, fm.n0, fm.NCai0,
                fm.ND0, fm.NNag0, fm.NKg0, fm.NClg0, fm.NCag0, fm.NGlug0, fm.Vi0,
             fm.Wi0, fm.Wg0]  
 
-if 'readbif' in fm.__dict__.keys():
-    fname = fm.readbif
-    data_ = sio.loadmat(fname)
-    temp_data = data_['x']
-    xdata_ = temp_data[0:-1,:]
-    par_ = temp_data[-1,:]
-    for i in [0]:
-        x_ = xdata_[:,i]
-        fm_ = fmclass(paramdict)
-        temp_V = fm.F/fm.C*(x_[0]+x_[1]+2*x_[3]-(x_[9]+x_[4]+x_[5]+x_[6]+x_[7]+x_[8]+x_[10])-x_[2]-fm.NAi)
-        paramdict['Vi0'] = temp_V
-        #paramdict['pumpScaleNeuron'] = fm.pumpScaleNeuron*par_[i]
-        #paramdict['pumpScaleAst'] = fm.pumpScaleAst*par_[i]
-        paramfile.parameters(fm_,paramdict)
-        temp_x = x_[0:3]
-        temp_x = append(temp_x,fm_.m0)
-        temp_x = append(temp_x,fm_.h0)
-        temp_x = append(temp_x,fm_.n0)
-        temp_x = append(temp_x,x_[3:16])
-        temp_x = append(temp_x,-65)
-        temp_x = append(temp_x,x_[16:18])
-        fm.__dict__['temp_p'] = par_[i]
-        def temp_model(y):
-            return fm.num_model(y,fm.temp_p)   
-        jac = jacobian(temp_model)
-        eigs = linalg.eigvals(jac(np.array(list(temp_x))))
-
-if 'readbiffull' in fm.__dict__.keys():
-    fname = fm.readbiffull
-    data_ = sio.loadmat(fname)
-    temp_data = data_['x']
-    xdata_ = temp_data[0:-1,:]
-    par_ = temp_data[-1,:]
-    for i in range(len(par_)):
-        x_ = xdata_[0:19,i]
-        x_ = append(x_,-65.0)
-        x_ = append(x_,xdata_[19:22,i])
-        fm.__dict__['temp_p'] = par_[i]
-        def temp_model(y):
-            return fm.num_model(y,fm.temp_p)   
-        jac = jacobian(temp_model)
-        eigs = eigvals(jac(np.array(list(x_))))
-        ctr = 0
-        for val in eigs[0:-1]:
-            if real(val)<0:
-                continue
-            elif real(val)>0:
-                ctr = ctr + 1
-            #elif abs(real(val))<1e-5:
-                #disp('nonhyperbolic equilibrium observed at i={a}'.format(a=i))
-        if ctr != 0:
-            #disp('Saddle with {a} unstable directions!'.format(a=ctr))
-            break
-        #else:
-            #disp('Stable equilibrium!')
         
 
 
@@ -126,36 +70,17 @@ else:
 # ---------------------------------------------------------------------------
 
 if 'saveloc' in fm.__dict__.keys():
-    directory = 'Images/{a}'.format(a=fm.saveloc)
+    directory = 'SimDataImages/{a}'.format(a=fm.saveloc)
     if not os.path.exists(directory):
-        os.makedirs(directory)        
+        os.makedirs(directory)    
 else:
-    directory = 'Images/{a}'.format(a='Test')
+    directory = 'SimDataImages/{a}'.format(a='Test')
     if not os.path.exists(directory):
         os.makedirs(directory)
+fm.directory = directory    
 
-
-if fm.tomatlab:
-    fm.tstart = 20
-    fm.tend = 50
-    fm.alphae0 = 0.2
-    fm.tfinal = 100
-    fm.nogates = True
-    fm.perc = 0.2
-    t,y = solver(fm,fm.t0,fm.tfinal,fm.initvals)
-    baselinepath = y[-1,:]
-    fm.tend = 500
-    fm.tfinal = 150
-    t,y = solver(fm,fm.t0,fm.tfinal,fm.initvals)
-    lowenergypath = y[-1,:]
-    sio.savemat('{a}/baseline.mat'.format(a=directory),mdict={'initvals':fm.initvals})
-    sio.savemat('{a}/baselinepath.mat'.format(a=directory),mdict={'baselinepath':baselinepath})
-    sio.savemat('{a}/lowenergypath.mat'.format(a=directory),mdict={'lowenergypath':lowenergypath})
-    pdict_= {}
-    for key in fm.__dict__:
-        if type(fm.__dict__[key]).__name__ in ['int','int64','float','float64']:
-            pdict_[key]= float(fm.__dict__[key])
-    sio.savemat('{a}/params.mat'.format(a=directory),pdict_)                
+if fm.savematlabpar:
+    savematlabpar(fm)
         
 if 'casename' in fm.__dict__.keys():
     case1_ = fm.case1
@@ -167,27 +92,19 @@ if 'casename' in fm.__dict__.keys():
 elif fm.solve:
     t, y = solver(fm, fm.t0, fm.tfinal, fm.initvals)
 
+    if fm.savematlabpar:
+        savematlabpar(fm)
+
     # Negative check
     negcheck(fm,t,y)
 
-    # Save numpy files and parameters, ready for Matlab (to be used in Matcont)
-    if fm.datsave:
-        if 'saveloc' in fm.__dict__.keys():
-            directory = 'Images/{a}'.format(a=fm.saveloc)
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-        else:
-            directory = 'Images/{a}'.format(a='Test')
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-        save('{a}/tfile.npy'.format(a=directory),t)
-        save('{a}/yfile.npy'.format(a=directory),y)
-        pdict_= {}
-        for key in fm.__dict__:
-            if type(fm.__dict__[key]).__name__ in ['int','int64','float','float64']:
-                pdict_[key]= float(fm.__dict__[key])
-        sio.savemat('{a}/params.mat'.format(a=directory),pdict_)        
-        sio.savemat('{a}/finalval.mat'.format(a=directory),mdict={'initvals':fm.initvals})
+    # Save numpy files
+    if fm.savenumpy:
+        save('{a}/tfile.npy'.format(a=fm.directory),t)
+        save('{a}/yfile.npy'.format(a=fm.directory),y)
+
+    if fm.savematlab:
+        sio.savemat('{a}/sim.mat'.format(a=fm.directory),{'t':t,'y':y})
         
     # For making individual plots
     if 'plot' in fm.__dict__.keys():
@@ -277,3 +194,58 @@ elif fm.solve:
     #         file_.close()
 
 
+# if 'readbif' in fm.__dict__.keys():
+#     fname = fm.readbif
+#     data_ = sio.loadmat(fname)
+#     temp_data = data_['x']
+#     xdata_ = temp_data[0:-1,:]
+#     par_ = temp_data[-1,:]
+#     for i in [0]:
+#         x_ = xdata_[:,i]
+#         fm_ = fmclass(paramdict)
+#         temp_V = fm.F/fm.C*(x_[0]+x_[1]+2*x_[3]-(x_[9]+x_[4]+x_[5]+x_[6]+x_[7]+x_[8]+x_[10])-x_[2]-fm.NAi)
+#         paramdict['Vi0'] = temp_V
+#         #paramdict['pumpScaleNeuron'] = fm.pumpScaleNeuron*par_[i]
+#         #paramdict['pumpScaleAst'] = fm.pumpScaleAst*par_[i]
+#         paramfile.parameters(fm_,paramdict)
+#         temp_x = x_[0:3]
+#         temp_x = append(temp_x,fm_.m0)
+#         temp_x = append(temp_x,fm_.h0)
+#         temp_x = append(temp_x,fm_.n0)
+#         temp_x = append(temp_x,x_[3:16])
+#         temp_x = append(temp_x,-65)
+#         temp_x = append(temp_x,x_[16:18])
+#         fm.__dict__['temp_p'] = par_[i]
+#         def temp_model(y):
+#             return fm.num_model(y,fm.temp_p)   
+#         jac = jacobian(temp_model)
+#         eigs = linalg.eigvals(jac(np.array(list(temp_x))))
+
+# if 'readbiffull' in fm.__dict__.keys():
+#     fname = fm.readbiffull
+#     data_ = sio.loadmat(fname)
+#     temp_data = data_['x']
+#     xdata_ = temp_data[0:-1,:]
+#     par_ = temp_data[-1,:]
+#     for i in range(len(par_)):
+#         x_ = xdata_[0:19,i]
+#         x_ = append(x_,-65.0)
+#         x_ = append(x_,xdata_[19:22,i])
+#         fm.__dict__['temp_p'] = par_[i]
+#         def temp_model(y):
+#             return fm.num_model(y,fm.temp_p)   
+#         jac = jacobian(temp_model)
+#         eigs = eigvals(jac(np.array(list(x_))))
+#         ctr = 0
+#         for val in eigs[0:-1]:
+#             if real(val)<0:
+#                 continue
+#             elif real(val)>0:
+#                 ctr = ctr + 1
+#             #elif abs(real(val))<1e-5:
+#                 #disp('nonhyperbolic equilibrium observed at i={a}'.format(a=i))
+#         if ctr != 0:
+#             #disp('Saddle with {a} unstable directions!'.format(a=ctr))
+#             break
+#         #else:
+#             #disp('Stable equilibrium!')

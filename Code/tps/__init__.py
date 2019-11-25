@@ -23,6 +23,7 @@ from tps.fm_twocases import twocases
 import autograd.numpy as np
 from tps.fm_model_autograd import model as jac_model
 from autograd import jacobian
+from tps.fm_matlabpar import savematlabpar
 #rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('font',**{'family':'sans-serif','sans-serif':['Arial']})
 mpl.use('Qt4Agg')
