@@ -77,7 +77,8 @@ else:
     directory = 'SimDataImages/{a}'.format(a='Test')
     if not os.path.exists(directory):
         os.makedirs(directory)
-fm.directory = directory    
+fm.directory = directory
+paramdict['directory'] = directory
 
 if fm.savematlabpar:
     savematlabpar(fm)

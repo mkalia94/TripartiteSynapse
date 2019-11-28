@@ -128,8 +128,8 @@ def parameters(p, dict_):
                         p.NNae0*p.Wi0))/(p.F*p.Wi0))
         p.NBe = 0
 
-    # p.NGlui0 = p.NI0
-    # p.GluCi0 = p.NGlui0/p.VolPreSyn
+    p.NGlui0 = p.NI0
+    p.GluCi0 = p.NGlui0/p.VolPreSyn
 
     # Gates    
     p.alpham0 = 0.32*(p.Vi0+52)/(1-exp(-(p.Vi0+52)/4))
