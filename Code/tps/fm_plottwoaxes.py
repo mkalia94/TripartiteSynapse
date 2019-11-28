@@ -28,6 +28,8 @@ def plottwoaxes(fm,t,y,y1name,y2name,title,fig,ax1):
         else:
             if tend_ == 1:
                 tend_ = t[i]
+    if tend_ == 1:
+        tend_ = fm.tfinal
     ax1.xaxis.set_tick_params(labelsize=8)
     ax1.yaxis.set_tick_params(labelsize=8)
     tx1 = ax1.yaxis.get_offset_text()
