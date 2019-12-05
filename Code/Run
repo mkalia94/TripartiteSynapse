@@ -1,0 +1,16 @@
+#!/bin/bash
+python set_up.py --solve --casename 'AstNoAst_Final' --saveloc 'lowGLTiDec19' --case1 '{"excite":[1,6,25,0.9]}' --case2 '{"excite":[1,6,25,0.9],"astblock":[1,6]}' --tfinal 7 --alphae0 0.2 --gltScale 0.1 --gltScaleAst 2 --pumpScaleNeuron 1.6 --pumpScaleAst 1.6
+python set_up.py --solve --saveloc 'Calibration1_final' --plotall --alphae0 0.8 --tstart 10 --tend 14 --tfinal 40  --perc 0.5 --gltScale 0.1 --gltScaleAst 2 --pumpScaleNeuron 1.6 --pumpScaleAst 1.6
+python set_up.py --solve --saveloc 'Calibration2_final' --plotall --alphae0 0.8 --tstart 10 --tend 22 --tfinal 50  --perc 0.5 --gltScale 0.1 --gltScaleAst 2 --pumpScaleNeuron 1.6 --pumpScaleAst 1.6
+
+python set_up.py --solve --saveloc 'PScale3_1' --plotall --alphae0 0.98 --tstart 20 --tend 45 --tfinal 80  --perc 0 --gltScale 0.1 --gltScaleAst 2 --pumpScaleNeuron 3 --pumpScaleAst 3
+python set_up.py --solve --saveloc 'PScale3_2' --plotall --alphae0 0.98 --tstart 20 --tend 45 --tfinal 80  --perc 0 --gltScale 0.1 --gltScaleAst 2 --pumpScaleNeuron 2.8 --pumpScaleAst 2.8
+python set_up.py --solve --saveloc 'PScale3_2' --plotall --alphae0 0.98 --tstart 20 --tend 45 --tfinal 80  --perc 0 --gltScale 0.1 --gltScaleAst 2 --pumpScaleNeuron 3.2 --pumpScaleAst 3.2
+
+
+
+#python set_up.py --solve --saveloc 'Cal2' --plotall --alphae0 0.7 --tstart 10 --tend 14 --tfinal 50 --gltScale 0.1 --perc 0.5
+#python set_up.py --solve --saveloc 'Cal3' --plotall --alphae0 0.7 --tstart 10 --tend 14.5 --tfinal 50 --gltScale 0.1 --perc 0.5
+#python set_up.py --solve --saveloc 'Cal4' --plotall --alphae0 0.7 --tstart 10 --tend 15 --tfinal 50 --gltScale 0.1 --perc 0.5
+#python set_up.py --solve --saveloc 'Cal1' --plotall --alphae0 0.7 --tstart 10 --tend 13.5 --tfinal 50 --gltScale 0.1 --perc 0.5
+ 

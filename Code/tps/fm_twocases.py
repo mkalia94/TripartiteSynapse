@@ -2,11 +2,11 @@ from tps import *
 
 def twocases(fmclass,pdict,dict1,dict2,name):
     pdict_ = pdict
-    pdict_['s'] = False
-    pdict_['m'] = False
-    pdict_['b'] = False
-    pdict_['nochargecons'] = False
-    pdict_['nogates'] = False
+    #pdict_['s'] = False
+    #pdict_['m'] = False
+    #pdict_['b'] = False
+    #pdict_['nochargecons'] = False
+    #pdict_['nogates'] = False
     for key in dict1:
         if type(pdict_).__name__ == 'str':
             pdict_[key] = eval(dict1[key])
@@ -27,11 +27,11 @@ def twocases(fmclass,pdict,dict1,dict2,name):
         
     negcheck(fm,t1,y1)
     pdict_ = pdict
-    pdict_['s'] = False
-    pdict_['m'] = False
-    pdict_['b'] = False
-    pdict_['nochargecons'] = False
-    pdict_['nogates'] = False
+    #pdict_['s'] = False
+    #pdict_['m'] = False
+    #pdict_['b'] = False
+    #pdict_['nochargecons'] = False
+    #pdict_['nogates'] = False
     for key in dict2:
         pdict_[key] = dict2[key]
     fm2 = fmclass(paramdict)
