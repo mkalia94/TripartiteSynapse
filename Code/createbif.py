@@ -31,7 +31,7 @@ ax1.set_xlim(0,150)
 ax1.set_ylim(90,150)
 
 
-for name_ in PScale2_smallECS:
+for name_ in smallECS:
     data_ = sio.loadmat('BifFiles/{a}'.format(a=name_))
     xtemp = data_['x']
     eigs = data_['f']
@@ -86,25 +86,31 @@ for name_ in PScale2_smallECS:
         if len(shape(unstable_data))!=1:    
             ax1.plot(unstable_data[1:,1],unstable_data[1:,0],'--',color='tab:red')
     if len(shape(limpoints))!=1:
-        ax1.scatter(limpoints[1:,1],limpoints[1:,0],marker="*")
+        ax1.scatter(limpoints[1:,1],limpoints[1:,0],marker="*",color='black')
     if len(shape(hopfpoints))!=1:
-        ax1.scatter(hopfpoints[1:,1],hopfpoints[1:,0],marker="v")
+        ax1.scatter(hopfpoints[1:,1],hopfpoints[1:,0],marker="v",color='black')
 
-# t1 = load('BifFiles/BaselineSmallECS/tfile1.npy')
-# y1 = load('BifFiles/BaselineSmallECS/yfile1.npy')
-# fm.tend=21.5
-# fm.perc = 0.4
-# Voli1 = fm.model(t1,y1,'Voli')
-# blockExp1 = fm.model(t1,y1,'blockerExp')*100
-# t2 = load('BifFiles/BaselineSmallECS/tfile2.npy')
-# y2 = load('BifFiles/BaselineSmallECS/yfile2.npy')
-# fm.tend=27
-# fm.perc= 0.4
-# blockExp2 = fm.model(t2,y2,'blockerExp')*100
-# Voli2 = fm.model(t2,y2,'Voli')
+t1 = load('BifFiles/BaselineSmallECS/tfile1.npy')
+y1 = load('BifFiles/BaselineSmallECS/yfile1.npy')
+fm.tend=21.5
+fm.perc = 0.4
+Voli1 = fm.model(t1,y1,'Voli')
+blockExp1 = fm.model(t1,y1,'blockerExp')*100
+t2 = load('BifFiles/BaselineSmallECS/tfile2.npy')
+y2 = load('BifFiles/BaselineSmallECS/yfile2.npy')
+fm.tend=27
+fm.perc= 0.4
+blockExp2 = fm.model(t2,y2,'blockerExp')*100
+Voli2 = fm.model(t2,y2,'Voli')
 
-# ax1.plot(blockExp2,Voli2,color='black',alpha=0.6,linewidth=2)
-# ax1.plot(blockExp1,Voli1,color='tab:green',linewidth=2)
+ax1.plot(blockExp2,Voli2,color='black',alpha=0.6,linewidth=2)
+ax1.plot(blockExp1,Voli1,color='tab:green',linewidth=2)
+arrow_dist = range(int(len(blockExp1)/6),len(blockExp1)-1,int(len(blockExp1)/6))
+for val in arrow_dist:
+    ax1.arrow(blockExp1[val],Voli1[val],blockExp1[val+1]-blockExp1[val],Voli1[val+1]-Voli1[val])
+arrow_dist = range(int(len(blockExp2)/6),len(blockExp2)-1,int(len(blockExp2)/6))
+for val in arrow_dist:
+    ax1.arrow(blockExp2[val],Voli2[val],blockExp2[val+1]-blockExp2[val],Voli2[val+1]-Voli2[val])
         
 ax2 = fig.add_subplot(spec[0,1])
 ax2.xaxis.set_tick_params(labelsize=8)
@@ -116,7 +122,7 @@ ax2.set_xlim(0,150)
 ax2.set_ylim(90,150)
 
 
-for name_ in PScale2_largeECS:
+for name_ in largeECS:
     data_ = sio.loadmat('BifFiles/{a}'.format(a=name_))
     xtemp = data_['x']
     eigs = data_['f']
@@ -162,33 +168,68 @@ for name_ in PScale2_largeECS:
         #unstable_data = sort(unstable_data,1)
     if 'phys' in name_:
         if len(shape(stable_data))!=1:
-            ax2.plot(stable_data[1:,1],stable_data[1:,0],color='tab:blue')
+            ax2.plot(stable_data[1:,1],stable_data[1:,0],color='tab:blue',lw=2)
         if len(shape(unstable_data))!=1:    
-            ax2.plot(unstable_data[1:,1],unstable_data[1:,0],'--',color='tab:blue',)
+            ax2.plot(unstable_data[1:,1],unstable_data[1:,0],'--',color='tab:blue',lw=2)
     else:
         if len(shape(stable_data))!=1:
-            ax2.plot(stable_data[1:,1],stable_data[1:,0],color='tab:red')
+            ax2.plot(stable_data[1:,1],stable_data[1:,0],color='tab:red',lw=2)
         if len(shape(unstable_data))!=1:    
-            ax2.plot(unstable_data[1:,1],unstable_data[1:,0],'--',color='tab:red')
+            ax2.plot(unstable_data[1:,1],unstable_data[1:,0],'--',color='tab:red',lw=2)
     if len(shape(limpoints))!=1:
-        ax2.scatter(limpoints[1:,1],limpoints[1:,0],marker="*")
+        ax2.scatter(limpoints[1:,1],limpoints[1:,0],marker="*",color='black')
     if len(shape(hopfpoints))!=1:
-        ax2.scatter(hopfpoints[1:,1],hopfpoints[1:,0],marker="v")
+        ax2.scatter(hopfpoints[1:,1],hopfpoints[1:,0],marker="v",color = 'black')
 
-# t1 = load('BifFiles/BaselineLargeECS/tfile1.npy')
-# y1 = load('BifFiles/BaselineLargeECS/yfile1.npy')
-# fm.tend=23
-# fm.perc = 0.4
-# Voli1 = fm.model(t1,y1,'Voli')
-# blockExp1 = fm.model(t1,y1,'blockerExp')*100
-# t2 = load('BifFiles/BaselineLargeECS/tfile2.npy')
-# y2 = load('BifFiles/BaselineLargeECS/yfile2.npy')
-# fm.tend=30
-# fm.perc= 0.4
-# blockExp2 = fm.model(t2,y2,'blockerExp')*100
-# Voli2 = fm.model(t2,y2,'Voli')
+def add_arrow(line, position=None, direction='right', size=15, color=None):
+    """
+    add an arrow to a line.
 
-# ax2.plot(blockExp2,Voli2,color='black',alpha=0.6,linewidth=2)
-# ax2.plot(blockExp1,Voli1,color='tab:green',linewidth=2)
+    line:       Line2D object
+    position:   x-position of the arrow. If None, mean of xdata is taken
+    direction:  'left' or 'right'
+    size:       size of the arrow in fontsize points
+    color:      if None, line color is taken.
+    """
+    if color is None:
+        color = line.get_color()
 
-plt.savefig('BifFiles/BifPScale2.pdf', format='pdf',bbox_inches='tight',pad_inches=0)
+    xdata = line.get_xdata()
+    ydata = line.get_ydata()
+
+    if position is None:
+        position = [xdata.mean(),ydata.mean()]
+    # find closest index
+    start_ind = np.argmin(np.absolute(xdata - position[0])+np.absolute(ydata-position[1]))
+    if direction == 'right':
+        end_ind = start_ind + 1
+    else:
+        end_ind = start_ind - 1
+
+    line.axes.annotate('',
+        xytext=(xdata[start_ind], ydata[start_ind]),
+        xy=(xdata[end_ind], ydata[end_ind]),
+        arrowprops=dict(arrowstyle="->", color=color),
+        size=size
+    )
+
+        
+t1 = load('BifFiles/BaselineLargeECS/tfile1.npy')
+y1 = load('BifFiles/BaselineLargeECS/yfile1.npy')
+fm.tend=23
+fm.perc = 0.4
+Voli1 = fm.model(t1,y1,'Voli')
+blockExp1 = fm.model(t1,y1,'blockerExp')*100
+t2 = load('BifFiles/BaselineLargeECS/tfile2.npy')
+y2 = load('BifFiles/BaselineLargeECS/yfile2.npy')
+fm.tend=30
+fm.perc= 0.4
+blockExp2 = fm.model(t2,y2,'blockerExp')*100
+Voli2 = fm.model(t2,y2,'Voli')
+plt1=ax2.plot(blockExp2,Voli2,color='black',alpha=0.6,linewidth=2)[0]
+plt2 = ax2.plot(blockExp1,Voli1,color='tab:green',alpha=0.6,linewidth=2)[0]
+add_arrow(plt1,position = [40,105],size=7)
+add_arrow(plt1,position = [80,100],size=7)
+add_arrow(plt1,position = [80,120],size=7)
+add_arrow(plt1,position = [100,120],size=7)
+plt.savefig('BifFiles/Bif.pdf', format='pdf',bbox_inches='tight',pad_inches=0)
