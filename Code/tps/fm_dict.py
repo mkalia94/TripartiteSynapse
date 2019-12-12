@@ -78,6 +78,7 @@ dict_ = {#
         'Rm' : 0.79, # Tewari Majumdar
         'alphaAMPA' : 1.1,  # Segev and Koch chap 1
         'betaAMPA' : 0.19, # Segev and Koch chap 1
+        'perc_gray':0.95,
 
         # Initial concentrations and volumes (baseline rest)
         'NaCi0' : 13,

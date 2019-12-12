@@ -20,9 +20,11 @@ arg.add_argument('--astblock', nargs=2, type=float)
 arg.add_argument('--nogates', action='store_true')
 arg.add_argument('--nochargecons', action='store_true')
 arg.add_argument('--saveloc', type=str)
+arg.add_argument('--readdata', type=str)
 arg.add_argument('--case1', type=json.loads)
 arg.add_argument('--case2', type=json.loads)
 arg.add_argument('--casename',type=str)
+
 arg.add_argument('--savematlabpar',action='store_true')
 #arg.add_argument('--readbif',type=str)
 #arg.add_argument('--readbiffull',type=str)
@@ -48,7 +50,10 @@ fm.initvals = [fm.NNai0, fm.NKi0, fm.NCli0, fm.m0, fm.h0, fm.n0, fm.NCai0,
                fm.ND0, fm.NNag0, fm.NKg0, fm.NClg0, fm.NCag0, fm.NGlug0, fm.Vi0,
             fm.Wi0, fm.Wg0]  
 
-        
+fm.tstart_old = fm.tstart
+fm.tend_old = fm.tend
+fm.tstart = fm.tstart_old - 1/fm.beta1*log(1/fm.perc_gray -1)
+fm.tend = fm.tend_old + 1/fm.beta2*log(1/fm.perc_gray - 1)
 
 
 negctr = 0
@@ -91,7 +96,14 @@ if 'casename' in fm.__dict__.keys():
     plt.savefig(filename_,dpi=400,bbox_inches='tight',pad_inches=0)        
 
 elif fm.solve:
-    t, y = solver(fm, fm.t0, fm.tfinal, fm.initvals)
+    if 'readdata' in fm.__dict__.keys():
+        loc_ = fm.readdata
+        if loc_ == '':
+            loc_ = fm.saveloc
+        t = load('SimDataImages/{a}/tfile.npy'.format(a=loc_))
+        y = load('SimDataImages/{a}/yfile.npy'.format(a=loc_))
+    else:
+        t, y = solver(fm, fm.t0, fm.tfinal, fm.initvals)
 
     if fm.savematlabpar:
         savematlabpar(fm)
@@ -111,39 +123,63 @@ elif fm.solve:
     if 'plot' in fm.__dict__.keys():
         dict_ = fm.plot
         ctr = 0
+        size_ = dict_['size']
         # Comment all lines till for loop to remove single file plotting
-        len_ = fm.plot.__len__()
+        len_ = fm.plot.__len__()-1
         if len_>1:
-            widths = [1,1]
+            widths = list(ones(size_[0],'int'))
         else:
             widths = [1]
-        heights= list(ones(int(len_/2)+1))
+        heights= list(ones(size_[1],'int'))
         wspace_ = 0.8
-        hspace_ = 0.6
+        if len(heights) == 1:
+            hspace_ = 0
+        else:
+            hspace_ = 0.8
         figsizex_ = sum(widths)+(len(widths)+1)*wspace_
-        figsizey_ = sum(heights)+(len(heights)+1)*hspace_
+        figsizey_ = sum(heights)+(len(heights))*hspace_
         fig = plt.figure(constrained_layout=True,figsize=(figsizex_,figsizey_))
         spec = fig.add_gridspec(ncols=len(widths), nrows=len(heights), width_ratios=widths,
                                   height_ratios=heights)
         fig.subplots_adjust(wspace=wspace_)
         fig.subplots_adjust(hspace=hspace_)
         for keys in dict_:
-            # Switch comments for all commands except plottwoaxes(..) and ctr = ctr +1
-            # to remove single file plotting
-            #fig,ax = plt.subplots(num=ctr,figsize=(2,2))
-            specx = int(ctr/2)
-            if (int(ctr/2)-ctr/2) != 0:
-                specy = 1
+            if keys == 'size':
+                continue
             else:
-                specy = 0
-            ax = fig.add_subplot(spec[specx,specy])
-            plottwoaxes(fm,t,y,dict_[keys],[],keys,fig,ax)
-            if ctr == (len_-1) or ctr == (len_-2):
-                 ax.set_xlabel('time (min.)', fontdict={'fontsize': 8, 'fontweight': 'medium'})
-            #fig.tight_layout()
-            #plotfilename = '{a}/{b}.pdf'.format(a=directory,b=keys)
-            #plt.savefig(plotfilename, format='pdf', bbox_inches='tight')
-            ctr = ctr + 1
+                # Switch comments for all commands except plottwoaxes(..) and ctr = ctr +1
+                # to remove single file plotting
+                #fig,ax = plt.subplots(num=ctr,figsize=(2,2))
+                plotdict = dict_[keys]
+                specx = int(ctr/size_[0])
+                specy = ctr - int(ctr/size_[0])
+                ax = fig.add_subplot(spec[specx,specy])
+                ax1_ = []
+                ax2_ = []
+                for vals in plotdict["plot"]:
+                    if 'ax1' in vals:
+                        ax1_.append(vals)
+                    elif 'ax2' in vals:
+                        ax2_.append(vals)
+                if len(ax1_) == 0:
+                    plottwoaxes(fm,t,y,plotdict["plot"],[],keys,fig,ax)
+                else:
+                    if "ax1scale" in plotdict:
+                        ax1  = {"plot":ax1_,"scale":plotdict["ax1scale"]}
+                    else:
+                        ax1  = {"plot":ax1_}
+                    if "ax2scale" in plotdict:
+                        ax2  = {"plot":ax2_,"scale":plotdict["ax2scale"]}
+                    else:
+                        ax2  = {"plot":ax2_}    
+
+                    plottwoaxes(fm,t,y,ax1,ax2,keys,fig,ax)
+                if ctr == (len_-1) or ctr == (len_-2):
+                     ax.set_xlabel('time (min.)', fontdict={'fontsize': 8, 'fontweight': 'medium'})
+                #fig.tight_layout()
+                #plotfilename = '{a}/{b}.pdf'.format(a=directory,b=keys)
+                #plt.savefig(plotfilename, format='pdf', bbox_inches='tight')
+                ctr = ctr + 1
         #fig.tight_layout()
         plt.savefig('{a}/Plots.pdf'.format(a=directory), format='pdf',bbox_inches='tight',pad_inches=0)
         disp('Plotting Done...')
