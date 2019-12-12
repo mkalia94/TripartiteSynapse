@@ -2,6 +2,7 @@ def label_offset(ax, axis="y"):
     if axis == "y":
         fmt = ax.yaxis.get_major_formatter()
         ax.yaxis.offsetText.set_visible(False)
+        #ax.yaxis.set_major_locator(MaxNLocator(integer=True))
         set_label = ax.set_ylabel
         label = ax.get_ylabel()
 

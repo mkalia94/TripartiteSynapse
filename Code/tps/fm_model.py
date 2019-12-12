@@ -271,8 +271,8 @@ def model(t, y, p, *args):
         dict_ = p.block
         for key in dict_:
             val_ = dict_[key]
-            blockOther = (1/(1+exp(p.beta1*(t-val_[0]))) +
-                          1/(1+exp(-p.beta2*(t-val_[1]))))
+            blockOther = (1/(1+exp(100*(t-val_[0]))) +
+                          1/(1+exp(-100*(t-val_[1]))))
             if key == 'INaG':
                 INaG = INaG*blockOther
             elif key == 'IKG':
@@ -358,6 +358,10 @@ def model(t, y, p, *args):
     ODEs = array(ODEs)*60*1e3
 
     if args:
-        return eval(args[0])
+        if 'ax1' in args[0] or 'ax2' in args[0]:
+            temp_ = args[0]
+            return eval(temp_[3:])
+        else:     
+            return eval(args[0])
     else:
         return ODEs
