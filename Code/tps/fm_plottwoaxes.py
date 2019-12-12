@@ -74,23 +74,23 @@ def plottwoaxes(fm,t,y,y1name,y2name,title,fig,ax1):
             minploty1 = min(y1)
         #ax1 .set_xlabel('time (in min)')
         if plotname[-1] == 'i':
-            ax1.plot(array(t)-fm.t0, y1,color='tab:blue', label="Neuron")
+            ax1.plot(array(t)-fm.t0, y1,color='tab:blue', label="Neuron",alpha=0.8)
             #ax1.set_ylabel(title1, color='blue')
             #ax1.tick_params(axis='y', labelcolor='blue')
         elif plotname[-1] == 'e':
-            ax1.plot(array(t)-fm.t0, y1, color='forestgreen', label="ECS")
+            ax1.plot(array(t)-fm.t0, y1, color='forestgreen', label="ECS",alpha=0.8)
             #ax1.set_ylabel(title1, color='forestgreen')
             #ax1.tick_params(axis='y', labelcolor='forestgreen')
         elif plotname[-1] == 'g':
-            ax1.plot(array(t)-fm.t0, y1, color='orange', label="Ast.")
+            ax1.plot(array(t)-fm.t0, y1, color='orange', label="Ast.",alpha=0.8)
             #ax1.set_ylabel(title1, color='orange')
             #ax1.tick_params(axis='y', labelcolor='orange')
         elif plotname[-1] == 'c':
-            ax1.plot(array(t)-fm.t0, y1, color='forestgreen', label="Cleft")
+            ax1.plot(array(t)-fm.t0, y1, color='forestgreen', label="Cleft",alpha=0.8)
             #ax1.set_ylabel(title1, color='forestgreen')
             #ax1.tick_params(axis='y', labelcolor='forestgreen')
         else:
-            ax1.plot(array(t)-fm.t0,y1,color='black')
+            ax1.plot(array(t)-fm.t0,y1,color='black',alpha=0.8)
         ax1.set_title(title, fontdict={'fontsize': 8, 'fontweight': 'medium'})
         ax1.set_ylabel('', fontdict={'fontsize': 6, 'fontweight': 'medium'})
     ax1.ticklabel_format(axis='y',style='scientific',useOffset=True,scilimits=(-2.5,2.5),useMathText=True)
@@ -116,19 +116,19 @@ def plottwoaxes(fm,t,y,y1name,y2name,title,fig,ax1):
                 #ax2.ticklabel_format(useOffset=True)
             #ax2 .set_xlabel('time (in min)')
             if plotname[-1] == 'i':
-                ax2.plot(array(t)-fm.t0, y2, label="Neuron")
+                ax2.plot(array(t)-fm.t0, y2, label="Neuron",alpha=0.8)
                 #ax2.set_ylabel(title2, color='blue')
                 ax2.tick_params(axis='y', labelcolor='blue')
             elif plotname[-1] == 'e':
-                ax2.plot(array(t)-fm.t0, y2, color='forestgreen', label="ECS")
+                ax2.plot(array(t)-fm.t0, y2, color='forestgreen', label="ECS",alpha=0.8)
                 #ax2.set_ylabel(title2, color='forestgreen')
                 ax2.tick_params(axis='y', labelcolor='forestgreen')
             elif plotname[-1] == 'g':
-                ax2.plot(array(t)-fm.t0, y2, color='orange', label="Ast.")
+                ax2.plot(array(t)-fm.t0, y2, color='orange', label="Ast.",alpha=0.8)
                 #ax2.set_ylabel(title2, color='orange')
                 ax2.tick_params(axis='y', labelcolor='orange')
             elif plotname[-1] == 'c':
-                ax2.plot(array(t)-fm.t0, y2, color='forestgreen', label="Cleft")
+                ax2.plot(array(t)-fm.t0, y2, color='forestgreen', label="Cleft",alpha=0.8)
                 #ax2.set_ylabel(title2, color='forestgreen')
                 ax2.tick_params(axis='y', labelcolor='forestgreen')
             else:
