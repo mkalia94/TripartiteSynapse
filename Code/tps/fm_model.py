@@ -47,7 +47,7 @@ def model(t, y, p, *args):
         Wi = y[20]
         Wg = y[21]
 
-    if p.nosynapse == 1:
+    if p.nosynapse:
         synapse_block = 0
     else:
         synapse_block = 1
@@ -304,6 +304,9 @@ def model(t, y, p, *args):
         blocker_Excite = 1 - (1/(1+exp(100*(t-arg_excite[0]))) +
                               1/(1+exp(-100*(t-arg_excite[1]))))
         IExcite = blocker_Excite*arg_excite[2]/2/p.F*(1-signal.square(array(5*t),duty=arg_excite[3]))
+        dur_ = arg_excite[3]
+        duty_ = arg_excite[4]
+        IExcite = blocker_Excite*arg_excite[2]/2/p.F*(1-signal.square(2*pi*array(t)*(1-duty_)/(dur_/60),duty=duty_))
         #IExcite = blocker_Excite*4.5/p.F
     else:
         IExcite = 0

@@ -205,7 +205,7 @@ def plotall(fm,t,y,fig,spec,case):
         plottwoaxes(fm,t,y,['p.F*fGLTi','p.F*fGLTg'],[],"forward EAAT current (pA)",fig,ax41)
 
         ax50 = fig.add_subplot(spec[5,2])
-        plottwoaxes(fm,t,y,['-p.F*INCXi'],['-p.F*INCXg'],"forward NCX current (pA)",fig,ax50)
+        plottwoaxes(fm,t,y,['-INCXi'],['-INCXg'],"forward NCX current (pA)",fig,ax50)
         ax50.set_xlabel('time (min.)', fontdict={'fontsize': 8, 'fontweight': 'medium'})
         
         ax51 = fig.add_subplot(spec[5,3])

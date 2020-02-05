@@ -4,9 +4,9 @@ from tps import *
 def parameters(p, dict_):
     p.__dict__.update(dict_)
 
-    if p.nosynapse == 1:
+    if p.nosynapse:
         block_synapse = 0
-    if p.nosynapse == 0:
+    if p.nosynapse == False:
         block_synapse = 1
     if p.alphae0 == 0:
         if p.s:
@@ -252,7 +252,8 @@ def parameters(p, dict_):
     p.kRelK = (-p.IKir0 - 2*p.fActive0 -
                p.fNKCC10+block_synapse*p.fGLTg0)/p.fRelK0
     p.kRelCl = -2*p.fNKCC10/p.fRelCl0
-    p.kRelCa = -1/p.F*p.INCXg0/p.fRelCa0
+    p.kRelCa = 1/p.F*p.INCXg0/p.fRelCa0
+    #p.kRelCa = p.kRelCa*(1+1e-3)
     # -------------------------------------------------------------------------------
     
     # Glu parameters

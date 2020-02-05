@@ -24,18 +24,36 @@ import autograd.numpy as np
 from tps.fm_model_autograd import model as jac_model
 from autograd import jacobian
 from tps.fm_matlabpar import savematlabpar
-#rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+# Initialization
+from tps.fm_get_initvals import get_initvals
+from tps.fm_adjust_time import adjust_time
+from tps.fm_negcheck_init import negcheck_init
+from tps.fm_presolve_display import presolve_display
+from tps.fm_set_saveloc import set_saveloc
+from tps.fm_adjust_time import adjust_time
+from tps.fm_saveparams import saveparams
+# Execution
+from tps.fm_exec_cases import exec_cases
+from tps.fm_exec_plot import exec_plot
+from tps.fm_exec_savedata import exec_savedata
+from tps.fm_exec_geteigs import exec_geteigs
+from tps.fm_exec_solve import exec_solve
+# etting up
+import argparse
 rc('font',**{'family':'sans-serif','sans-serif':['Arial']})
 mpl.use('Qt4Agg')
-
-#plt.rcParams['font.family'] = 'cursive'
 
 warnings.filterwarnings("ignore")
 
 class fmclass:
     def __init__(self, dict_):
         paramfile.parameters(self, dict_)
-
+        get_initvals(self)
+        adjust_time(self)
+        presolve_display(self)
+        set_saveloc(self)
+        saveparams(self)
+        
     def model(self, t, y, *args):
         return(modelfile.model(t, y, self, *args))
 
