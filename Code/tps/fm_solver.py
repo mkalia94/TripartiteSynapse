@@ -4,7 +4,9 @@ def solver(fm, t0, tfinal, initvals):
     sim = CVode(mod)
     sim.atol = 1e-11
     sim.rtol = 1e-11
+
     sim.verbosity = 50
+    
     # sim.iter = 'Newton'
     # sim.discr = 'BDF'
     # sim.linear_solver = 'SPGMR'
@@ -13,6 +15,6 @@ def solver(fm, t0, tfinal, initvals):
     if fm.nogates:
         t, y = sim.simulate(tfinal)
     else:
-        t, y = sim.simulate(tfinal)# fm.tfinal*5*1e3)
+        t, y = sim.simulate(tfinal)# ,fm.tfinal*5*1e3)
     disp('Simulation Done...')
     return t, y

@@ -7,16 +7,23 @@ def twocases(fmclass,pdict,dict1,dict2,name):
     #pdict_['b'] = False
     #pdict_['nochargecons'] = False
     #pdict_['nogates'] = False
+    
     for key in dict1:
         if type(pdict_).__name__ == 'str':
             pdict_[key] = eval(dict1[key])
         else:
             pdict_[key] = dict1[key]
+
+    pdict_['tstart_old'] = pdict_['tstart']
+    pdict_['tend_old'] = pdict_['tend']
+    pdict_['tstart'] = pdict_['tstart_old'] - 1/pdict_['beta1']*log(1/pdict_['perc_gray'] -1)
+    pdict_['tend'] = pdict_['tend_old'] + 1/pdict_['beta2']*log(1/pdict_['perc_gray'] -1)       
     fm = fmclass(pdict_)
-    fm.initvals = [fm.NNai0, fm.NKi0, fm.NCli0, fm.m0, fm.h0, fm.n0, fm.NCai0,
+    fm.initvals = array([fm.NNai0, fm.NKi0, fm.NCli0, fm.m0, fm.h0, fm.n0, fm.NCai0,
             fm.NN0, fm.NR0, fm.NR10, fm.NR20, fm.NR30, fm.NI0,
                fm.ND0, fm.NNag0, fm.NKg0, fm.NClg0, fm.NCag0, fm.NGlug0, fm.Vi0,
-            fm.Wi0, fm.Wg0]  
+            fm.Wi0, fm.Wg0])
+    fm.initvals = fm.initvals + 1e-5*fm.initvals
     t1,y1 = solver(fm,fm.t0,fm.tfinal,fm.initvals)
     if fm.savenumpy:
         save('{a}/tfile1.npy'.format(a=fm.directory),t1)
@@ -32,13 +39,21 @@ def twocases(fmclass,pdict,dict1,dict2,name):
     #pdict_['b'] = False
     #pdict_['nochargecons'] = False
     #pdict_['nogates'] = False
-    for key in dict2:
-        pdict_[key] = dict2[key]
-    fm2 = fmclass(paramdict)
-    fm2.initvals = [fm2.NNai0, fm2.NKi0, fm2.NCli0, fm2.m0, fm2.h0, fm2.n0, fm2.NCai0,
+    for key in dict1:
+        if type(pdict_).__name__ == 'str':
+            pdict_[key] = eval(dict2[key])
+        else:
+            pdict_[key] = dict2[key]
+    pdict_['tstart_old'] = pdict_['tstart']
+    pdict_['tend_old'] = pdict_['tend']
+    pdict_['tstart'] = pdict_['tstart_old'] - 1/pdict_['beta1']*log(1/pdict_['perc_gray'] -1)
+    pdict_['tend'] = pdict_['tend_old'] + 1/pdict_['beta2']*log(1/pdict_['perc_gray'] -1)
+    fm2 = fmclass(pdict_)
+    fm2.initvals = array([fm2.NNai0, fm2.NKi0, fm2.NCli0, fm2.m0, fm2.h0, fm2.n0, fm2.NCai0,
                     fm2.NN0, fm2.NR0, fm2.NR10, fm2.NR20, fm2.NR30, fm2.NI0,
                     fm2.ND0, fm2.NNag0, fm2.NKg0, fm2.NClg0, fm2.NCag0, fm2.NGlug0, fm2.Vi0,
-                    fm2.Wi0, fm2.Wg0]
+                    fm2.Wi0, fm2.Wg0])
+    fm2.initvals = fm2.initvals + 1e-5*fm.initvals
     t2,y2 = solver(fm2,fm2.t0,fm2.tfinal,fm2.initvals)
     if fm.savenumpy:
         save('{a}/tfile2.npy'.format(a=fm.directory),t2)

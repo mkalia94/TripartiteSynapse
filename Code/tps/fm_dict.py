@@ -6,24 +6,23 @@ dict_ = {#
         #
         'blockerScaleAst' : 1.0,       # How much more should you block astrocyte pump?
         'blockerScaleNeuron' : 1.0,     # How much more should you block neuronal pump?
-        'pumpScaleAst' : 1.4,           # baseline astrocyte pump strength factor
-        'pumpScaleNeuron' : 1.4,        # baseline neuron pump strength factor
+        'pumpScaleAst' : 1.6,           # baseline astrocyte pump strength factor
+        'pumpScaleNeuron' : 1.6,        # baseline neuron pump strength factor
         'nkccScale' : 10,              # factor NKCC1 flux rate
         'kirScale' : 1.0,               # factor Kir conductance
-        'gltScale' : 0.9,
-        'gltScaleAst':0.9,
+        'gltScale' : 0.1,
+        'gltScaleAst':2,
         'ncxScale' : 0.1,
         'nka_na' : 13.0,
         'nka_k' : 0.2,
-        'beta1' : 2.5,                  # sigmoidal rate NKA blockade onset
-        'beta2' : 2.5,                  # sigmoidal rate NKA blockade offset
+        'beta1' : 4,                  # sigmoidal rate NKA blockade onset
+        'beta2' : 4,                  # sigmoidal rate NKA blockade offset
         'perc' : 0.0,                   # Perc of baseline blocked NKA
         'tstart' : 20.0,                # Start blockade
         'tend' : 80.0,                  # End blockade
         't0':0.0,
         'tfinal': 150,
         'alphae0' : 0.0,
-        'nosynapse' : 0.0,        #
         #-----------------------------------------------
         #---------FIXED PARAMETERS----------------------
         #-----------------------------------------------
@@ -94,7 +93,7 @@ dict_ = {#
         'NaCg0' : 13,
         'KCg0' : 80,
         'ClCg0' : 35,
-        'CaCg0' : 0.05*1e-3,
+        'CaCg0' : 0.11*1e-3,
         'GluCg0' : 2,
         'Wi0' : 2,
         'Wg0' : 1.7,
