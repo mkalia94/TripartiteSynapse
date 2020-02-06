@@ -95,6 +95,7 @@ for name_ in "${!Experiments[@]}"; do
     $size_ \
     --solve \
     --plot '{"MemPot":{"plot":["ax1Vi","ax2Vg"]},"Na":{"plot":["ax1NaCi","ax2NaCg"]},"size":[2,1]}' \
-    --saveloc "$name_/${ECSsizes[$size_]}" 
+    --saveloc "$name_/${ECSsizes[$size_]}" \
+    --nogates
   done; 
 done
