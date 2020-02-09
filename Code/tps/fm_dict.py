@@ -6,8 +6,8 @@ dict_ = {#
         #
         'blockerScaleAst' : 1.0,       # How much more should you block astrocyte pump?
         'blockerScaleNeuron' : 1.0,     # How much more should you block neuronal pump?
-        'pumpScaleAst' : 1.6,           # baseline astrocyte pump strength factor
-        'pumpScaleNeuron' : 1.6,        # baseline neuron pump strength factor
+        'pumpScaleAst' : 1.0,           # baseline astrocyte pump strength factor
+        'pumpScaleNeuron' : 1.0,        # baseline neuron pump strength factor
         'nkccScale' : 10,              # factor NKCC1 flux rate
         'kirScale' : 1.0,               # factor Kir conductance
         'gltScale' : 0.1,
@@ -28,174 +28,165 @@ dict_ = {#
         #-----------------------------------------------
         #
         'C': 20.0,                # Neuron membrane capacitance
-        'F' : 96485.333,     # Faraday's constant
-        'R' : 8314.4598,        # Gas constant
-        'T' : 310.0,            # Temperature
-        'PNaG' : 80*1e-5,        # permeability of gated Na current
-        'PKG' : 40*1e-5,      # permbeability of gated K current
-        'PClG' : 1.95*1e-5,      # permeability of gated Cl current
+        'F' : 96485.333,          # Faraday's constant
+        'R' : 8314.4598,          # Gas constant
+        'T' : 310.0,              # Temperature
+        'PNaG' : 80*1e-5,         # permeability of gated Na current
+        'PKG' : 40*1e-5,          # permbeability of gated K current
+        'PClG' : 1.95*1e-5,       # permeability of gated Cl current
         'PNaL_base': 0.2*1e-5,
         'PKL_base': 2*1e-5,
         'PClL_base': 0.25*1e-5,
-        'UKCl' : 13*1e-7,       # flux rate of KCl cotransporter
+        'UKCl' : 13*1e-7,         # flux rate of KCl cotransporter
         'LH20i' : 2*1e-14 ,       # Osmotic permeability in the neuron
-        'Qpump' : 54.5,
-        'Cg' : 20.0,               # Astrocyte membrane capacitance
+        'PNKAi' : 54.5*1.6,       # Baseline NKA pump strength
+        'Cg' : 20.0,              # Astrocyte membrane capacitance
         'Vg0' : -80.0,            # Fix initial glial membrane potential
-        'Vi0' : -65.5,           # Fix initial neuronal membrane potential
-        'KCe_thres' : 13.0,        # Kir: Threshold for Kir gate
-        'kup2' : 0.1,     # Kir: Rate of transition from low uptake to high uptake
-        'PCaG' : 0.75*1e-5, # (from Naomi)
-        'kNCXi' : 0, # 1/10th of NKA strength, from Oschmann (2017), spatial separation..
-        'alphaNaNCX' : 87.5, # in mM
-        'alphaCaNCX' : 1.38, # in mM, from Oschmann 2017
-        'eNCX' : 0.35, # in mM, from Oschmann 2017
-        'ksatNCX' : 0.1, # in mM, from Oschmann 2017
-        'kGLTi' : 0, # Take max current of 0.67pA/microm^2 from Oschmann, compute avg : (.)/6
-        'kGLTg' : 0, # Take max current of 0.67pA/microm^2 from Oschmann, compute avg : (.)/6
-        'HeOHa' : 0.66, # from Breslin, Wade sodium microdomains..
-        'HeOHai':0.66,
-        'Nv' : 1.5*1e4,# Naomi
-        'Gv' : 2, # Naomi
-        'k1max' : 1,# Naomi
-        'KM' : 0.0023, # Naomi
-        'KDV' : 0.1, # Naomi
-        'k20' : 0.021*1e-3,  # Naomi
-        'k2cat' : 20*1e-3, # Naomi
-        'kmin20' : 0.017*1e-3, # Naomi
-        'kmin1' : 0.05*1e-3, # Naomi
-        'k3' : 4.4, # Naomi
-        'kmin3' : 56*1e-3, # Naomi
-        'k4' : 1.45, # Naomi
-        'tinact' : 3, # Naomi
-        'trec' : 30, # (instead of 800, as per Naomi) the change was made due to the new NI*ND term
-        'tpost' : 50, # Naomi
-        'Vpost0' : -65.5, # Emperical
-        'kNCXg' : 0,
-        'gAMPA' : 0.035, # Tewari Majumdar
-        'VAMPA' : 0, # Tewari Majumdar
-        'Rm' : 0.79, # Tewari Majumdar
-        'alphaAMPA' : 1.1,  # Segev and Koch chap 1
-        'betaAMPA' : 0.19, # Segev and Koch chap 1
-        'perc_gray':0.95,
+        'Vi0' : -65.5,            # Fix initial neuronal membrane potential
+        'KCe_thres' : 13.0,       # Kir: Threshold for Kir gate
+        'kup2' : 0.1,             # Kir: Rate of transition from low uptake to high uptake
+        'PCaG' : 0.75*1e-5,       # permeability of voltage-gated Ca channel
+        'PNCXi' : 0,              # NCX conductance (defined in tps/fm_params.py)
+        'alphaNaNCX' : 87.5,      # NCX: Na half saturation concentration
+        'alphaCaNCX' : 1.38,      # NCX: Ca  half saturation concentration
+        'eNCX' : 0.35,            # NCX: position of energy barrier
+        'ksatNCX' : 0.1,          # NCX: saturation factor
+        'PEAATi' : 0,              # EAAT: Neuronal EAAT strength (defined in tps/fm_params.py)
+        'PEAATg' : 0,              # EAAT: Astrocyte EAAT strength (defined in tps/fm_params.py)
+        'HeOHa' : 0.66,           # Proton ratio (ex:in) in astrocytes (fixed)
+        'HeOHai':0.66,            # Proton ratio (ex:in) in neurons (fixed)
+        'k1max' : 1,              # Glut recycling: Max forward reaction rate
+        'KM' : 0.0023,            # Glu recycling: Ca half-saturation concentration
+        'KDV' : 0.1,              # Glu recycling: Half saturation for forward reaction rate
+        'k20' : 0.021*1e-3,       # Glu recycling: Uncatalysed forward reaction rate
+        'k2cat' : 20*1e-3,        # Glu recycling: Catalysed forward reaction rate
+        'kmin20' : 0.017*1e-3,    # Glu recycling: Uncatalysed backward reaction rate
+        'kmin1' : 0.05*1e-3,      # Glu recycling: Backward reaction rate
+        'k3' : 4.4,               # Glu recycling: Forward reaction rate
+        'kmin3' : 56*1e-3,        # Glu recycling: Backward reaction rate
+        'k4' : 1.45,              # Glu recycling: Fusion rate
+        'trec' : 30,              # Glu recycling: Vesicle fusion factor
+        'PNCXg' : 0,              # Astrocyte NCX conductance (defined in tps/fm_params.py)
+        'perc_gray':0.95,         # Gray area in plotting starts when avaliable energy is below perc_gray
 
         # Initial concentrations and volumes (baseline rest)
-        'NaCi0' : 13,
-        'KCi0' : 145,
-        'ClCi0' : 7,
-        'CaCi0' : 0.1*1e-3, # Assumption based on Oschmann model
-        'GluCi0' : 3 , # (instead of 3, which is in 'maintaining the presynaptic glutamate...Marx, Billups...2015)' note that this indicates total Glu, which includes all non-free states as well
-        'NaCe0' : 152,
-        'KCe0' : 3,
-        'ClCe0' : 135,
-        'CaCc0' : 1.8, # Oschmann
-        'GluCc0' : 1*1e-4,
-        'NaCg0' : 13,
-        'KCg0' : 80,
-        'ClCg0' : 35,
-        'CaCg0' : 0.11*1e-3,
-        'GluCg0' : 2,
-        'Wi0' : 2,
-        'Wg0' : 1.7,
-        'VolPreSyn' : 1*1e-3,
-        'VolPAP' : 1*1e-3,
-        'Volc' : 1*1e-3,
-        'NF0' : 0,
-        'NGlui0' : 0,
-        'NGluc0' : 0,
-        'We0' : 0,
-        'NNai0' : 0,
-        'NKi0' : 0,
-        'NCli0' : 0,
-        'NCai0' : 0,
-        'NNae0' : 0,
-        'NKe0' : 0,
-        'NCle0' : 0,
-        'NCac0' : 0,
-        'NNag0' : 0,
-        'NKg0' : 0,
-        'NClg0' : 0,
-        'NCag0' : 0,
-        'NGlug0' : 0,
-        'CNa' : 0,
-        'CK' : 0,
-        'CCl' : 0,
-        'CCa' : 0,
-        'Wtot' : 0,
-        'NAi' : 0,
-        'NAe' : 0,
-        'NBe' : 0,
-        'NAg' : 0,
-        'NBg' : 0,
+        'NaCi0' : 13,             # Neuronal sodium concentration
+        'KCi0' : 145,             # Neuronal potassium concentration               
+        'ClCi0' : 7,              # Neuronal chloride concentration
+        'CaCi0' : 0.1*1e-3,       # Neuronal calcium concentration
+        'GluCi0' : 3 ,            # Neuronal glutamate concentration
+        'NaCe0' : 152,            # Extracellular sodium concentration
+        'KCe0' : 3,               # Extracellular potassium concentration
+        'ClCe0' : 135,            # Extracellular chloride concentration
+        'CaCc0' : 1.8,            # Cleft calcium concentration
+        'GluCc0' : 1*1e-4,        # Cleft glutamate concentration
+        'NaCg0' : 13,             # Astrocyte sodium concentration
+        'KCg0' : 80,              # Astrocyte potassium concentration
+        'ClCg0' : 35,             # Astrocyte chloride concentration
+        'CaCg0' : 0.11*1e-3,      # Astrocyte calcium concentration
+        'GluCg0' : 2,             # Astrocyte glutamate concentration
+        'Wi0' : 2,                # Neuronal volume
+        'Wg0' : 1.7,              # Astrocyte volume
+        'VolPreSyn' : 1*1e-3,     # Presynaptic terminal volume (fixed)
+        'VolPAP' : 1*1e-3,        # Perisynaptic astrocyte process volume (fixed)
+        'Volc' : 1*1e-3,          # Cleft volume (fixed)
+
+        # All parameters below are computed/defined in tps/fm_params.py 
+        'NF0' : 0,                # Fused glutamate = Cleft glutamate molar amount
+        'NGlui0' : 0,             # Neuronal glutamate molar amount
+        'NGluc0' : 0,             # Cleft glutamate molar amount
+        'We0' : 0,                # Extracellular volume
+        'NNai0' : 0,              # Neuronal sodium molar amount
+        'NKi0' : 0,               # Neuronal potassium molar amount
+        'NCli0' : 0,              # Neuronal chloride molar amount
+        'NCai0' : 0,              # Neuronal calcium molar amount
+        'NNae0' : 0,              # Extracellular sodium molar amount  
+        'NKe0' : 0,               # Extracellular potassium molar amount
+        'NCle0' : 0,              # Extracellular chloride molar amount
+        'NCac0' : 0,              # Cleft calcium molar amount
+        'NNag0' : 0,              # Astrocyte sodium molar amount
+        'NKg0' : 0,               # Astrocyte potassium molar amount
+        'NClg0' : 0,              # Astrocyte chloride molar amount
+        'NCag0' : 0,              # Astrocyte calcium molar amount
+        'NGlug0' : 0,             # Astrocyte sodium molar amount
+        'CNa' : 0,                # Total molar amount of sodium in the system
+        'CK' : 0,                 # Total molar amount of potassium in the system
+        'CCl' : 0,                # Total molar amount of chloride in the system
+        'CCa' : 0,                # Total molar amount of calcium in the system
+        'Wtot' : 0,               # Total volume in the system
+        'NAi' : 0,                # Molar amount of neuronal impermeant anions
+        'NAe' : 0,                # Molar amount of extracellular impermeant anions
+        'NBe' : 0,                # Molar amount of extracellular impermeant cations
+        'NAg' : 0,                # Molar amount of astrocyte impermeant anions
+        'NBg' : 0,                # Molar amount of astrocyte impermeant cations
         # Gates
-        'alpham0' : 0,
-        'betam0' : 0,
-        'alphah0' : 0,
-        'betah0' : 0,
-        'alphan0' : 0,
-        'betan0' : 0,
-        'm0' : 0,
-        'h0' : 0,
-        'n0' : 0,
+        'alpham0' : 0,            # Gating: alpha function for m for Vi=Vi0
+        'betam0' : 0,             # Gating: beta function for m for Vi=Vi0
+        'alphah0' : 0,            # Gating: alpha function for h for Vi=Vi0
+        'betah0' : 0,             # Gating: beta function for h for Vi=Vi0
+        'alphan0' : 0,            # Gating: alpha function for n for Vi=Vi0
+        'betan0' : 0,             # Gating: beta function for n for Vi=Vi0
+        'm0' : 0,                 # Gating: baseline sodium activation
+        'h0' : 0,                 # Gating: baseline sodium inactivation
+        'n0' : 0,                 # Gating: baseline potassium activation
         # Neuronal leaks
-        'INaG0' : 0,
-        'IKG0' : 0,
-        'IClG0' : 0,
-        'INaL0' : 0,
-        'IKL0' : 0,
-        'IClL0' : 0,
-        'JKCl0' : 0,
-        'sigmapump' : 0,
-        'fpump' : 0,
-        'neurPump' : 0,
-        'INCXi0' : 0,
-        'fGLTi0' : 0,
-        'ICaG0' : 0,
-        'ICaL0' : 0,
-        'fRelGlui0' : 0,
-        'PNaL' : 0,            # Estimated sodium leak conductance in neuron
-        'PKL' : 0,   # Estimated K leak conductance in neuron
-        'PClL' : 0,              # Estimated Cl leak conducatance in neuron
-        'PCaL' : 0,
+        'INaGi0' : 0,              # Baseline neuronal sodium voltage gated channel current
+        'IKGi0' : 0,               # Baseline neuronal potassium voltage gated channel current
+        'IClGi0' : 0,              # Baseline neuronal chloride voltage gated channel current
+        'INaLi0' : 0,              # Leak: baseline neuronal sodium leak
+        'IKLi0' : 0,               # Leak: baseline neuronal potassium leak
+        'IClLi0' : 0,              # Leak: baseline neuronal chloride leak
+        'JKCl0' : 0,               # Baseline KCC-cotrasnporter flux
+        'sigmapump' : 0,           # NKA: sigma expression at baseline in neuron
+        'fpump' : 0,               # NKA: g expression at baseline in neuron
+        'neurPump' : 0,            # NKA: total pump current at baseline in neuron
+        'INCXi0' : 0,              # NCX: baseline neuronal current
+        'JEAATi0' : 0,             # EAAT: baseline neuronal current
+        'ICaG0' : 0,               # Voltage-gated calcium channel: baseline neuronal current
+        'ICaLi0' : 0,              # Leak: baseline neuronal calcium leak
+        'IGluLi0' : 0,             # Leak: baseline neuronal glutamate leak
+        'PNaLi' : 0,               # sodium leak conductance in neuron
+        'PKLi' : 0,                # potassium leak conductance in neuron
+        'PClLi' : 0,               # chloride leak conducatance in neuron
+        'PCaLi' : 0,               # caclium leak conductance in neuron
         # Glial uptake parameters
-        'kActive' : 0,
-        'LH20g' : 0,
-        'gNKCC1' : 0,
-        'GKir' : 0,
+        'PNKAg' : 0,             # NKA: astrocyte conductance
+        'LH20g' : 0,              # Astrocyte water permeability
+        'PNKCC1' : 0,             # NKCC1: astrocyte conductance
+        'PKir' : 0,               # Kir4.1: astrocyte conductance
         #-----------------------------------------------------------------------------------------------
         # Astrocyte leaks
-        'fRelK0' : 0,
-        'fRelCl0' : 0,
-        'fRelNa0' : 0,
-        'fNKCC10' : 0,
-        'sigmapumpA' : 0,
-        'fpumpA' : 0,
-        'fActive0': 0,
-        'IKir0' : 0,
-        'fRelGlu0' : 0,
-        'fRelCa0' : 0,
-        'fGLTg0' : 0,
-        'INCXg0' : 0,
-        'fRelGlu0' : 0,
-        'k1init' : 0,
-        'gCainit' : 0,
-        'k2init' : 0,
-        'kmin2catinit' : 0,
-        'kmin2init' : 0,
-        'kRelNa' : 0,
-        'kRelK' : 0,
-        'kRelCl' : 0,
-        'kRelCa' : 0,
+        'IKLg0' : 0,             # Baseline astrocyte potassium leak
+        'IClLg0' : 0,            # Baseline astrocyte chloride leak
+        'INaLg0' : 0,            # Baseline astrocyte sodium leak
+        'JNKCC10' : 0,            # NKCC1: Baseline astrocyte flux
+        'sigmapumpA' : 0,         # NKA: sigma expression at baseline for astrocyte
+        'fpumpA' : 0,             # NKA: g expression at baseline for astrocyte
+        'astpump': 0,            # NKA: total pump current at baseline for astrocyte
+        'IKir0' : 0,              # Baseline Kir channel current for astrocyte
+        'IGluLg0' : 0,           # Baseline astrocyte glutamate leak
+        'ICaLg0' : 0,            # Baseline astrocyte calcium leak
+        'JEAATg0' : 0,             # Baseline astrocyte EAAT current
+        'INCXg0' : 0,             # Baseline astrocyte NCX current
+        'k1init' : 0,             # Glu recycling: k1 at baseline
+        'gCainit' : 0,            # Glu recycling: gCa at baseline
+        'k2init' : 0,             # Glu recycling: k2 at baseline
+        'kmin2catinit' : 0,       # Glu recycling: kmin2cat at baseline
+        'kmin2init' : 0,          # Glu recycling: kmin2 at baseline
+        'PNaLg' : 0,             # Astrocyte sodium leak conductance
+        'PKLg' : 0,              # Astrocyte potassium leak conductance
+        'PClLg' : 0,             # Astrocyte chloride leak conductance
+        'PCaLg' : 0,             # Astrocyte calcium leak conductance
         #---------------------------------------------------------------------------------------------------------
         #Glutamate recycling initial conditions
-        'NI0' : 0,
-        'ND0' : 0,
-        'NN0' : 0,
-        'NR0' : 0,
-        'NR10' : 0,
-        'NR20' : 0,
-        'NR30' : 0,
-        'kRelGlui' : 0,
-        'kRelGlu' : 0,
-        'CGlu' : 0}
+        'NI0' : 0,                # Molar amount of inactive=presynaptic glutamate
+        'ND0' : 0,                # Molar amount of depot (D)
+        'NN0' : 0,                # Molar amount of non releasable pool (N)
+        'NR0' : 0,                # Molar amount of readily releasable pool (R)
+        'NR10' : 0,               # Molar amount of readily releasable pool 1 (R1)
+        'NR20' : 0,               # Molar amount of readily releasable pool 2 (R2)
+        'NR30' : 0,               # Molar amount of readily releasable pool 3 (R3)
+        'PGluLi' : 0,           # Astrocyte glutamate leak conductance
+        'PGluLg' : 0,            # Neuron glutamate leak conductance
+        'CGlu' : 0}               # Molar amount of total glutamate in the system
 

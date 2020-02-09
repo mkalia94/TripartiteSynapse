@@ -127,23 +127,23 @@ def model(t, y, p, *args):
                        1-exp(-2*(p.F*V)/(p.R*p.T))))
 
     # Leak currents
-    INaL = p.PNaL*(p.F**2)/(
+    INaLi = p.PNaLi*(p.F**2)/(
        p.R*p.T)*V*((NaCi -
                     NaCe*exp((-p.F*V)/(p.R*p.T)))/(
                        1-exp((-p.F*V)/(p.R*p.T))))
-    IKL = p.PKL*p.F**2/(p.R*p.T)*V*((
+    IKLi = p.PKLi*p.F**2/(p.R*p.T)*V*((
        KCi -
        KCe*exp((-p.F*V)/(p.R*p.T)))/(
           1-exp((-p.F*V)/(p.R*p.T))))
-    IClL = p.PClL*(p.F**2)/(
+    IClLi = p.PClLi*(p.F**2)/(
        p.R*p.T)*V*((ClCi -
                     ClCe*exp((p.F*V)/(p.R*p.T)))/(
                        1-exp((p.F*V)/(p.R*p.T))))
-    ICaL = 4*p.PCaL*(p.F**2)/(
+    ICaLi = 4*p.PCaLi*(p.F**2)/(
        p.R*p.T)*V*((CaCi -
                     CaCc*exp((-2*p.F*V)/(p.R*p.T)))/(
                        1-exp((-2*p.F*V)/(p.R*p.T))))
-    fRelGlui = p.kRelGlui*1/p.F*p.F**2/(
+    IGluLi = p.PGluLi*p.F**2/(
        p.R*p.T)*V*((GluCi -
                     GluCc*exp((p.F*V)/(p.R*p.T)))/(
                        1-exp((p.F*V)/(p.R*p.T))))
@@ -160,21 +160,21 @@ def model(t, y, p, *args):
     sigmapump = 1/7*(exp(NaCe/67.3)-1)
     fpump = 1/(1+0.1245*exp(-0.1*p.F/p.R/p.T*V) +
                0.0365*sigmapump*exp(-p.F/p.R/p.T*V))
-    Ipump = blockerExp*p.pumpScaleNeuron*fpump*p.Qpump*(
+    Ipumpi = blockerExp*p.pumpScaleNeuron*fpump*p.PNKAi*(
                 NaCi**(1.5)/(NaCi**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
 
     # KCl cotransport
     JKCl = p.UKCl*p.R*p.T/p.F*(log(KCi)+log(ClCi)-log(KCe)-log(ClCe))
 
     # NCX
-    INCXi = p.kNCXi*(NaCe**3)/(p.alphaNaNCX**3+NaCe**3)*(
+    INCXi = p.PNCXi*(NaCe**3)/(p.alphaNaNCX**3+NaCe**3)*(
        CaCc/(p.alphaCaNCX+CaCc))*(
           NaCi**3/NaCe**3*exp(p.eNCX*p.F*V/p.R/p.T) -
           CaCi/CaCc*exp((p.eNCX-1)*p.F*V/p.R/p.T))/(
              1+p.ksatNCX*exp((p.eNCX-1)*p.F*V/p.R/p.T))
 
     # EAAT
-    fGLTi = p.kGLTi*p.R*p.T/p.F*log(NaCe**3/NaCi**3 *
+    JEAATi = p.PEAATi*p.R*p.T/p.F*log(NaCe**3/NaCi**3 *
                                     KCi/KCe*p.HeOHai*GluCc/GluCi)
 
     # =========================================================================
@@ -195,48 +195,48 @@ def model(t, y, p, *args):
     sigmapumpA = 1/7*(exp(NaCe/67.3)-1)
     fpumpA = 1/(1+0.1245*exp(-0.1*p.F/p.R/p.T*Vg) +
                 0.0365*sigmapumpA*exp(-p.F/p.R/p.T*Vg))
-    fActive = blockerExp*p.kActive*fpumpA*(
+    Ipumpg = p.pumpScaleAst*blockerExp*p.PNKAg*fpumpA*(
           NaCg**(1.5)/(NaCg**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
 
     # Leak
-    fRelK = p.kRelK*1/p.F*p.F**2/(
+    IKLg = p.PKLg*p.F**2/(
        p.R*p.T)*Vg*((KCg -
                      KCe*exp((-p.F*Vg)/(p.R*p.T)))/(
                         1-exp((-p.F*Vg)/(p.R*p.T))))
-    fRelCl = p.kRelCl*1/p.F*p.F**2/(
+    IClLg = p.PClLg*p.F**2/(
        p.R*p.T)*Vg*((ClCg -
                      ClCe*exp((p.F*Vg)/(p.R*p.T)))/(
                         1-exp((p.F*Vg)/(p.R*p.T))))
-    fRelNa = p.kRelNa*1/p.F*p.F**2/(
+    INaLg = p.PNaLg*p.F**2/(
        p.R*p.T)*Vg*((NaCg -
                      NaCe*exp((-p.F*Vg)/(p.R*p.T)))/(
                         1-exp((-p.F*Vg)/(p.R*p.T))))
-    fRelGlu = p.kRelGlu*1/p.F*p.F**2/(
+    IGluLg = p.PGluLg*p.F**2/(
        p.R*p.T)*Vg*((GluCg -
                      GluCc*exp((p.F*Vg)/(p.R*p.T)))/(
                         1-exp((p.F*Vg)/(p.R*p.T))))
-    fRelCa = 4*p.kRelCa*1/p.F*p.F**2/(
+    ICaLg = 4*p.PCaLg*p.F**2/(
        p.R*p.T)*Vg*((CaCg -
                      CaCc*exp((-2*p.F*Vg)/(p.R*p.T)))/(
                         1-exp((-2*p.F*Vg)/(p.R*p.T))))
 
     # NKCC1
-    fNKCC1 = p.gNKCC1*p.R*p.T/p.F*(log(KCe) + log(NaCe)
+    JNKCC1 = p.PNKCC1*p.R*p.T/p.F*(log(KCe) + log(NaCe)
                                    + 2*log(ClCe) - log(KCg)
                                    - log(NaCg) - 2*log(ClCg))
 
     # Kir4.1
     Vkg = p.R*p.T/p.F*log(KCe/KCg)
     minfty = 1/(2+exp(1.62*(p.F/p.R/p.T)*(Vg-Vkg)))
-    IKir = p.GKir*minfty*KCe/(KCe+p.KCe_thres)*(Vg-Vkg)
+    IKir = p.PKir*minfty*KCe/(KCe+p.KCe_thres)*(Vg-Vkg)
     # IKir = p.GKir*(Vg-Vkg)*sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
 
     # GLT-1
-    fGLTg = p.kGLTg*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe *
+    JEAATg = p.PEAATg*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe *
                                     p.HeOHa*GluCc/GluCg)
 
     # NCX
-    INCXg = p.kNCXg*(NaCe**3)/(p.alphaNaNCX**3 +
+    INCXg = p.PNCXg*(NaCe**3)/(p.alphaNaNCX**3 +
                                NaCe**3)*(CaCc/(p.alphaCaNCX+CaCc))*(
                                   NaCg**3/NaCe**3*exp(p.eNCX*p.F*Vg/p.R/p.T) -
                                   CaCg/CaCc*exp((p.eNCX-1)*p.F*Vg/p.R/p.T))/(
@@ -285,14 +285,14 @@ def model(t, y, p, *args):
                 ICaG = ICaG*blockOther
             elif key == 'INCXi':
                 INCXi = INCXi*blockOther
-            elif key == 'fGLTi':
-                fGLTi = fGLTi*blockOther
+            elif key == 'JEAATi':
+                JEAATi = JEAATi*blockOther
             elif key == 'IKir':
                 IKir = IKir*blockOther
-            elif key == 'fNKCC1':
-                fNKCC1 = fNKCC1*blockOther
-            elif key == 'fGLTg':
-                fGLTg = fGLTg*blockOther
+            elif key == 'JNKCC1':
+                JNKCC1 = JNKCC1*blockOther
+            elif key == 'JEAATg':
+                JEAATg = JEAATg*blockOther
             elif key == 'INCXg':
                 INCXg = INCXg*blockOther
             elif key == 'WaterN':
@@ -321,35 +321,33 @@ def model(t, y, p, *args):
     # ==========================================================================
     # ----------------------------FINAL MODEL-----------------------------------
     # ==========================================================================
-    Ipumpi = Ipump
-    fActiveg = fActive
     
     ODEs = [  # Neuron
-       ((-1/p.F*(INaG+INaL+3*Ipump))-synapse_block*3/p.F*INCXi +
-        synapse_block*3*fGLTi ),
-       (-1/p.F*(IKG+IKL-2*Ipump)-JKCl-synapse_block*fGLTi),
-       (1/p.F*(IClG+IClL)-JKCl),
+       ((-1/p.F*(INaG+INaLi+3*Ipumpi))-synapse_block*3/p.F*INCXi +
+        synapse_block*3*JEAATi ),
+       (-1/p.F*(IKG+IKLi-2*Ipumpi)-JKCl-synapse_block*JEAATi),
+       (1/p.F*(IClG+IClLi)-JKCl),
        gates_block*(alpham*(1-m)-betam*m),
        gates_block*(alphah*(1-h)-betah*h),
        gates_block*(alphan*(1-n)-betan*n),
-       synapse_block*(-1/p.F*(ICaG+ICaL) + 1/p.F*INCXi),
+       synapse_block*(-1/p.F*(ICaG+ICaLi) + 1/p.F*INCXi),
        # GLUTAMATE RECYCLING
        (k1*ND-(p.kmin1+k2)*NN+kmin2*NR),
        (k2*NN-(kmin2+3*p.k3*CaCi)*NR + p.kmin3*NR1),
        (3*p.k3*CaCi*NR-(p.kmin3+2*p.k3*CaCi)*NR1+2*p.kmin3*NR2),
        (2*p.k3*CaCi*NR1-(2*p.kmin3+p.k3*CaCi)*NR2+3*p.kmin3*NR3),
        (p.k3*CaCi*NR2-(3*p.kmin3+p.k4)*NR3),
-       (- NI*ND/p.trec + fGLTi + fRelGlui),
+       synapse_block*(- NI*ND/p.trec + JEAATi + 1/p.F*IGluLi),
        (NI*ND/p.trec-k1*ND+p.kmin1*NN),
        # ASTROCYTE
-       (astblock*(-3*fActive + fRelNa + fNKCC1 -
-                  synapse_block*3/p.F*INCXg + synapse_block*3*fGLTg)),
-       astblock*(IKir + 2*fActive + fRelK
-                 + fNKCC1-synapse_block*fGLTg),
-       astblock*(2*fNKCC1 + fRelCl),
-       synapse_block*astblock*(1/(p.F)*INCXg - fRelCa),
+       astblock*((-1/p.F)*(3*Ipumpg + INaLg +
+                  synapse_block*3*INCXg)+JNKCC1+synapse_block*3*JEAATg),
+       astblock*((-1/p.F)*(-IKir - 2*Ipumpg + IKLg)+
+                 + JNKCC1-synapse_block*JEAATg),
+       astblock*(2*JNKCC1 + 1/p.F*IClLg),
+       synapse_block*astblock*(-1/p.F)*(-INCXg + ICaLg),
        # POSTSYN
-       astblock*fGLTg + astblock*fRelGlu,  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
+       synapse_block*astblock*(JEAATg + 1/p.F*IGluLg),  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
        0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\
        # WATER
        fluxi, \
