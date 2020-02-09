@@ -47,7 +47,7 @@ def model(t, y, p,par_, *args):
         Wi = y[20]
         Wg = y[21]
 
-    if p.nosynapse == 1:
+    if p.nosynapse:
         synapse_block = 0
     else:
         synapse_block = 1
@@ -127,52 +127,54 @@ def model(t, y, p,par_, *args):
                        1-np.exp(-2*(p.F*V)/(p.R*p.T))))
 
     # Leak currents
-    INaL = p.PNaL*(p.F**2)/(
+    INaLi = p.PNaLi*(p.F**2)/(
        p.R*p.T)*V*((NaCi -
                     NaCe*np.exp((-p.F*V)/(p.R*p.T)))/(
                        1-np.exp((-p.F*V)/(p.R*p.T))))
-    IKL = p.PKL*p.F**2/(p.R*p.T)*V*((
+    IKLi = p.PKLi*p.F**2/(p.R*p.T)*V*((
        KCi -
        KCe*np.exp((-p.F*V)/(p.R*p.T)))/(
           1-np.exp((-p.F*V)/(p.R*p.T))))
-    IClL = p.PClL*(p.F**2)/(
+    IClLi = p.PClLi*(p.F**2)/(
        p.R*p.T)*V*((ClCi -
                     ClCe*np.exp((p.F*V)/(p.R*p.T)))/(
                        1-np.exp((p.F*V)/(p.R*p.T))))
-    ICaL = 4*p.PCaL*(p.F**2)/(
+    ICaLi = 4*p.PCaLi*(p.F**2)/(
        p.R*p.T)*V*((CaCi -
                     CaCc*np.exp((-2*p.F*V)/(p.R*p.T)))/(
                        1-np.exp((-2*p.F*V)/(p.R*p.T))))
-    fRelGlui = p.kRelGlui*1/p.F*p.F**2/(
+    IGluLi = p.PGluLi*p.F**2/(
        p.R*p.T)*V*((GluCi -
                     GluCc*np.exp((p.F*V)/(p.R*p.T)))/(
                        1-np.exp((p.F*V)/(p.R*p.T))))
 
     # Blockade
-    #blockerExp = 1/(1+np.exp(p.beta1*(t-p.tstart))) + 1/(
-    #   1+np.exp(-p.beta2*(t-p.tend)))
-    #blockerExp = p.perc + (1-p.perc)*blockerNp.Exp
-    blockerExp = 1
-    
+    # blockerNp.Exp = 1/(1+np.exp(p.beta1*(t-p.tstart))) + 1/(
+    #    1+np.exp(-p.beta2*(t-p.tend)))
+    # blockerNp.ExpAlt = 1/(1+np.exp(p.beta1*(t-p.tstart))) + p.perc/(
+    #    1+np.exp(-p.beta2*(t-p.tend)))
+    # blockerNp.Exp = p.perc + (1-p.perc)*blockerNp.Exp
+    blockerNp.Exp = 1
+
     # Na-K pump
     sigmapump = 1/7*(np.exp(NaCe/67.3)-1)
     fpump = 1/(1+0.1245*np.exp(-0.1*p.F/p.R/p.T*V) +
                0.0365*sigmapump*np.exp(-p.F/p.R/p.T*V))
-    Ipump = par_*p.pumpScaleNeuron*fpump*p.Qpump*(
+    Ipumpi = par_*p.pumpScaleNeuron*fpump*p.PNKAi*(
                 NaCi**(1.5)/(NaCi**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
 
     # KCl cotransport
     JKCl = p.UKCl*p.R*p.T/p.F*(np.log(KCi)+np.log(ClCi)-np.log(KCe)-np.log(ClCe))
 
     # NCX
-    INCXi = p.kNCXi*(NaCe**3)/(p.alphaNaNCX**3+NaCe**3)*(
+    INCXi = p.PNCXi*(NaCe**3)/(p.alphaNaNCX**3+NaCe**3)*(
        CaCc/(p.alphaCaNCX+CaCc))*(
           NaCi**3/NaCe**3*np.exp(p.eNCX*p.F*V/p.R/p.T) -
           CaCi/CaCc*np.exp((p.eNCX-1)*p.F*V/p.R/p.T))/(
              1+p.ksatNCX*np.exp((p.eNCX-1)*p.F*V/p.R/p.T))
 
     # EAAT
-    fGLTi = p.kGLTi*p.R*p.T/p.F*np.log(NaCe**3/NaCi**3 *
+    JEAATi = p.PEAATi*p.R*p.T/p.F*np.log(NaCe**3/NaCi**3 *
                                     KCi/KCe*p.HeOHai*GluCc/GluCi)
 
     # =========================================================================
@@ -193,48 +195,48 @@ def model(t, y, p,par_, *args):
     sigmapumpA = 1/7*(np.exp(NaCe/67.3)-1)
     fpumpA = 1/(1+0.1245*np.exp(-0.1*p.F/p.R/p.T*Vg) +
                 0.0365*sigmapumpA*np.exp(-p.F/p.R/p.T*Vg))
-    fActive = par_*p.kActive*fpumpA*(
+    Ipumpg = p.pumpScaleAst*par_*p.PNKAg*fpumpA*(
           NaCg**(1.5)/(NaCg**(1.5)+p.nka_na**1.5))*(KCe/(KCe+p.nka_k))
 
     # Leak
-    fRelK = p.kRelK*1/p.F*p.F**2/(
+    IKLg = p.PKLg*p.F**2/(
        p.R*p.T)*Vg*((KCg -
                      KCe*np.exp((-p.F*Vg)/(p.R*p.T)))/(
                         1-np.exp((-p.F*Vg)/(p.R*p.T))))
-    fRelCl = p.kRelCl*1/p.F*p.F**2/(
+    IClLg = p.PClLg*p.F**2/(
        p.R*p.T)*Vg*((ClCg -
                      ClCe*np.exp((p.F*Vg)/(p.R*p.T)))/(
                         1-np.exp((p.F*Vg)/(p.R*p.T))))
-    fRelNa = p.kRelNa*1/p.F*p.F**2/(
+    INaLg = p.PNaLg*p.F**2/(
        p.R*p.T)*Vg*((NaCg -
                      NaCe*np.exp((-p.F*Vg)/(p.R*p.T)))/(
                         1-np.exp((-p.F*Vg)/(p.R*p.T))))
-    fRelGlu = p.kRelGlu*1/p.F*p.F**2/(
+    IGluLg = p.PGluLg*p.F**2/(
        p.R*p.T)*Vg*((GluCg -
                      GluCc*np.exp((p.F*Vg)/(p.R*p.T)))/(
                         1-np.exp((p.F*Vg)/(p.R*p.T))))
-    fRelCa = 4*p.kRelCa*1/p.F*p.F**2/(
+    ICaLg = 4*p.PCaLg*p.F**2/(
        p.R*p.T)*Vg*((CaCg -
                      CaCc*np.exp((-2*p.F*Vg)/(p.R*p.T)))/(
                         1-np.exp((-2*p.F*Vg)/(p.R*p.T))))
 
     # NKCC1
-    fNKCC1 = p.gNKCC1*p.R*p.T/p.F*(np.log(KCe) + np.log(NaCe)
+    JNKCC1 = p.PNKCC1*p.R*p.T/p.F*(np.log(KCe) + np.log(NaCe)
                                    + 2*np.log(ClCe) - np.log(KCg)
                                    - np.log(NaCg) - 2*np.log(ClCg))
 
     # Kir4.1
     Vkg = p.R*p.T/p.F*np.log(KCe/KCg)
     minfty = 1/(2+np.exp(1.62*(p.F/p.R/p.T)*(Vg-Vkg)))
-    IKir = p.GKir*minfty*KCe/(KCe+p.KCe_thres)*(Vg-Vkg)
+    IKir = p.PKir*minfty*KCe/(KCe+p.KCe_thres)*(Vg-Vkg)
     # IKir = p.GKir*(Vg-Vkg)*sqrt(KCe)/(1+np.exp((Vg - Vkg - 34)/19.23)))
 
     # GLT-1
-    fGLTg = p.kGLTg*p.R*p.T/p.F*np.log(NaCe**3/NaCg**3*KCg/KCe *
+    JEAATg = p.PEAATg*p.R*p.T/p.F*np.log(NaCe**3/NaCg**3*KCg/KCe *
                                     p.HeOHa*GluCc/GluCg)
 
     # NCX
-    INCXg = p.kNCXg*(NaCe**3)/(p.alphaNaNCX**3 +
+    INCXg = p.PNCXg*(NaCe**3)/(p.alphaNaNCX**3 +
                                NaCe**3)*(CaCc/(p.alphaCaNCX+CaCc))*(
                                   NaCg**3/NaCe**3*np.exp(p.eNCX*p.F*Vg/p.R/p.T) -
                                   CaCg/CaCc*np.exp((p.eNCX-1)*p.F*Vg/p.R/p.T))/(
@@ -269,8 +271,8 @@ def model(t, y, p,par_, *args):
         dict_ = p.block
         for key in dict_:
             val_ = dict_[key]
-            blockOther = (1/(1+np.exp(p.beta1*(t-val_[0]))) +
-                          1/(1+np.exp(-p.beta2*(t-val_[1]))))
+            blockOther = (1/(1+np.exp(100*(t-val_[0]))) +
+                          1/(1+np.exp(-100*(t-val_[1]))))
             if key == 'INaG':
                 INaG = INaG*blockOther
             elif key == 'IKG':
@@ -283,14 +285,14 @@ def model(t, y, p,par_, *args):
                 ICaG = ICaG*blockOther
             elif key == 'INCXi':
                 INCXi = INCXi*blockOther
-            elif key == 'fGLTi':
-                fGLTi = fGLTi*blockOther
+            elif key == 'JEAATi':
+                JEAATi = JEAATi*blockOther
             elif key == 'IKir':
                 IKir = IKir*blockOther
-            elif key == 'fNKCC1':
-                fNKCC1 = fNKCC1*blockOther
-            elif key == 'fGLTg':
-                fGLTg = fGLTg*blockOther
+            elif key == 'JNKCC1':
+                JNKCC1 = JNKCC1*blockOther
+            elif key == 'JEAATg':
+                JEAATg = JEAATg*blockOther
             elif key == 'INCXg':
                 INCXg = INCXg*blockOther
             elif key == 'WaterN':
@@ -301,7 +303,10 @@ def model(t, y, p,par_, *args):
         arg_excite = p.excite
         blocker_Excite = 1 - (1/(1+np.exp(100*(t-arg_excite[0]))) +
                               1/(1+np.exp(-100*(t-arg_excite[1]))))
-        IExcite = blocker_Excite*10/p.F*(1-signal.square(array(5*t),duty=0.95))
+        IExcite = blocker_Excite*arg_excite[2]/2/p.F*(1-signal.square(array(5*t),duty=arg_excite[3]))
+        dur_ = arg_excite[3]
+        duty_ = arg_excite[4]
+        IExcite = blocker_Excite*arg_excite[2]/2/p.F*(1-signal.square(2*pi*array(t)*(1-duty_)/(dur_/60),duty=duty_))
         #IExcite = blocker_Excite*4.5/p.F
     else:
         IExcite = 0
@@ -316,35 +321,33 @@ def model(t, y, p,par_, *args):
     # ==========================================================================
     # ----------------------------FINAL MODEL-----------------------------------
     # ==========================================================================
-    Ipumpi = Ipump
-    fActiveg = fActive
     
     ODEs = [  # Neuron
-       ((-1/p.F*(INaG+INaL+3*Ipump))-synapse_block*3/p.F*INCXi +
-        synapse_block*3*fGLTi ),
-       (-1/p.F*(IKG+IKL-2*Ipump)-JKCl-synapse_block*fGLTi),
-       (1/p.F*(IClG+IClL)-JKCl),
+       ((-1/p.F*(INaG+INaLi+3*Ipumpi))-synapse_block*3/p.F*INCXi +
+        synapse_block*3*JEAATi ),
+       (-1/p.F*(IKG+IKLi-2*Ipumpi)-JKCl-synapse_block*JEAATi),
+       (1/p.F*(IClG+IClLi)-JKCl),
        gates_block*(alpham*(1-m)-betam*m),
        gates_block*(alphah*(1-h)-betah*h),
        gates_block*(alphan*(1-n)-betan*n),
-       synapse_block*(-1/p.F*(ICaG+ICaL) + 1/p.F*INCXi),
+       synapse_block*(-1/p.F*(ICaG+ICaLi) + 1/p.F*INCXi),
        # GLUTAMATE RECYCLING
        (k1*ND-(p.kmin1+k2)*NN+kmin2*NR),
        (k2*NN-(kmin2+3*p.k3*CaCi)*NR + p.kmin3*NR1),
        (3*p.k3*CaCi*NR-(p.kmin3+2*p.k3*CaCi)*NR1+2*p.kmin3*NR2),
        (2*p.k3*CaCi*NR1-(2*p.kmin3+p.k3*CaCi)*NR2+3*p.kmin3*NR3),
        (p.k3*CaCi*NR2-(3*p.kmin3+p.k4)*NR3),
-       (- NI*ND/p.trec + fGLTi + fRelGlui),
+       synapse_block*(- NI*ND/p.trec + JEAATi + 1/p.F*IGluLi),
        (NI*ND/p.trec-k1*ND+p.kmin1*NN),
        # ASTROCYTE
-       (astblock*(-3*fActive + fRelNa + fNKCC1 -
-                  synapse_block*3/p.F*INCXg + synapse_block*3*fGLTg)),
-       astblock*(IKir + 2*fActive + fRelK
-                 + fNKCC1-synapse_block*fGLTg),
-       astblock*(2*fNKCC1 + fRelCl),
-       synapse_block*astblock*(1/(p.F)*INCXg - fRelCa),
+       astblock*((-1/p.F)*(3*Ipumpg + INaLg +
+                  synapse_block*3*INCXg)+JNKCC1+synapse_block*3*JEAATg),
+       astblock*((-1/p.F)*(IKir - 2*Ipumpg + IKLg)+
+                 + JNKCC1-synapse_block*JEAATg),
+       astblock*(2*JNKCC1 + 1/p.F*IClLg),
+       synapse_block*astblock*1/p.F*(-INCXg + ICaLg),
        # POSTSYN
-       astblock*fGLTg + astblock*fRelGlu,  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
+       synapse_block*astblock*(JEAATg + 1/p.F*IGluLg),  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
        0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\
        # WATER
        fluxi, \
@@ -353,9 +356,13 @@ def model(t, y, p,par_, *args):
     if 'excite' in p.__dict__.keys():
         ODEs[19] =  p.F/p.C*(ODEs[0]+ODEs[1]+synapse_block*2*(ODEs[6])-synapse_block*(ODEs[7]+ODEs[8]+ODEs[9]+ODEs[10]+ODEs[11]+ODEs[12]+ODEs[13])-ODEs[2] + IExcite)
     
-    ODEs1 = np.array(ODEs)*60*1e3
+    ODEs = array(ODEs)*60*1e3
 
     if args:
-        return eval(args[0])
+        if 'ax1' in args[0] or 'ax2' in args[0]:
+            temp_ = args[0]
+            return eval(temp_[3:])
+        else:     
+            return eval(args[0])
     else:
-        return ODEs1
+        return ODEs
