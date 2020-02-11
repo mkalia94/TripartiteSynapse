@@ -41,8 +41,8 @@ else:
 fm = fmclass(paramdict)
 
 negcheck_init(fm)
-exec_cases(fm)
-exec_solve(fm)
+exec_cases(fm,fmclass)
+t,y = exec_solve(fm)
 
 
 
