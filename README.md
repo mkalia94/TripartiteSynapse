@@ -1,12 +1,28 @@
-# The Tripartite Synapse
+# Energy-deprived tripartite synapse
+Running the simulations from the manuscript 'Ion dynamics of the energy-deprived tripartite synapse'
 
-## Dependencies
-Runs on Python 3.x
-Dependencies: scipy, numpy, assimulo, matplotlib, argparse, autograd
+## Requirements
+ a) Install Python 3.x (anaconda recommended)
+ b) In a new environment install the following packages:
+  - warnings
+  - numpy
+  - assimulo
+  - matplotlib
+  - scipy
+  - json
+  - os
+  - autograd 
+  - argparse
 
-## Sample Run
-An example of running multiple experiments in a bash script is done in `Code/Example`. Run:
+## Simulating
+Refer to files 'Example' and Paper_Figures on how to run simulations. Run:
 `chmod +x ./Example`
 `Example`
+
+## Bifurcations
+Bifurcation computations are stored in various .mat files in the folder 'BifFiles'. Running 'createbif.py' constructs the bifurcation diagram presented in Fig. 5 automatically.
+
+## Further info
+For any further questions, please contact m.kalia@utwente.nl
 
 
