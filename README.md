@@ -4,15 +4,15 @@ Running the simulations from the manuscript 'Ion dynamics of the energy-deprived
 ## Requirements
   - Install Python 3.x (anaconda recommended)
   - In a new environment install the following packages:
-   - warnings
-   - numpy
-   - assimulo
-   - matplotlib
-   - scipy
-   - json
-   - os
-   - autograd 
-   - argparse
+       - warnings
+       - numpy
+       - assimulo
+       - matplotlib
+       - scipy
+       - json
+       - os
+       - autograd 
+       - argparse
 
 ## Simulating
 Refer to files 'Example' and Paper_Figures on how to run simulations. Run:
