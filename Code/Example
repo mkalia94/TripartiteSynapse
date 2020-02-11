@@ -98,4 +98,7 @@ for name_ in "${!Experiments[@]}"; do
     --saveloc "$name_/${ECSsizes[$size_]}" \
     --nogates
   done; 
-done
+done;
+
+# python set_up.py --solve --saveloc 'TwoCasesExample' --casename 'ED' --case1 '{"tstart":20,"tend":25}' --case2 '{"tstart":20,"tend":30}' --alphae0 0.8  --tfinal 50  --perc 0.5 --nogates
+
