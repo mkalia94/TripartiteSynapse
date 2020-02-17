@@ -23,6 +23,7 @@ def model(t, y, p, *args):
         Vtemp = y[:, 19]
         Wi = y[:, 20]
         Wg = y[:, 21]
+        NH = y[:, 22]
     else:
         NNa = y[0]
         NK = y[1]
@@ -46,6 +47,7 @@ def model(t, y, p, *args):
         Vtemp = y[19]
         Wi = y[20]
         Wg = y[21]
+        NH = y[22]
 
     if p.nosynapse:
         synapse_block = 0
@@ -58,9 +60,11 @@ def model(t, y, p, *args):
     NNae = p.CNa - NNag - NNa
     NKe = p.CK - NKg - NK
     NCle = p.CCl - NClg - NCl
+    NHe = p.CH - NHg - NH
     NaCe = NNae/We
     KCe = NKe/We
     ClCe = NCle/We
+    HCe = NHe/We
     # Neuron
     NGlui = NI
     NaCi = NNa/Wi
@@ -68,15 +72,17 @@ def model(t, y, p, *args):
     ClCi = NCl/Wi
     CaCi = NCai/p.VolPreSyn
     GluCi = NGlui/p.VolPreSyn
+    HCi = NH/Wi
     # Astrocyte
     NaCg = NNag/Wg
     KCg = NKg/Wg
     ClCg = NClg/Wg
     GluCg = NGlug/p.VolPAP
     CaCg = NCag/p.VolPAP
+    HCg = NHg/Wg
     # Cleft
     NCac = p.CCa - NCai - NCag
-    NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1- NR2 - NR3
+    NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1 - NR2 - NR3
     CaCc = NCac/p.Volc
     GluCc = NGluc/p.Volc
     
@@ -84,11 +90,10 @@ def model(t, y, p, *args):
     if 'excite' in p.__dict__.keys():
         V = Vtemp
     else:
-        V = p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*(NGlui+NN+NR+NR1+NR2+NR3+ND)-NCl-p.NAi)
+        V = p.F/p.C*(NNa+NK+NH+synapse_block*2*NCai-synapse_block*(NGlui+NN+NR+NR1+NR2+NR3+ND)-NCl-p.NAi)
     Vi = V # Needed for plotting
-    Vg = p.F/p.Cg*(NNag + NKg + p.NBg - p.NAg - NClg +
+    Vg = p.F/p.Cg*(NNag + NKg + NHg + p.NBg - p.NAg - NClg +
                    synapse_block*2*NCag - synapse_block*NGlug)
-
     # ==========================================================================
     # --------------------NEURON-------------------------------------------------
     # ===========================================================================
@@ -125,6 +130,10 @@ def model(t, y, p, *args):
        p.R*p.T)*V*((CaCi-
                     CaCc*exp(-2*(p.F*V)/(p.R*p.T)))/(
                        1-exp(-2*(p.F*V)/(p.R*p.T))))
+    IHG = p.PHG * (p.F ** 2) * (V) / (
+            p.R * p.T) * ((HCi -
+                           HCe * exp(-(p.F * V) / (p.R * p.T))) / (
+                                  1 - exp(-p.F * V / (p.R * p.T))))
 
     # Leak currents
     INaLi = p.PNaLi*(p.F**2)/(
@@ -147,6 +156,10 @@ def model(t, y, p, *args):
        p.R*p.T)*V*((GluCi -
                     GluCc*exp((p.F*V)/(p.R*p.T)))/(
                        1-exp((p.F*V)/(p.R*p.T))))
+
+    IHLi = p.PHLi*p.F**2/(p.R*p.T)*V*((
+       HCi - HCe*exp((-p.F*V)/(p.R*p.T)))/(
+          1-exp((-p.F*V)/(p.R*p.T))))
 
     # Blockade
     blockerExp = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(
@@ -172,6 +185,10 @@ def model(t, y, p, *args):
           NaCi**3/NaCe**3*exp(p.eNCX*p.F*V/p.R/p.T) -
           CaCi/CaCc*exp((p.eNCX-1)*p.F*V/p.R/p.T))/(
              1+p.ksatNCX*exp((p.eNCX-1)*p.F*V/p.R/p.T))
+
+    # NHE
+    JNHEi = p.PNHE * p.R * p.T / p.F * log(
+        p.NaCe0 / p.NaCi * p.HCe / p.HCi)
 
     # EAAT
     JEAATi = p.PEAATi*p.R*p.T/p.F*log(NaCe**3/NaCi**3 *
@@ -225,6 +242,10 @@ def model(t, y, p, *args):
                                    + 2*log(ClCe) - log(KCg)
                                    - log(NaCg) - 2*log(ClCg))
 
+    # NHE
+    JNHEg = p.PNHE*p.R*p.T/p.F*log(
+        (p.NaCe/p.NaCg)*(p.HCe/p.HCg))
+
     # Kir4.1
     Vkg = p.R*p.T/p.F*log(KCe/KCg)
     minfty = 1/(2+exp(1.62*(p.F/p.R/p.T)*(Vg-Vkg)))
@@ -246,9 +267,10 @@ def model(t, y, p, *args):
     # =========================================================================
     # ----------------------------VOLUME DYNAMICS------------------------------
     # =========================================================================
-    SCi = NaCi+KCi+ClCi+p.NAi/Wi
-    SCe = NaCe+KCe+ClCe+p.NAe/We + p.NBe/We
-    SCg = NaCg + KCg + ClCg + p.NAg/Wg + p.NBg/Wg
+    SCi = NaCi+KCi+ClCi+HCi+p.NAi/Wi
+    SCe = NaCe+KCe+ClCe+HCe+p.NAe/We + p.NBe/We
+    SCg = NaCg + KCg + ClCg + HCg + p.NAg/Wg + p.NBg/Wg
+
     delpii = p.R*p.T*(SCi-SCe)
     fluxi = p.LH20i*(delpii)
     delpig = p.R*p.T*(SCg-SCe)
@@ -324,9 +346,10 @@ def model(t, y, p, *args):
     
     ODEs = [  # Neuron
        ((-1/p.F*(INaG+INaLi+3*Ipumpi))-synapse_block*3/p.F*INCXi +
-        synapse_block*3*JEAATi ),
+        synapse_block*3*JEAATi + JNHEi),
        (-1/p.F*(IKG+IKLi-2*Ipumpi)-JKCl-synapse_block*JEAATi),
        (1/p.F*(IClG+IClLi)-JKCl),
+       (-1/p.F*(IHG+IHLi)-synapse_block*JNHEi),
        gates_block*(alpham*(1-m)-betam*m),
        gates_block*(alphah*(1-h)-betah*h),
        gates_block*(alphan*(1-n)-betan*n),
@@ -341,11 +364,12 @@ def model(t, y, p, *args):
        (NI*ND/p.trec-k1*ND+p.kmin1*NN),
        # ASTROCYTE
        astblock*((-1/p.F)*(3*Ipumpg + INaLg +
-                  synapse_block*3*INCXg)+JNKCC1+synapse_block*3*JEAATg),
+                  synapse_block*3*INCXg)+JNKCC1+synapse_block*3*JEAATg+JNHEg),
        astblock*((-1/p.F)*(-IKir - 2*Ipumpg + IKLg)+
                  + JNKCC1-synapse_block*JEAATg),
        astblock*(2*JNKCC1 + 1/p.F*IClLg),
        synapse_block*astblock*(-1/2/p.F)*(-INCXg + ICaLg),
+       astblock*(JNHE + 1/p.F*IHLg),
        # POSTSYN
        synapse_block*astblock*(JEAATg + 1/p.F*IGluLg),  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
        0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\

@@ -32,9 +32,11 @@ dict_ = {#
         'PNaG' : 80*1e-5,         # permeability of gated Na current
         'PKG' : 40*1e-5,          # permbeability of gated K current
         'PClG' : 1.95*1e-5,       # permeability of gated Cl current
+        # 'PHG' : 0,
         'PNaL_base': 0.2*1e-5,
         'PKL_base': 2*1e-5,
         'PClL_base': 0.25*1e-5,
+        #'PHL_base': 0,
         'UKCl' : 13*1e-7,         # flux rate of KCl cotransporter
         'LH20i' : 2*1e-14 ,       # Osmotic permeability in the neuron
         'PNKAi' : 54.5*1.6,       # Baseline NKA pump strength
@@ -73,16 +75,19 @@ dict_ = {#
         'ClCi0' : 7,              # Neuronal chloride concentration
         'CaCi0' : 0.1*1e-3,       # Neuronal calcium concentration
         'GluCi0' : 3 ,            # Neuronal glutamate concentration
+        # 'HCi0' : 0
         'NaCe0' : 152,            # Extracellular sodium concentration
         'KCe0' : 3,               # Extracellular potassium concentration
         'ClCe0' : 135,            # Extracellular chloride concentration
         'CaCc0' : 1.8,            # Cleft calcium concentration
         'GluCc0' : 1*1e-4,        # Cleft glutamate concentration
+        # 'HCe0' : 0
         'NaCg0' : 13,             # Astrocyte sodium concentration
         'KCg0' : 80,              # Astrocyte potassium concentration
         'ClCg0' : 35,             # Astrocyte chloride concentration
         'CaCg0' : 0.11*1e-3,      # Astrocyte calcium concentration
         'GluCg0' : 2,             # Astrocyte glutamate concentration
+        # #HCg0 = 0
         'Wi0' : 2,                # Neuronal volume
         'Wg0' : 1.7,              # Astrocyte volume
         'VolPreSyn' : 1*1e-3,     # Presynaptic terminal volume (fixed)
