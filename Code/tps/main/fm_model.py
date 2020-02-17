@@ -61,6 +61,7 @@ def model(t, y, p, *args):
     NaCe = NNae/We
     KCe = NKe/We
     ClCe = NCle/We
+    HCe = NHe/We
     # Neuron
     NGlui = NI
     NaCi = NNa/Wi
@@ -68,12 +69,14 @@ def model(t, y, p, *args):
     ClCi = NCl/Wi
     CaCi = NCai/p.VolPreSyn
     GluCi = NGlui/p.VolPreSyn
+    HCi = NHi/Wi
     # Astrocyte
     NaCg = NNag/Wg
     KCg = NKg/Wg
     ClCg = NClg/Wg
     GluCg = NGlug/p.VolPAP
     CaCg = NCag/p.VolPAP
+    HCg = NHg/Wg
     # Cleft
     NCac = p.CCa - NCai - NCag
     NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1- NR2 - NR3
@@ -147,7 +150,10 @@ def model(t, y, p, *args):
        p.R*p.T)*V*((GluCi -
                     GluCc*exp((p.F*V)/(p.R*p.T)))/(
                        1-exp((p.F*V)/(p.R*p.T))))
-
+    IHLi = p.PHLi * p.F ** 2 / (
+            p.R * p.T) * V * ((HCi -
+                               HCe * exp((p.F * V) / (p.R * p.T))) / (
+                                      1 - exp((p.F * V) / (p.R * p.T))))
     # Blockade
     blockerExp = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(
        1+exp(-p.beta2*(t-p.tend)))
@@ -331,6 +337,7 @@ def model(t, y, p, *args):
        gates_block*(alphah*(1-h)-betah*h),
        gates_block*(alphan*(1-n)-betan*n),
        synapse_block*(-1/2/p.F)*(ICaG+ICaLi -INCXi),
+       -1/p.F*(IHG+IHLi) - JNHE,
        # GLUTAMATE RECYCLING
        (k1*ND-(p.kmin1+k2)*NN+kmin2*NR),
        (k2*NN-(kmin2+3*p.k3*CaCi)*NR + p.kmin3*NR1),
