@@ -195,7 +195,7 @@ def model(t, y, p, *args):
              1+p.ksatNCX*exp((p.eNCX-1)*p.F*V/p.R/p.T))
 
     # NHE
-    JNHEi = p.PNHE * p.R * p.T / p.F * log(
+    JNHEi = p.PNHEi * p.R * p.T / p.F * log(
         NaCe / NaCi * HCi / HCc)
 
     # EAAT
@@ -255,7 +255,7 @@ def model(t, y, p, *args):
                 1 - exp((-p.F * p.Vg) / (p.R * p.T))))
 
     # NHE
-    JNHEg = p.PNHE*p.R*p.T/p.F*log(
+    JNHEg = p.PNHEg*p.R*p.T/p.F*log(
         (NaCe/NaCg)*(HCg/HCc))
 
     # Kir4.1
@@ -381,7 +381,7 @@ def model(t, y, p, *args):
                  + JNKCC1-synapse_block*JEAATg),
        astblock*(2*JNKCC1 + 1/p.F*IClLg),
        synapse_block*astblock*(-1/2/p.F)*(-INCXg + ICaLg),
-       astblock*(JNHEg + 1/p.F*IHLg),
+       astblock*(1/p.F*IHLg - JNHEg + JEAATg),
        # POSTSYN
        synapse_block*astblock*(JEAATg + 1/p.F*IGluLg),  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
        0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\

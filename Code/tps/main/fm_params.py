@@ -22,8 +22,8 @@ def parameters(p, dict_):
     p.PEAATi = p.eaatScaleNeuron*1e-6
     p.PNCXi = 2*p.ncxScale*0.1*54
     p.PNCXg = p.PNCXi
-    p.PNHEi = 1e-5
-    p.PNHEg = 1e-6
+    p.PNHEi = 1
+    p.PNHEg = 1
 
     # Glial uptake parameters
     p.PNKAg = p.PNKAi
@@ -218,7 +218,7 @@ def parameters(p, dict_):
     p.INaLg0 = p.F**2/(p.R*p.T)*p.Vg0*((
         p.NaCg0-p.NaCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(
             1-exp((-p.F*p.Vg0)/(p.R*p.T))))
-    p.IHLg0 = p.F**2/(p.R*p.T)*p.Vg0*((
+    p.IHLg0 = p.F**2/(p.R*p.T)*p.Vg0*((                                #hier
         p.HCg0-p.HCc0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(
             1-exp((-p.F*p.Vg0)/(p.R*p.T))))
     p.JNKCC10 = p.PNKCC1*p.R*p.T/p.F*(log(p.KCe0) +

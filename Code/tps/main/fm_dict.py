@@ -80,13 +80,13 @@ dict_ = {#
         'ClCe0' : 135,            # Extracellular chloride concentration
         'CaCc0' : 1.8,            # Cleft calcium concentration
         'GluCc0' : 1*1e-4,        # Cleft glutamate concentration
-        'HCg0' : 2.5*1e-5,
+        'HCg0' : 3.1*1e-5,
         'NaCg0' : 13,             # Astrocyte sodium concentration
         'KCg0' : 80,              # Astrocyte potassium concentration
         'ClCg0' : 35,             # Astrocyte chloride concentration
         'CaCg0' : 0.11*1e-3,      # Astrocyte calcium concentration
         'GluCg0' : 2,             # Astrocyte glutamate concentration
-        'HCc0' : 3*1e-5 ,
+        'HCc0' : 2.5*1e-5,
         'Wi0' : 2,                # Neuronal volume
         'Wg0' : 1.7,              # Astrocyte volume
         'VolPreSyn' : 1*1e-3,     # Presynaptic terminal volume (fixed)
