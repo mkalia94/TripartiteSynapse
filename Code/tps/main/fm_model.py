@@ -25,7 +25,7 @@ def model(t, y, p, *args):
         Vtemp = y[:, 21]
         Wi = y[:, 22]
         Wg = y[:, 23]
-
+    #testestest
     else:
         NNa = y[0]
         NK = y[1]
