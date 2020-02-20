@@ -22,6 +22,9 @@ def parameters(p, dict_):
     p.PEAATi = p.eaatScaleNeuron*1e-6
     p.PNCXi = 2*p.ncxScale*0.1*54
     p.PNCXg = p.PNCXi
+    p.PNHEi = 1e-5
+    p.PNHEg = 1e-6
+
     # Glial uptake parameters
     p.PNKAg = p.PNKAi
     p.LH20g = p.LH20i
@@ -30,16 +33,18 @@ def parameters(p, dict_):
 
 
     p.NF0 = p.GluCc0*p.Volc
-    # p.NGlui0 = p.GluCi0*p.VolPreSyn
-    p.NGluc0 = p.NF0
+    p.NGlui0 = p.GluCi0*p.VolPreSyn
+    #p.NGluc0 = p.NF0
     p.We0 = p.alphae0*(p.Wi0 + p.Wg0)/(1-p.alphae0)
     p.NNai0 = p.NaCi0*p.Wi0
     p.NKi0 = p.KCi0*p.Wi0
     p.NCli0 = p.ClCi0*p.Wi0
     p.NCai0 = p.CaCi0*p.VolPreSyn
+    p.NHi0 = p.HCi0*p.Wi0
     p.NNae0 = p.NaCe0*p.We0
     p.NKe0 = p.KCe0*p.We0
     p.NCle0 = p.ClCe0*p.We0
+    p.NHc0 = p.HCc0*p.VolPAP
     p.NCac0 = p.CaCc0*p.Volc
     p.NGluc0 = p.NF0
     p.NNag0 = p.NaCg0*p.Wg0
@@ -47,10 +52,13 @@ def parameters(p, dict_):
     p.NClg0 = p.ClCg0*p.Wg0
     p.NCag0 = p.CaCg0*p.VolPAP
     p.NGlug0 = p.GluCg0*p.VolPAP
+    p.NHg0 = p.HCg0*p.VolPAP
+    # C = combined amounts of conc of each Ion
     p.CNa = p.NNai0 + p.NNae0 + p.NNag0
     p.CK = p.NKi0 + p.NKe0 + p.NKg0
     p.CCl = p.NCli0 + p.NCle0 + p.NClg0
     p.CCa = p.NCai0 + p.NCac0 + p.NCag0
+    p.CH = p.NHi0 + p.NHc0 + p.NHg0
     p.Wtot = p.Wi0 + p.We0 + p.Wg0
 
     #-------------------------------------------------------------
@@ -77,7 +85,7 @@ def parameters(p, dict_):
     
     # Impermeants and conserved quantities
     p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
-             block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F)
+             block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 + p.NHi0 - (p.C*p.Vi0)/p.F)
     p.NAe = (p.Cg*p.Vg0*p.Wi0 + p.C*p.Vi0*(-p.We0 + p.Wi0) +
              p.F*(block_synapse*2*p.NCai0*p.We0 -
                   block_synapse*p.NGlui0*p.We0 + 2*p.NKi0*p.We0 +
@@ -146,6 +154,7 @@ def parameters(p, dict_):
         p.R*p.T)*((p.ClCi0 -
                    p.ClCe0*exp(p.F*p.Vi0/(p.R*p.T)))/(
                        1-exp(p.F*p.Vi0/(p.R*p.T))))
+
     p.INaLi0 = (p.F**2)/(p.R*p.T)*p.Vi0*((
         p.NaCi0 -
         p.NaCe0*exp((-p.F*p.Vi0)/(p.R*p.T)))/(
@@ -155,6 +164,9 @@ def parameters(p, dict_):
             1-exp((-p.F*p.Vi0)/(p.R*p.T))))
     p.IClLi0 = (p.F**2)/(p.R*p.T)*p.Vi0*((
         p.ClCi0-p.ClCe0*exp((p.F*p.Vi0)/(p.R*p.T)))/(
+            1-exp((p.F*p.Vi0)/(p.R*p.T))))
+    p.IHLi0 = (p.F**2)/(p.R*p.T)*p.Vi0*((
+        p.HCi0-p.HCc0*exp((p.F*p.Vi0)/(p.R*p.T)))/(
             1-exp((p.F*p.Vi0)/(p.R*p.T))))
     p.JKCl0 = p.UKCl*p.R*p.T/p.F*(log(p.KCi0) +
                                   log(p.ClCi0)-log(p.KCe0)-log(p.ClCe0))
@@ -169,8 +181,11 @@ def parameters(p, dict_):
                 p.NaCi0**3/p.NaCe0**3*exp(p.eNCX*p.F*p.Vi0/p.R/p.T) -
                 p.CaCi0/p.CaCc0*exp((p.eNCX-1)*p.F*p.Vi0/p.R/p.T))/(
                     1+p.ksatNCX*exp((p.eNCX-1)*p.F*p.Vi0/p.R/p.T))
+
     p.JEAATi0 = p.PEAATi*p.R*p.T/p.F*log(
-        p.NaCe0**3/p.NaCi0**3*p.KCi0/p.KCe0*p.HeOHai*p.GluCc0/p.GluCi0)
+        p.NaCe0**3/p.NaCi0**3*p.KCi0/p.KCe0*p.HCc0/p.HCi0*p.GluCc0/p.GluCi0)
+    p.JNHEi0 = p.PNHEi*p.R*p.T/p.F*log(
+        p.NaCe0/p.NaCi0*p.HCi0/p.HCc0)
     p.ICaG0 = p.PCaG*p.m0**2*p.h0*4*p.F/(p.R*p.T)*p.Vi0*((
         p.CaCi0-p.CaCc0*exp(-2*(p.F*p.Vi0)/(p.R*p.T)))/(
             1-exp(-2*(p.F*p.Vi0)/(p.R*p.T))))
@@ -182,13 +197,14 @@ def parameters(p, dict_):
             1-exp((p.F*p.Vi0)/(p.R*p.T)))) 
 
     p.PNaLi = (-p.INaG0 - 3*p.neurPump - block_synapse*3*p.INCXi0
-               + block_synapse*3*p.JEAATi0*p.F)/p.INaLi0  # Estimated sodium leak
+               + block_synapse*3*p.JEAATi0*p.F + p.JNHEi0*p.F)/p.INaLi0  # Estimated sodium leak
     #                                                    conductance in neuron
     p.PKLi = (-p.IKG0 + 2*p.neurPump - p.F*p.JKCl0 -
               block_synapse*p.JEAATi0*p.F)/p.IKLi0    # Estimated K leak conductance in neuron 
     p.PClLi = (p.F*p.JKCl0 - p.IClG0)/p.IClLi0                 # Estimated Cl leak conducatance in neuron
     p.PCaLi = (-p.ICaG0+p.INCXi0)/p.ICaLi0
-
+    p.PHLi = (p.JEAATi0*p.F + p.JNHEi0*p.F)/p.IHLi0
+    #
 
 
     # ---------------------------------------------------------------------------------
@@ -201,6 +217,9 @@ def parameters(p, dict_):
             1-exp((p.F*p.Vg0)/(p.R*p.T))))
     p.INaLg0 = p.F**2/(p.R*p.T)*p.Vg0*((
         p.NaCg0-p.NaCe0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(
+            1-exp((-p.F*p.Vg0)/(p.R*p.T))))
+    p.IHLg0 = p.F**2/(p.R*p.T)*p.Vg0*((
+        p.HCg0-p.HCc0*exp((-p.F*p.Vg0)/(p.R*p.T)))/(
             1-exp((-p.F*p.Vg0)/(p.R*p.T))))
     p.JNKCC10 = p.PNKCC1*p.R*p.T/p.F*(log(p.KCe0) +
                                       log(p.NaCe0) +
@@ -220,12 +239,15 @@ def parameters(p, dict_):
         p.CaCg0-p.CaCc0*exp((-2*p.F*p.Vg0)/(p.R*p.T)))/(
             1-exp((-2*p.F*p.Vg0)/(p.R*p.T))))
     p.JEAATg0 = p.PEAATg*p.R*p.T/p.F*log(
-        p.NaCe0**3/p.NaCg0**3*p.KCg0/p.KCe0*p.HeOHa*p.GluCc0/p.GluCg0)
+        p.NaCe0**3/p.NaCg0**3*p.KCg0/p.KCe0*p.HCc0/p.HCg0*p.GluCc0/p.GluCg0)
+    p.JNHEg0 = p.PNHEg*p.R*p.T/p.F*log(
+       p.NaCe0/p.NaCg0*p.HCg0/p.HCc0)
     p.INCXg0 = p.PNCXg*(p.NaCe0**3)/(p.alphaNaNCX**3+p.NaCe0**3)*(
         p.CaCc0/(p.alphaCaNCX+p.CaCc0))*(
             p.NaCg0**3/p.NaCe0**3*exp(p.eNCX*p.F*p.Vg0/p.R/p.T) -
             p.CaCg0/p.CaCc0*exp((p.eNCX-1)*p.F*p.Vg0/p.R/p.T))/(
                 1+p.ksatNCX*exp((p.eNCX-1)*p.F*p.Vg0/p.R/p.T))
+
     p.IGluLg0 = p.F**2/(p.R*p.T)*p.Vg0*((
         p.GluCg0-p.GluCc0*exp((p.F*p.Vg0)/(p.R*p.T)))/(
             1-exp((p.F*p.Vg0)/(p.R*p.T))))
@@ -233,17 +255,19 @@ def parameters(p, dict_):
 
     p.PNaLg = (-3*p.astpump + p.F*p.JNKCC10
                 -block_synapse*3*p.INCXg0 +
-                block_synapse*3*p.JEAATg0*p.F)/p.INaLg0
+                    block_synapse*3*p.JEAATg0*p.F + p.JNHEg0*p.F)/p.INaLg0
     p.PKLg = (p.IKir0 + 2*p.astpump +
                p.F*p.JNKCC10-block_synapse*p.JEAATg0*p.F)/p.IKLg0
     p.PClLg = -2*p.F*p.JNKCC10/p.IClLg0
     p.PCaLg = p.INCXg0/p.ICaLg0
+    p.PHLg = (p.JEAATg0*p.F+p.JNHEg0*p.F)/p.IHLg0
+
     #p.kRelCa = p.kRelCa*(1+1e-3)
     # -------------------------------------------------------------------------------
     
     # Glu parameters
     p.PGluLi = (p.F*p.NI0*p.ND0/p.trec - p.F*p.JEAATi0)/p.IGluLi0
-    p.PGluLg   = -p.F*p.JEAATg0/p.IGluLg0
+    p.PGluLg = -p.F*p.JEAATg0/p.IGluLg0
     
     
 
@@ -260,7 +284,7 @@ def parameters(p, dict_):
         disp('ERROR: Quantity of an impermeant is nonpositive')
         p.err = 10
         
-    if (p.PGluLg>0) & (p.PNaLg>0) & (p.PKLg>0) & (p.PClLg>0) & (p.PCaLg>0):
+    if (p.PGluLg>0) & (p.PNaLg>0) & (p.PKLg>0) & (p.PClLg>0) & (p.PCaLg>0) & (p.PHLg>0):
         disp('Leak cond. in astrocytes....OK')
     else:
         disp('ERROR: Sign error in astrocyte leak conductance')
@@ -272,7 +296,7 @@ def parameters(p, dict_):
         disp('----------------------------------')
         p.err = 10
     
-    if (p.PGluLi>0) & (p.PNaLi>0) & (p.PKLi>0) & (p.PClLi>0) & (p.PCaLi>0):
+    if (p.PGluLi>0) & (p.PNaLi>0) & (p.PKLi>0) & (p.PClLi>0) & (p.PCaLi>0) & (p.PHLi>0):
         disp('Leak cond. in neurons....OK')
     else:
         disp('ERROR: Sign error in neuron leak conductance')

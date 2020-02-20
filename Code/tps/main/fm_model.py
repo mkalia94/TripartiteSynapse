@@ -8,21 +8,24 @@ def model(t, y, p, *args):
         h = y[:, 4]
         n = y[:, 5]
         NCai = y[:, 6]
-        NN = y[:, 7]
-        NR = y[:, 8]
-        NR1 = y[:, 9]
-        NR2 = y[:, 10]
-        NR3 = y[:, 11]
-        NI = y[:, 12]
-        ND = y[:, 13]
-        NNag = y[:, 14]
-        NKg = y[:, 15]
-        NClg = y[:, 16]
-        NCag = y[:, 17]
-        NGlug = y[:,18]
-        Vtemp = y[:, 19]
-        Wi = y[:, 20]
-        Wg = y[:, 21]
+        NHi = y[:, 7]
+        NN = y[:, 8]
+        NR = y[:, 9]
+        NR1 = y[:, 10]
+        NR2 = y[:, 11]
+        NR3 = y[:, 12]
+        NI = y[:, 13]
+        ND = y[:, 14]
+        NNag = y[:, 15]
+        NKg = y[:, 16]
+        NClg = y[:, 17]
+        NCag = y[:, 18]
+        NHg = y[:, 19]
+        NGlug = y[:, 20]
+        Vtemp = y[:, 21]
+        Wi = y[:, 22]
+        Wg = y[:, 23]
+
     else:
         NNa = y[0]
         NK = y[1]
@@ -31,21 +34,24 @@ def model(t, y, p, *args):
         h = y[4]
         n = y[5]
         NCai = y[6]
-        NN = y[7]
-        NR = y[8]
-        NR1 = y[9]
-        NR2 = y[10]
-        NR3 = y[11]
-        NI = y[12]
-        ND = y[13]
-        NNag = y[14]
-        NKg = y[15]
-        NClg = y[16]
-        NCag = y[17]
-        NGlug = y[18]
-        Vtemp = y[19]
-        Wi = y[20]
-        Wg = y[21]
+        NHi = y[7]
+        NN = y[8]
+        NR = y[9]
+        NR1 = y[10]
+        NR2 = y[11]
+        NR3 = y[12]
+        NI = y[13]
+        ND = y[14]
+        NNag = y[15]
+        NKg = y[16]
+        NClg = y[17]
+        NCag = y[18]
+        NHg = y[19]
+        NGlug = y[20]
+        Vtemp = y[21]
+        Wi = y[22]
+        Wg = y[23]
+
 
     if p.nosynapse:
         synapse_block = 0
@@ -58,10 +64,11 @@ def model(t, y, p, *args):
     NNae = p.CNa - NNag - NNa
     NKe = p.CK - NKg - NK
     NCle = p.CCl - NClg - NCl
+
     NaCe = NNae/We
     KCe = NKe/We
     ClCe = NCle/We
-    HCe = NHe/We
+
     # Neuron
     NGlui = NI
     NaCi = NNa/Wi
@@ -69,29 +76,32 @@ def model(t, y, p, *args):
     ClCi = NCl/Wi
     CaCi = NCai/p.VolPreSyn
     GluCi = NGlui/p.VolPreSyn
-    HCi = NHi/Wi
+
+    HCi = NHi/p.VolPreSyn
+
     # Astrocyte
     NaCg = NNag/Wg
     KCg = NKg/Wg
     ClCg = NClg/Wg
     GluCg = NGlug/p.VolPAP
     CaCg = NCag/p.VolPAP
-    HCg = NHg/Wg
+    HCg = NHg/p.VolPAP
     # Cleft
     NCac = p.CCa - NCai - NCag
-    NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1- NR2 - NR3
+    NHc = p.CH - NHi - NHg
+    NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1 - NR2 - NR3
     CaCc = NCac/p.Volc
+    Hc = NHc/p.Volc
     GluCc = NGluc/p.Volc
     
     # Voltages
     if 'excite' in p.__dict__.keys():
         V = Vtemp
     else:
-        V = p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*(NGlui+NN+NR+NR1+NR2+NR3+ND)-NCl-p.NAi)
+        V = p.F/p.C*(NNa+NK+NH+synapse_block*2*NCai-synapse_block*(NGlui+NN+NR+NR1+NR2+NR3+ND)-NCl-p.NAi)
     Vi = V # Needed for plotting
-    Vg = p.F/p.Cg*(NNag + NKg + p.NBg - p.NAg - NClg +
+    Vg = p.F/p.Cg*(NNag + NKg + NHg + p.NBg - p.NAg - NClg +
                    synapse_block*2*NCag - synapse_block*NGlug)
-
     # ==========================================================================
     # --------------------NEURON-------------------------------------------------
     # ===========================================================================
@@ -150,10 +160,15 @@ def model(t, y, p, *args):
        p.R*p.T)*V*((GluCi -
                     GluCc*exp((p.F*V)/(p.R*p.T)))/(
                        1-exp((p.F*V)/(p.R*p.T))))
-    IHLi = p.PHLi * p.F ** 2 / (
-            p.R * p.T) * V * ((HCi -
-                               HCe * exp((p.F * V) / (p.R * p.T))) / (
-                                      1 - exp((p.F * V) / (p.R * p.T))))
+
+
+
+
+    IHLi = p.PHLi*p.F**2/(p.R*p.T)*V*((
+       HCi - HCe*exp((-p.F*V)/(p.R*p.T)))/(
+          1-exp((-p.F*V)/(p.R*p.T))))
+
+
     # Blockade
     blockerExp = 1/(1+exp(p.beta1*(t-p.tstart))) + 1/(
        1+exp(-p.beta2*(t-p.tend)))
@@ -179,9 +194,13 @@ def model(t, y, p, *args):
           CaCi/CaCc*exp((p.eNCX-1)*p.F*V/p.R/p.T))/(
              1+p.ksatNCX*exp((p.eNCX-1)*p.F*V/p.R/p.T))
 
+    # NHE
+    JNHEi = p.PNHE * p.R * p.T / p.F * log(
+        NaCe / NaCi * HCi / HCc)
+
     # EAAT
     JEAATi = p.PEAATi*p.R*p.T/p.F*log(NaCe**3/NaCi**3 *
-                                    KCi/KCe*p.HeOHai*GluCc/GluCi)
+                                    KCi/KCe*HCc/HCi*GluCc/GluCi)
 
     # =========================================================================
     # ---------------------------------------------------------------------
@@ -231,6 +250,14 @@ def model(t, y, p, *args):
                                    + 2*log(ClCe) - log(KCg)
                                    - log(NaCg) - 2*log(ClCg))
 
+    p.IHLg = p.F ** 2 / (p.R * p.T) * p.Vg * ((
+            p.HCg - p.HCc * exp((-p.F * p.Vg) / (p.R * p.T))) / (
+                1 - exp((-p.F * p.Vg) / (p.R * p.T))))
+
+    # NHE
+    JNHEg = p.PNHE*p.R*p.T/p.F*log(
+        (NaCe/NaCg)*(HCg/HCc))
+
     # Kir4.1
     Vkg = p.R*p.T/p.F*log(KCe/KCg)
     minfty = 1/(2+exp(1.62*(p.F/p.R/p.T)*(Vg-Vkg)))
@@ -239,7 +266,7 @@ def model(t, y, p, *args):
 
     # GLT-1
     JEAATg = p.PEAATg*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe *
-                                    p.HeOHa*GluCc/GluCg)
+                                    HCc/HCg*GluCc/GluCg)
 
     # NCX
     INCXg = p.PNCXg*(NaCe**3)/(p.alphaNaNCX**3 +
@@ -252,9 +279,10 @@ def model(t, y, p, *args):
     # =========================================================================
     # ----------------------------VOLUME DYNAMICS------------------------------
     # =========================================================================
-    SCi = NaCi+KCi+ClCi+p.NAi/Wi
-    SCe = NaCe+KCe+ClCe+p.NAe/We + p.NBe/We
-    SCg = NaCg + KCg + ClCg + p.NAg/Wg + p.NBg/Wg
+    SCi = NaCi+KCi+ClCi+HCi+p.NAi/Wi
+    SCe = NaCe+KCe+ClCe+HCe+p.NAe/We + p.NBe/We
+    SCg = NaCg + KCg + ClCg + HCg + p.NAg/Wg + p.NBg/Wg
+
     delpii = p.R*p.T*(SCi-SCe)
     fluxi = p.LH20i*(delpii)
     delpig = p.R*p.T*(SCg-SCe)
@@ -330,14 +358,14 @@ def model(t, y, p, *args):
     
     ODEs = [  # Neuron
        ((-1/p.F*(INaG+INaLi+3*Ipumpi))-synapse_block*3/p.F*INCXi +
-        synapse_block*3*JEAATi ),
+        synapse_block*3*JEAATi + JNHEi),
        (-1/p.F*(IKG+IKLi-2*Ipumpi)-JKCl-synapse_block*JEAATi),
        (1/p.F*(IClG+IClLi)-JKCl),
        gates_block*(alpham*(1-m)-betam*m),
        gates_block*(alphah*(1-h)-betah*h),
        gates_block*(alphan*(1-n)-betan*n),
        synapse_block*(-1/2/p.F)*(ICaG+ICaLi -INCXi),
-       -1/p.F*(IHG+IHLi) - JNHE,
+       -1/p.F*(IHLi) - JNHEi + JEAATi,
        # GLUTAMATE RECYCLING
        (k1*ND-(p.kmin1+k2)*NN+kmin2*NR),
        (k2*NN-(kmin2+3*p.k3*CaCi)*NR + p.kmin3*NR1),
@@ -348,11 +376,12 @@ def model(t, y, p, *args):
        (NI*ND/p.trec-k1*ND+p.kmin1*NN),
        # ASTROCYTE
        astblock*((-1/p.F)*(3*Ipumpg + INaLg +
-                  synapse_block*3*INCXg)+JNKCC1+synapse_block*3*JEAATg),
+                  synapse_block*3*INCXg)+JNKCC1+synapse_block*3*JEAATg+JNHEg),
        astblock*((-1/p.F)*(-IKir - 2*Ipumpg + IKLg)+
                  + JNKCC1-synapse_block*JEAATg),
        astblock*(2*JNKCC1 + 1/p.F*IClLg),
        synapse_block*astblock*(-1/2/p.F)*(-INCXg + ICaLg),
+       astblock*(JNHEg + 1/p.F*IHLg),
        # POSTSYN
        synapse_block*astblock*(JEAATg + 1/p.F*IGluLg),  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
        0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\

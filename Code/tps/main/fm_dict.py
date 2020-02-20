@@ -18,7 +18,7 @@ dict_ = {#
         'perc' : 0.0,                   # Available energy during NKA blockade (in fraction, between 0 and 1)
         'tstart' : 20.0,                # Time of NKA blockade onset (in min.)
         'tend' : 80.0,                  # Time of NKA blockade offset (in min.)
-        't0': 0.0,                   
+        't0': 0.0,
         'tfinal': 150,                  # End time of simulation (in min.)
         'alphae0' : 0.0,                # Initial extracellular volume ratio (in fraction, between 0 and 1)
         #-----------------------------------------------
@@ -35,6 +35,7 @@ dict_ = {#
         'PNaL_base': 0.2*1e-5,
         'PKL_base': 2*1e-5,
         'PClL_base': 0.25*1e-5,
+        #'PHL_base': 0,
         'UKCl' : 13*1e-7,         # flux rate of KCl cotransporter
         'LH20i' : 2*1e-14 ,       # Osmotic permeability in the neuron
         'PNKAi' : 54.5*1.6,       # Baseline NKA pump strength
@@ -69,27 +70,30 @@ dict_ = {#
 
         # Initial concentrations and volumes (baseline rest)
         'NaCi0' : 13,             # Neuronal sodium concentration
-        'KCi0' : 145,             # Neuronal potassium concentration               
+        'KCi0' : 145,             # Neuronal potassium concentration
         'ClCi0' : 7,              # Neuronal chloride concentration
         'CaCi0' : 0.1*1e-3,       # Neuronal calcium concentration
         'GluCi0' : 3 ,            # Neuronal glutamate concentration
+        'HCi0' : 3*1e-5,
         'NaCe0' : 152,            # Extracellular sodium concentration
         'KCe0' : 3,               # Extracellular potassium concentration
         'ClCe0' : 135,            # Extracellular chloride concentration
         'CaCc0' : 1.8,            # Cleft calcium concentration
         'GluCc0' : 1*1e-4,        # Cleft glutamate concentration
+        'HCg0' : 2.5*1e-5,
         'NaCg0' : 13,             # Astrocyte sodium concentration
         'KCg0' : 80,              # Astrocyte potassium concentration
         'ClCg0' : 35,             # Astrocyte chloride concentration
         'CaCg0' : 0.11*1e-3,      # Astrocyte calcium concentration
         'GluCg0' : 2,             # Astrocyte glutamate concentration
+        'HCc0' : 3*1e-5 ,
         'Wi0' : 2,                # Neuronal volume
         'Wg0' : 1.7,              # Astrocyte volume
         'VolPreSyn' : 1*1e-3,     # Presynaptic terminal volume (fixed)
         'VolPAP' : 1*1e-3,        # Perisynaptic astrocyte process volume (fixed)
         'Volc' : 1*1e-3,          # Cleft volume (fixed)
 
-        # All parameters below are computed/defined in tps/fm_params.py 
+        # All parameters below are computed/defined in tps/fm_params.py
         'NF0' : 0,                # Fused glutamate = Cleft glutamate molar amount
         'NGlui0' : 0,             # Neuronal glutamate molar amount
         'NGluc0' : 0,             # Cleft glutamate molar amount
@@ -98,7 +102,7 @@ dict_ = {#
         'NKi0' : 0,               # Neuronal potassium molar amount
         'NCli0' : 0,              # Neuronal chloride molar amount
         'NCai0' : 0,              # Neuronal calcium molar amount
-        'NNae0' : 0,              # Extracellular sodium molar amount  
+        'NNae0' : 0,              # Extracellular sodium molar amount
         'NKe0' : 0,               # Extracellular potassium molar amount
         'NCle0' : 0,              # Extracellular chloride molar amount
         'NCac0' : 0,              # Cleft calcium molar amount
