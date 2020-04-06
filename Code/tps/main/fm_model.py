@@ -23,6 +23,19 @@ def model(t, y, p, *args):
         Vtemp = y[:, 19]
         Wi = y[:, 20]
         Wg = y[:, 21]
+        Wp = y[:, 22]
+        NNap = y[:, 23]
+        NKp = y[:, 24]
+        NClp = y[:, 25]
+        NCap = y[:, 26]
+        mp = y[:, 27]
+        hp = y[:, 28]
+        np = y[:, 29]
+        AMPA2A = y[:, 30]
+        AMPA2D = y[:, 31]
+        #AMPA1A = y[:,32]
+        #NMDAA = y[:, 33]
+
     else:
         NNa = y[0]
         NK = y[1]
@@ -46,6 +59,18 @@ def model(t, y, p, *args):
         Vtemp = y[19]
         Wi = y[20]
         Wg = y[21]
+        Wp = y[22]
+        NNap = y[23]
+        NKp = y[24]
+        NClp = y[25]
+        NCap = y[26]
+        mp = y[27]
+        hp = y[28]
+        np = y[29]
+        AMPA2A = y[30]
+        AMPA2D = y[31]
+        #AMPA1A = y[32]
+        #NMDAA = y[33]
 
     if p.nosynapse:
         synapse_block = 0
@@ -54,20 +79,27 @@ def model(t, y, p, *args):
 
     # Ionic amounts and concentrations
     # ECS
-    We = p.Wtot - Wi - Wg
-    NNae = p.CNa - NNag - NNa
-    NKe = p.CK - NKg - NK
-    NCle = p.CCl - NClg - NCl
+    We = p.Wtot - Wi - Wg - Wp
+    NNae = p.CNa - NNag - NNa - NNap
+    NKe = p.CK - NKg - NK -NKp
+    NCle = p.CCl - NClg - NCl - NClp
     NaCe = NNae/We
     KCe = NKe/We
     ClCe = NCle/We
-    # Neuron
+    # Presynaptic Neuron
     NGlui = NI
     NaCi = NNa/Wi
     KCi = NK/Wi
     ClCi = NCl/Wi
     CaCi = NCai/p.VolPreSyn
     GluCi = NGlui/p.VolPreSyn
+    # Postsynaptic Neuron
+
+    NaCp = NNa / Wp
+    KCp = NK / Wp
+    ClCp = NCl / Wp
+    CaCp = NCai / Wp
+
     # Astrocyte
     NaCg = NNag/Wg
     KCg = NKg/Wg
@@ -79,7 +111,8 @@ def model(t, y, p, *args):
     NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1- NR2 - NR3
     CaCc = NCac/p.Volc
     GluCc = NGluc/p.Volc
-    
+    #tprint(GluCc)
+    #Joel Glutamat: adds 150mM = 0.15M
     # Voltages
     if 'excite' in p.__dict__.keys():
         V = Vtemp
@@ -88,6 +121,8 @@ def model(t, y, p, *args):
     Vi = V # Needed for plotting
     Vg = p.F/p.Cg*(NNag + NKg + p.NBg - p.NAg - NClg +
                    synapse_block*2*NCag - synapse_block*NGlug)
+    Vp = p.F / p.C * (NNap + NKp + synapse_block * 2 * NCap - NClp - p.NAp)
+
 
     # ==========================================================================
     # --------------------NEURON-------------------------------------------------
@@ -181,6 +216,108 @@ def model(t, y, p, *args):
     # ---------------------------------------------------------------------
     # ========================================================================
 
+    # ===========================================================================
+    # --------------------------hier postsynapse-----------------------------------------
+    # ============================================================================
+    alphamp = 0.32 * (Vp + 52) / (1 - exp(-(V + 52) / 4))
+    betamp = 0.28 * (V + 25) / (exp((V + 25) / 5) - 1)
+    alphahp = 0.128 * exp(-(V + 53) / 18)
+    betahp = 4 / (1 + exp(-(V + 30) / 5))
+    alphanp = 0.016 * (V + 35) / (1 - exp(-(V + 35) / 5))
+    betanp = 0.25 * exp(-(V + 50) / 40)
+
+    if p.nogates:
+        gates_block = 0
+        mp = alphamp / (alphamp + betamp)
+        hp = alphahp / (alphahp + betahp)
+        np = alphanp / (alphanp + betanp)
+    else:
+        gates_block = 1
+
+        # Gated currents
+    INaGp = p.PNaGp * (mp ** 3) * (hp) * (p.F ** 2) * (Vp) / (
+            p.R * p.T) * ((NaCi -
+                           NaCe * exp(-(p.F * Vp) / (p.R * p.T))) / (
+                                  1 - exp(-(p.F * Vp) / (p.R * p.T))))
+    IKGp = (p.PKG * (np ** 2)) * (p.F ** 2) * (Vp) / (
+            p.R * p.T) * ((KCp -
+                           KCe * exp(-(p.F * Vp) / (p.R * p.T))) / (
+                                  1 - exp(-p.F * Vp / (p.R * p.T))))
+    IClGp = p.PClG * 1 / (1 + exp(-(Vp + 10) / 10)) * (
+            p.F ** 2) * Vp / (p.R * p.T) * ((ClCp -
+                                            ClCe * exp(p.F * Vp / (p.R * p.T))) / (
+                                                   1 - exp(p.F * Vp / (p.R * p.T))))
+    ICaGp = p.PCaG * mp ** 2 * hp * 4 * p.F / (
+            p.R * p.T) * Vp * ((CaCp -
+                               CaCc * exp(-2 * (p.F * V) / (p.R * p.T))) / (
+                                      1 - exp(-2 * (p.F * V) / (p.R * p.T))))
+
+    # Leak currents
+    INaLp = p.PNaLi * (p.F ** 2) / (
+            p.R * p.T) * Vp * ((NaCp -
+                               NaCe * exp((-p.F * Vp) / (p.R * p.T))) / (
+                                      1 - exp((-p.F * Vp) / (p.R * p.T))))
+    IKLp = p.PKLi * p.F ** 2 / (p.R * p.T) * Vp * ((
+                                KCp - KCe * exp((-p.F * Vp) / (p.R * p.T))) / (
+                                    1 - exp((-p.F * Vp) / (p.R * p.T))))
+    IClLp = p.PClLi * (p.F ** 2) / (
+            p.R * p.T) * V * ((ClCp -
+                               ClCe * exp((p.F * Vp) / (p.R * p.T))) / (
+                                      1 - exp((p.F * Vp) / (p.R * p.T))))
+    ICaLp = 4 * p.PCaLi * (p.F ** 2) / (
+            p.R * p.T) * V * ((CaCp -
+                               CaCc * exp((-2 * p.F * Vp) / (p.R * p.T))) / (
+                                      1 - exp((-2 * p.F * Vp) / (p.R * p.T))))
+    #IGluLp = p.PGluLi * p.F ** 2 / (
+            #p.R * p.T) * V * ((GluCp -
+                               #GluCc * exp((p.F * Vp) / (p.R * p.T))) / (
+                                      #1 - exp((p.F * Vp) / (p.R * p.T))))
+
+    # Blockade
+    blockerExp = 1 / (1 + exp(p.beta1 * (t - p.tstart))) + 1 / (
+            1 + exp(-p.beta2 * (t - p.tend)))
+    blockerExpAlt = 1 / (1 + exp(p.beta1 * (t - p.tstart))) + p.perc / (
+            1 + exp(-p.beta2 * (t - p.tend)))
+    blockerExp = p.perc + (1 - p.perc) * blockerExp
+    # blockerExp = blockerExpAlt
+
+    # Na-K pump
+    sigmapump = 1 / 7 * (exp(NaCe / 67.3) - 1)
+    fpump = 1 / (1 + 0.1245 * exp(-0.1 * p.F / p.R / p.T * V) +
+                 0.0365 * sigmapump * exp(-p.F / p.R / p.T * V))
+    Ipumpp = blockerExp * p.pumpScaleNeuron * fpump * p.PNKAi * (
+            NaCp ** (1.5) / (NaCp ** (1.5) + p.nka_na ** 1.5)) * (KCe / (KCe + p.nka_k))
+
+    # KCl cotransport
+    JKClp = p.UKCl * p.R * p.T / p.F * (log(KCi) + log(ClCi) - log(KCe) - log(ClCe))
+
+    # NCX
+    INCXp = p.PNCXi * (NaCe ** 3) / (p.alphaNaNCX ** 3 + NaCe ** 3) * (
+            CaCc / (p.alphaCaNCX + CaCc)) * (
+                    NaCp ** 3 / NaCe ** 3 * exp(p.eNCX * p.F * Vp / p.R / p.T) -
+                    CaCp / CaCc * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T)) / (
+                    1 + p.ksatNCX * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T))
+
+    JAMPA2 = p.PAMPA2 * AMPA2A * p.R*p.T/p.F*log(NaCe/NaCp)
+    # JAMPA1 = p.PAMPA1 * p.R*p.T/p.F*log(NaCe/NaCp)
+
+    # JNMDA = p.PNMDA * p.R*p.T/p.F*log(NaCe/NaCp * KCp/KCe * CaCc/CaCp)
+
+    CAMPA2 = 1
+    AMPA2R = CAMPA2 - AMPA2D - AMPA2A
+    #CAMPA1 = 1
+    #AMPA1R = CAMPA1 - AMPA1A
+    #CNMDA = 1
+    #NMDAR = CNMDA - NMDAA
+
+
+    # EAAT
+    #JEAATi = p.PEAATi * p.R * p.T / p.F * log(NaCe ** 3 / NaCp ** 3 *
+                                              #KCp / KCe * p.HeOHai * GluCc / GluCp)
+    # ===========================================================================
+    # --------------------------hier postsynapse ende-----------------------------
+    # ============================================================================
+
     k1 = p.k1max*CaCi/(CaCi+p.KM)
     gCa = CaCi/(CaCi+p.KDV)
     k2 = p.k20+gCa*p.k2cat
@@ -247,16 +384,19 @@ def model(t, y, p, *args):
     # ----------------------------VOLUME DYNAMICS------------------------------
     # =========================================================================
     SCi = NaCi+KCi+ClCi+p.NAi/Wi
+    SCp = NaCp+KCp+ClCp+p.NAp/Wp
     SCe = NaCe+KCe+ClCe+p.NAe/We + p.NBe/We
     SCg = NaCg + KCg + ClCg + p.NAg/Wg + p.NBg/Wg
     delpii = p.R*p.T*(SCi-SCe)
     fluxi = p.LH20i*(delpii)
     delpig = p.R*p.T*(SCg-SCe)
     fluxg = p.LH20g*(delpig)
+    delpip = p.R * p.T * (SCp - SCe)
+    fluxp = p.LH20p * (delpii)
 
     Voli = Wi/p.Wi0*100
     Volg = Wg/p.Wg0*100
-
+    Volp = Wp/p.Wp0*100
     # =========================================================================
     # ----------------------------POSTSYNAPTIC RESPONSE------------------------
     # =========================================================================
@@ -317,6 +457,14 @@ def model(t, y, p, *args):
                     1/(1+exp(-500*(t-arg_astblock[1]))))
     else:
         astblock = 1
+    #timeconstants
+    AMPAtaoAD = 4
+    AMPAtaoRA = 0.1
+    AMPAtaoAR = 10
+    AMPAtaoDR = 100
+    #NMDAtaoAD
+    #NMDAtaoDR
+
 
     # ==========================================================================
     # ----------------------------FINAL MODEL-----------------------------------
@@ -351,7 +499,26 @@ def model(t, y, p, *args):
        0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\
        # WATER
        fluxi, \
-       astblock*fluxg]
+       astblock*fluxg,
+       fluxp,
+       ((-1 / p.F * (INaGp + INaLp + 3 * Ipumpp) + JAMPA2) - synapse_block * 3 / p.F * INCXp),
+       (-1 / p.F * (IKGp + IKLp - 2 * Ipumpp) - JKClp),
+       (1 / p.F * (IClG + IClLp) - JKClp),
+       synapse_block * (-1 / 2 / p.F) * (ICaGp + ICaLp - INCXp),
+       gates_block * (alphamp * (1 - mp) - betamp * mp),
+       gates_block * (alphahp * (1 - hp) - betahp * hp),
+       gates_block * (alphanp * (1 - np) - betanp * np),
+       -AMPA2A/AMPAtaoAD + (GluCc*AMPA2R)/AMPAtaoRA - AMPA2A/AMPAtaoAR,
+       AMPA2A/AMPAtaoAD + AMPA2D/AMPAtaoDR]
+       #AMPA1A/AMPAtaoAD - AMPA2D/AMPAtaoDR]
+       #NMDAA / NMDAtaoAD - AMPA2D / NMDAtaoDR]
+
+
+
+
+
+
+
 
     if 'excite' in p.__dict__.keys():
         ODEs[19] =  p.F/p.C*(ODEs[0]+ODEs[1]+synapse_block*2*(ODEs[6])-synapse_block*(ODEs[7]+ODEs[8]+ODEs[9]+ODEs[10]+ODEs[11]+ODEs[12]+ODEs[13])-ODEs[2] + IExcite)

@@ -37,10 +37,12 @@ dict_ = {#
         'PClL_base': 0.25*1e-5,
         'UKCl' : 13*1e-7,         # flux rate of KCl cotransporter
         'LH20i' : 2*1e-14 ,       # Osmotic permeability in the neuron
+        'LH20p' : 2*1e-14 ,       # Osmotic permeability in the PS neuron
         'PNKAi' : 54.5*1.6,       # Baseline NKA pump strength
         'Cg' : 20.0,              # Astrocyte membrane capacitance
         'Vg0' : -80.0,            # Fix initial glial membrane potential
         'Vi0' : -65.5,            # Fix initial neuronal membrane potential
+        'Vp0' : -65.5,
         'KCe_thres' : 13.0,       # Kir: Threshold for Kir gate
         'kup2' : 0.1,             # Kir: Rate of transition from low uptake to high uptake
         'PCaG' : 2*0.75*1e-5,       # permeability of voltage-gated Ca channel
@@ -50,7 +52,7 @@ dict_ = {#
         'eNCX' : 0.35,            # NCX: position of energy barrier
         'ksatNCX' : 0.1,          # NCX: saturation factor
         'PEAATi' : 0,              # EAAT: Neuronal EAAT strength (defined in tps/fm_params.py)
-        'PEAATg' : 0,              # EAAT: Astrocyte EAAT strength (defined in tps/fm_params.py)
+        'PEAATg' : 0,             # EAAT: Astrocyte EAAT strength (defined in tps/fm_params.py)
         'HeOHa' : 0.66,           # Proton ratio (ex:in) in astrocytes (fixed)
         'HeOHai':0.66,            # Proton ratio (ex:in) in neurons (fixed)
         'k1max' : 1,              # Glut recycling: Max forward reaction rate
@@ -73,6 +75,11 @@ dict_ = {#
         'ClCi0' : 7,              # Neuronal chloride concentration
         'CaCi0' : 0.1*1e-3,       # Neuronal calcium concentration
         'GluCi0' : 3 ,            # Neuronal glutamate concentration
+        'NaCp0' : 13,             # PS Neuronal sodium concentration
+        'KCp0' : 145,             # PS Neuronal potassium concentration
+        'ClCp0' : 7,              # PS Neuronal chloride concentration
+        'CaCp0' : 0.1*1e-3,       # PS Neuronal calcium concentration
+        'GluCp0' : 3 ,            # PS Neuronal glutamate concentration
         'NaCe0' : 152,            # Extracellular sodium concentration
         'KCe0' : 3,               # Extracellular potassium concentration
         'ClCe0' : 135,            # Extracellular chloride concentration
@@ -85,9 +92,18 @@ dict_ = {#
         'GluCg0' : 2,             # Astrocyte glutamate concentration
         'Wi0' : 2,                # Neuronal volume
         'Wg0' : 1.7,              # Astrocyte volume
+        'Wp0' : 2,                # PS Neuronal volume
         'VolPreSyn' : 1*1e-3,     # Presynaptic terminal volume (fixed)
+        'VolPostSyn' : 1*1e-3,    # Postsynaptic terminal volume (fixed)
         'VolPAP' : 1*1e-3,        # Perisynaptic astrocyte process volume (fixed)
         'Volc' : 1*1e-3,          # Cleft volume (fixed)
+        # RECEPTOR initials
+        'AMPA2A0' : 0,
+        'AMPA2D0' : 0,
+        'NMDAA0': 0,
+        'PAMPA2' : 0,             # AMPA2 permeability (defined in tps/fm_params.py)
+        'PAMPA1' :0,              # AMPA1 permeability (defined in tps/fm_params.py)
+        'PNMDA' : 0,              # NMDA permeability (defined in tps/fm_params.py)
 
         # All parameters below are computed/defined in tps/fm_params.py 
         'NF0' : 0,                # Fused glutamate = Cleft glutamate molar amount
@@ -98,6 +114,10 @@ dict_ = {#
         'NKi0' : 0,               # Neuronal potassium molar amount
         'NCli0' : 0,              # Neuronal chloride molar amount
         'NCai0' : 0,              # Neuronal calcium molar amount
+        'NNap0' : 0,              # Neuronal sodium molar amount
+        'NKp0' : 0,               # Neuronal potassium molar amount
+        'NClp0' : 0,              # Neuronal chloride molar amount
+        'NCap0' : 0,              # Neuronal calcium molar amount
         'NNae0' : 0,              # Extracellular sodium molar amount  
         'NKe0' : 0,               # Extracellular potassium molar amount
         'NCle0' : 0,              # Extracellular chloride molar amount
@@ -113,6 +133,7 @@ dict_ = {#
         'CCa' : 0,                # Total molar amount of calcium in the system
         'Wtot' : 0,               # Total volume in the system
         'NAi' : 0,                # Molar amount of neuronal impermeant anions
+        'NAp' : 0,                # PS Molar amount of neuronal impermeant anions
         'NAe' : 0,                # Molar amount of extracellular impermeant anions
         'NBe' : 0,                # Molar amount of extracellular impermeant cations
         'NAg' : 0,                # Molar amount of astrocyte impermeant anions
@@ -127,6 +148,16 @@ dict_ = {#
         'm0' : 0,                 # Gating: baseline sodium activation
         'h0' : 0,                 # Gating: baseline sodium inactivation
         'n0' : 0,                 # Gating: baseline potassium activation
+        # Gates
+        'alphamp0' : 0,            # Gating: alpha function for m for Vi=Vi0
+        'betamp0' : 0,             # Gating: beta function for m for Vi=Vi0
+        'alphahp0' : 0,            # Gating: alpha function for h for Vi=Vi0
+        'betahp0' : 0,             # Gating: beta function for h for Vi=Vi0
+        'alphanp0' : 0,            # Gating: alpha function for n for Vi=Vi0
+        'betanp0' : 0,             # Gating: beta function for n for Vi=Vi0
+        'mp0' : 0,                 # Gating: baseline sodium activation
+        'hp0' : 0,                 # Gating: baseline sodium inactivation
+        'np0' : 0,                 # Gating: baseline potassium activation
         # Neuronal leaks
         'INaGi0' : 0,              # Baseline neuronal sodium voltage gated channel current
         'IKGi0' : 0,               # Baseline neuronal potassium voltage gated channel current
@@ -135,6 +166,13 @@ dict_ = {#
         'IKLi0' : 0,               # Leak: baseline neuronal potassium leak
         'IClLi0' : 0,              # Leak: baseline neuronal chloride leak
         'JKCl0' : 0,               # Baseline KCC-cotrasnporter flux
+        'INaGp0' : 0,              # Baseline neuronal sodium voltage gated channel current
+        'IKGp0' : 0,               # Baseline neuronal potassium voltage gated channel current
+        'IClGp0' : 0,              # Baseline neuronal chloride voltage gated channel current
+        'INaLp0' : 0,              # Leak: baseline neuronal sodium leak
+        'IKLp0' : 0,               # Leak: baseline neuronal potassium leak
+        'IClLp0' : 0,              # Leak: baseline neuronal chloride leak
+        'JKClp0' : 0,               # Baseline KCC-cotrasnporter flux
         'sigmapump' : 0,           # NKA: sigma expression at baseline in neuron
         'fpump' : 0,               # NKA: g expression at baseline in neuron
         'neurPump' : 0,            # NKA: total pump current at baseline in neuron
@@ -147,6 +185,10 @@ dict_ = {#
         'PKLi' : 0,                # potassium leak conductance in neuron
         'PClLi' : 0,               # chloride leak conducatance in neuron
         'PCaLi' : 0,               # caclium leak conductance in neuron
+        'ICaGp0' : 0,               # Voltage-gated calcium channel: baseline neuronal current
+        'ICaLp0' : 0,              # Leak: baseline neuronal calcium leak
+        'IGluLp0' : 0,             # Leak: baseline neuronal glutamate leak
+
         # Glial uptake parameters
         'PNKAg' : 0,             # NKA: astrocyte conductance
         'LH20g' : 0,              # Astrocyte water permeability

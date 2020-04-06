@@ -20,8 +20,16 @@ def parameters(p, dict_):
 
     p.PEAATg = p.eaatScaleAst*2*1e-5
     p.PEAATi = p.eaatScaleNeuron*1e-6
+    #EAAT??
+    p.PAMPA2 = 2*1e-5
+    #p.PAMPA1 = ...
+    #p.PNMDA = ...
+
+
     p.PNCXi = 2*p.ncxScale*0.1*54
     p.PNCXg = p.PNCXi
+    p.PNCXp = p.PNCXi
+
     # Glial uptake parameters
     p.PNKAg = p.PNKAi
     p.LH20g = p.LH20i
@@ -32,7 +40,7 @@ def parameters(p, dict_):
     p.NF0 = p.GluCc0*p.Volc
     # p.NGlui0 = p.GluCi0*p.VolPreSyn
     p.NGluc0 = p.NF0
-    p.We0 = p.alphae0*(p.Wi0 + p.Wg0)/(1-p.alphae0)
+    p.We0 = p.alphae0*(p.Wi0 + p.Wg0 + p.Wp0)/(1-p.alphae0)
     p.NNai0 = p.NaCi0*p.Wi0
     p.NKi0 = p.KCi0*p.Wi0
     p.NCli0 = p.ClCi0*p.Wi0
@@ -47,11 +55,15 @@ def parameters(p, dict_):
     p.NClg0 = p.ClCg0*p.Wg0
     p.NCag0 = p.CaCg0*p.VolPAP
     p.NGlug0 = p.GluCg0*p.VolPAP
-    p.CNa = p.NNai0 + p.NNae0 + p.NNag0
-    p.CK = p.NKi0 + p.NKe0 + p.NKg0
-    p.CCl = p.NCli0 + p.NCle0 + p.NClg0
-    p.CCa = p.NCai0 + p.NCac0 + p.NCag0
-    p.Wtot = p.Wi0 + p.We0 + p.Wg0
+    p.NNap0 = p.NaCp0*p.Wp0
+    p.NKp0 = p.NaCp0*p.Wp0
+    p.NClp0 = p.ClCp0*p.Wp0
+    p.NCap0 = p.CaCp0*p.VolPostSyn
+    p.CNa = p.NNai0 + p.NNae0 + p.NNag0 + p.NNap0
+    p.CK = p.NKi0 + p.NKe0 + p.NKg0 + p.NKp0
+    p.CCl = p.NCli0 + p.NCle0 + p.NClg0 + p.NClp0
+    p.CCa = p.NCai0 + p.NCac0 + p.NCag0 + p.NCap0
+    p.Wtot = p.Wi0 + p.We0 + p.Wg0 + p.Wp0
 
     #-------------------------------------------------------------
     # Glutamate recycling initial conditions
@@ -78,6 +90,7 @@ def parameters(p, dict_):
     # Impermeants and conserved quantities
     p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
              block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F)
+    p.NAp = (block_synapse*2*p.NCap0 - p.NClp0 + p.NKp0 + p.NNap0 - (p.C*p.Vp0)/p.F)
     p.NAe = (p.Cg*p.Vg0*p.Wi0 + p.C*p.Vi0*(-p.We0 + p.Wi0) +
              p.F*(block_synapse*2*p.NCai0*p.We0 -
                   block_synapse*p.NGlui0*p.We0 + 2*p.NKi0*p.We0 +
@@ -131,7 +144,19 @@ def parameters(p, dict_):
     p.m0 = p.alpham0/(p.alpham0+p.betam0)
     p.h0 = p.alphah0/(p.alphah0+p.betah0)
     p.n0 = p.alphan0/(p.alphan0+p.betan0)
-    
+
+    # Gates postsynapse
+
+    p.alphamp0 = 0.32 * (p.Vi0 + 52) / (1 - exp(-(p.Vi0 + 52) / 4))
+    p.betamp0 = 0.28 * (p.Vi0 + 25) / (exp((p.Vi0 + 25) / 5) - 1)
+    p.alphahp0 = 0.128 * exp(-(p.Vi0 + 53) / 18)
+    p.betahp0 = 4 / (1 + exp(-(p.Vi0 + 30) / 5))
+    p.alphanp0 = 0.016 * (p.Vi0 + 35) / (1 - exp(-(p.Vi0 + 35) / 5))
+    p.betanp0 = 0.25 * exp(-(p.Vi0 + 50) / 40)
+    p.mp0 = p.m0
+    p.hp0 = p.h0
+    p.np0 = p.n0
+
     # Neuronal leaks
     p.INaG0 = p.PNaG*(p.m0**3)*(p.h0)*(p.F**2)*(p.Vi0)/(
         p.R*p.T)*((p.NaCi0 -
@@ -188,7 +213,70 @@ def parameters(p, dict_):
               block_synapse*p.JEAATi0*p.F)/p.IKLi0    # Estimated K leak conductance in neuron 
     p.PClLi = (p.F*p.JKCl0 - p.IClG0)/p.IClLi0                 # Estimated Cl leak conducatance in neuron
     p.PCaLi = (-p.ICaG0+p.INCXi0)/p.ICaLi0
+    #---------------------------------------------------------------------------------
+    # Postsynaptic Neuron leaks
 
+    p.INaGp0 = p.PNaG * (p.mp0 ** 3) * (p.hp0) * (p.F ** 2) * (p.Vp0) / (
+            p.R * p.T) * ((p.NaCp0 -
+                           p.NaCp0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
+                                  1 - exp(-(p.F * p.Vp0) / (p.R * p.T))))
+    p.IKGp0 = (p.PKG * (p.np0 ** 2)) * (p.F ** 2) * (p.Vp0) / (
+            p.R * p.T) * ((p.KCp0 -
+                           p.KCe0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
+                                  1 - exp(-p.F * p.Vp0 / (p.R * p.T))))
+
+    p.IClGp0 = p.PClG * 1 / (1 + exp(-(p.Vp0 + 10) / 10)) * (p.F ** 2) * p.Vp0 / (
+            p.R * p.T) * ((p.ClCp0 -
+                           p.ClCe0 * exp(p.F * p.Vp0 / (p.R * p.T))) / (
+                                  1 - exp(p.F * p.Vp0 / (p.R * p.T))))
+    p.INaLp0 = (p.F ** 2) / (p.R * p.T) * p.Vp0 * ((
+                                                           p.NaCp0 -
+                                                           p.NaCe0 * exp((-p.F * p.Vp0) / (p.R * p.T))) / (
+                                                           1 - exp((-p.F * p.Vp0) / (p.R * p.T))))
+    p.IKLp0 = p.F ** 2 / (p.R * p.T) * p.Vp0 * ((
+                                                        p.KCp0 - p.KCe0 * exp((-p.F * p.Vp0) / (p.R * p.T))) / (
+                                                        1 - exp((-p.F * p.Vp0) / (p.R * p.T))))
+    p.IClLp0 = (p.F ** 2) / (p.R * p.T) * p.Vp0 * ((
+                                                           p.ClCp0 - p.ClCe0 * exp((p.F * p.Vp0) / (p.R * p.T))) / (
+                                                           1 - exp((p.F * p.Vp0) / (p.R * p.T))))
+    p.JKClp0 = p.UKCl * p.R * p.T / p.F * (log(p.KCp0) +
+                                          log(p.ClCp0) - log(p.KCe0) - log(p.ClCe0))
+    p.sigmapump = 1 / 7 * (exp(p.NaCe0 / 67.3) - 1)
+    p.fpump = 1 / (1 + 0.1245 * exp(-0.1 * p.F / p.R / p.T * p.Vi0) +
+                   0.0365 * p.sigmapump * exp(-p.F / p.R / p.T * p.Vi0))
+    p.neurPump = p.pumpScaleNeuron * p.PNKAi * p.fpump * (p.NaCi0 ** (1.5) / (
+            p.NaCi0 ** (1.5) + p.nka_na ** 1.5)) * (p.KCe0 / (p.KCe0 + p.nka_k))
+    p.INCXp0 = p.PNCXi * (p.NaCe0 ** 3) / (
+            p.alphaNaNCX ** 3 + p.NaCe0 ** 3) * (
+                       p.CaCc0 / (p.alphaCaNCX + p.CaCc0)) * (
+                       p.NaCp0 ** 3 / p.NaCe0 ** 3 * exp(p.eNCX * p.F * p.Vp0 / p.R / p.T) -
+                       p.CaCp0 / p.CaCc0 * exp((p.eNCX - 1) * p.F * p.Vp0 / p.R / p.T)) / (
+                       1 + p.ksatNCX * exp((p.eNCX - 1) * p.F * p.Vp0 / p.R / p.T))
+
+    p.JAMPA20 = p.PAMPA2 * p.AMPA2A0 * p.R * p.T / p.F * log(p.NaCe0 / p.NaCp0)
+
+    #p.JEAATi0 = p.PEAATi * p.R * p.T / p.F * log(
+        #p.NaCe0 ** 3 / p.NaCp0 ** 3 * p.KCp0 / p.KCe0 * p.HeOHai * p.GluCc0 / p.GluCp0)
+    p.ICaGp0 = p.PCaG * p.mp0 ** 2 * p.hp0 * 4 * p.F / (p.R * p.T) * p.Vp0 * ((
+                                                                                   p.CaCp0 - p.CaCc0 * exp(
+                                                                               -2 * (p.F * p.Vp0) / (p.R * p.T))) / (
+                                                                                   1 - exp(
+                                                                               -2 * (p.F * p.Vp0) / (p.R * p.T))))
+    p.ICaLp0 = 4 * (p.F ** 2) / (p.R * p.T) * p.Vp0 * ((
+                                                               p.CaCp0 - p.CaCc0 * exp(
+                                                           (-2 * p.F * p.Vp0) / (p.R * p.T))) / (
+                                                               1 - exp((-2 * p.F * p.Vp0) / (p.R * p.T))))
+    #p.IGluLi0 = p.F ** 2 / (p.R * p.T) * p.Vp0 * ((
+                                                          #p.GluCp0 - p.GluCc0 * exp((p.F * p.Vp0) / (p.R * p.T))) / (
+                                                          #1 - exp((p.F * p.Vp0) / (p.R * p.T))))
+
+    p.PNaLp = (-p.INaGp0 - 3 * p.neurPump - block_synapse * 3 * p.INCXp0
+               + block_synapse) / p.INaLp0  # Estimated sodium leak
+    #                                                    conductance in neuron
+    p.PKLp = (-p.IKGp0 + 2 * p.neurPump - p.F * p.JKClp0 -
+              block_synapse * p.JEAATi0 * p.F) / p.IKLi0  # Estimated K leak conductance in neuron
+    p.PClLp = (p.F * p.JKClp0 - p.IClGp0) / p.IClLp0  # Estimated Cl leak conducatance in neuron
+    p.PCaLp = (-p.ICaGp0 + p.INCXp0) / p.ICaLp0
 
 
     # ---------------------------------------------------------------------------------
