@@ -50,3 +50,7 @@ python set_up.py --solve --saveloc 'Finalfigures/SuppFigExcite' --casename 'Exci
 python set_up.py --solve --saveloc 'Finalfigures/SuppFig2' --casename 'ED' --case1 '{"tstart":20,"tend":25}' --case2 '{"tstart":20,"tend":30}' --alphae0 0.8  --tfinal 50  --perc 0.5 --nogates
 
 # python set_up.py --solve --saveloc 'Finalfigures/SuppFig3GD' --case1 '{"tstart":20,"tend":25}' --plotall --alphae0 0.8 --t0 0 --tfinal 200 --tstart 20 --tend 500  --perc 0 --gltScale 0.1 --gltScaleAst 2 --pumpScaleNeuron 1.6 --pumpScaleAst 1.6
+
+python -i set_up.py --solve --readdata 'Finalfigures/SynapticRecovery' --alphae0 0.8 --tstart 5 --tend 20 --excite 30 44 20 10 0.95 --block '{"INaG":[55,65]}' --t0 30 --excite2 120 134 20 10 0.95 --tfinal  --perc 0.5   --plot '{"E$_m$ (mV)":{"plot":["ax1Vi","ax1IExcite*p.F/25*10+15.5","ax1IExcite2*p.F/25*10+15.5"]},"[Glu] (mM)":{"plot":["ax1GluCc"]},"size":[2,1]}' --beta1 4 --beta2 4
+
+

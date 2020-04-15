@@ -27,6 +27,9 @@ arg.add_argument('--casename',type=str)
 arg.add_argument('--geteigs',action='store_true')
 arg.add_argument('--savematlabpar',action='store_true')
 
+arg.add_argument('--breakaxis',nargs=4,type=float)
+arg.add_argument('--excite2',nargs=5,type=float)
+
 args = arg.parse_args()
 
 for key in args.__dict__:

@@ -34,6 +34,11 @@ def exec_plot(fm,t,y):
                 specx = int(ctr/size_[0])
                 specy = ctr - int(ctr/size_[0])
                 ax = fig.add_subplot(spec[specx,specy])
+                if 'breakaxis' in fm.__dict__.keys():
+                    vals_ = fm.breakaxis 
+                    ax = brokenaxes(xlims=((vals_[0],vals_[1]),(vals_[2],vals_[3])),subplot_spec = spec[specx,specy])
+                else:
+                    ax = fig.add_subplot(spec[specx,specy])
                 ax1_ = []
                 ax2_ = []
                 for vals in plotdict["plot"]:

@@ -68,6 +68,7 @@ def main():
     args.__dict__['nochargecons'] = False
     args.__dict__['geteigs'] = False
     args.__dict__['savematlabpar'] = False
+    args.__dict__['nosynapse'] = False	
     
     for key in args.__dict__:
         if args.__dict__[key] is not None:
@@ -79,9 +80,8 @@ def main():
         disp('------Test------')
 
     fm = fmclass(paramdict)
-    
     negcheck_init(fm)
-    exec_cases(fm)
-    exec_solve(fm)
+    exec_cases(fm,fmclass)
+    t,y = exec_solve(fm)
 
 main()

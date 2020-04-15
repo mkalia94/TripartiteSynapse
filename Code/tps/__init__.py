@@ -12,6 +12,7 @@ from matplotlib import rc
 from autograd import jacobian
 import autograd.numpy as np
 import argparse
+import brokenaxes
 
 # Main files
 from tps.main.fm_dict import dict_ as paramdict            # Dictionary of known parameters
@@ -42,8 +43,8 @@ from tps.exec.fm_exec_geteigs import exec_geteigs          # Execute eigenvalue 
 from tps.exec.fm_exec_solve import exec_solve              # Execute solving
 # etting up
 
-rc('font',**{'family':'sans-serif','sans-serif':['Arial']})
-mpl.use('Qt4Agg')
+#rc('font',**{'family':'sans-serif','sans-serif':['Arial']})
+#mpl.use('Qt4Agg')
 
 warnings.filterwarnings("ignore")
 

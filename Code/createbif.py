@@ -1,7 +1,7 @@
 from set_up import *
 
-smallECS = ['FP_smallECS_phys1.mat','FP_smallECS_phys2.mat','FP_smallECS_path1.mat','FP_smallECS_path2.mat','FP_smallECS_phys3.mat' ]
-largeECS = ['FP_largeECS_phys1.mat','FP_largeECS_phys2.mat','FP_largeECS_path1.mat','FP_largeECS_path2.mat' ]
+smallECS = ['FP_smallECS_phys1.mat','FP_smallECS_phys2.mat','FP_smallECS_path1.mat','FP_smallECS_path2.mat','FP_smallECS_phys3.mat', 'FP_smallECS_physBP1.mat','FP_smallECS_physBP2.mat' ]
+largeECS = ['FP_largeECS_phys1.mat','FP_largeECS_phys2.mat','FP_largeECS_path1.mat','FP_largeECS_path2.mat','FP_largeECS_physBP1.mat','FP_largeECS_physBP2.mat' ]
 
 # PScale2_largeECS = ['PScale2_largeECS_path1.mat','PScale2_largeECS_path2.mat','PScale2_largeECS_phys2.mat',
 #                      'PScale2_largeECS_phys1.mat']
@@ -365,5 +365,5 @@ plottwoaxes(fm4,t2,y2,{"plot":["ax1Voli+0*Wg"],"scale":[95,140]},{"plot":["0*We"
 ax1.set_xlabel('time (min.)', fontdict={'fontsize': 8, 'fontweight': 'medium'})
 ax2.set_xlabel('time (min.)', fontdict={'fontsize': 8, 'fontweight': 'medium'})
 
-plt.savefig('BifFiles/Plots.pdf'.format(a=directory), format='pdf',bbox_inches='tight',pad_inches=0)
+plt.savefig('BifFiles/Plots.pdd', format='pdf',bbox_inches='tight',pad_inches=0)
 

@@ -81,7 +81,7 @@ def model(t, y, p, *args):
     GluCc = NGluc/p.Volc
     
     # Voltages
-    if 'excite' in p.__dict__.keys():
+    if 'excite' in p.__dict__.keys() or 'excite2' in p.__dict__.keys():
         V = Vtemp
     else:
         V = p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*(NGlui+NN+NR+NR1+NR2+NR3+ND)-NCl-p.NAi)
@@ -307,9 +307,20 @@ def model(t, y, p, *args):
         dur_ = arg_excite[3]
         duty_ = arg_excite[4]
         IExcite = blocker_Excite*arg_excite[2]/2/p.F*(1-signal.square(2*pi*array(t)*(1-duty_)/(dur_/60),duty=duty_))
-        #IExcite = blocker_Excite*4.5/p.F
     else:
-        IExcite = 0
+        IExcite = 0    
+        #IExcite = blocker_Excite*4.5/p.F
+    if 'excite2' in p.__dict__.keys():
+        arg_excite2 = p.excite2
+        blocker_Excite2 = 1 - (1/(1+exp(100*(t-arg_excite2[0]))) +
+                              1/(1+exp(-100*(t-arg_excite2[1]))))
+        IExcite2 = blocker_Excite2*arg_excite2[2]/2/p.F*(1-signal.square(array(5*t),duty=arg_excite2[3]))
+        dur_ = arg_excite2[3]
+        duty_ = arg_excite2[4]
+        IExcite2 = blocker_Excite2*arg_excite2[2]/2/p.F*(1-signal.square(2*pi*array(t)*(1-duty_)/(dur_/60),duty=duty_))
+    else:
+        IExcite2=0
+
 
     if 'astblock' in p.__dict__.keys():
         arg_astblock = p.astblock
@@ -354,7 +365,7 @@ def model(t, y, p, *args):
        astblock*fluxg]
 
     if 'excite' in p.__dict__.keys():
-        ODEs[19] =  p.F/p.C*(ODEs[0]+ODEs[1]+synapse_block*2*(ODEs[6])-synapse_block*(ODEs[7]+ODEs[8]+ODEs[9]+ODEs[10]+ODEs[11]+ODEs[12]+ODEs[13])-ODEs[2] + IExcite)
+        ODEs[19] =  p.F/p.C*(ODEs[0]+ODEs[1]+synapse_block*2*(ODEs[6])-synapse_block*(ODEs[7]+ODEs[8]+ODEs[9]+ODEs[10]+ODEs[11]+ODEs[12]+ODEs[13])-ODEs[2] + IExcite+IExcite2)
     
     ODEs = array(ODEs)*60*1e3
 
