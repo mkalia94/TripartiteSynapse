@@ -298,7 +298,10 @@ def model(t, y, p, *args):
                     CaCp / CaCc * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T)) / (
                     1 + p.ksatNCX * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T))
 
-    JAMPA2 = p.PAMPA2 * AMPA2A * p.R*p.T/p.F*log(NaCe/NaCp)
+    JAMPA2 = p.PAMPA2 * AMPA2A * (p.F ** 2) * (p.Vp) / (
+            p.R * p.T) * ((p.NaCp -
+                           p.NaCe * exp(-(p.F * p.Vp) / (p.R * p.T))) / (
+                                  1 - exp(-(p.F * p.Vp) / (p.R * p.T))))
     # JAMPA1 = p.PAMPA1 * p.R*p.T/p.F*log(NaCe/NaCp)
 
     # JNMDA = p.PNMDA * p.R*p.T/p.F*log(NaCe/NaCp * KCp/KCe * CaCc/CaCp)
@@ -509,15 +512,9 @@ def model(t, y, p, *args):
        gates_block * (alphahp * (1 - hp) - betahp * hp),
        gates_block * (alphanp * (1 - np) - betanp * np),
        -AMPA2A/AMPAtaoAD + (GluCc*AMPA2R)/AMPAtaoRA - AMPA2A/AMPAtaoAR,
-       AMPA2A/AMPAtaoAD + AMPA2D/AMPAtaoDR]
+       (1/1+exp(GluT - GluCc)) * AMPA2A/AMPAtaoAD + AMPA2D/AMPAtaoDR]
        #AMPA1A/AMPAtaoAD - AMPA2D/AMPAtaoDR]
        #NMDAA / NMDAtaoAD - AMPA2D / NMDAtaoDR]
-
-
-
-
-
-
 
 
     if 'excite' in p.__dict__.keys():

@@ -1,5 +1,5 @@
 from tps import *
-
+import sympy as sp
 
 def parameters(p, dict_):
     p.__dict__.update(dict_)
@@ -56,7 +56,7 @@ def parameters(p, dict_):
     p.NCag0 = p.CaCg0*p.VolPAP
     p.NGlug0 = p.GluCg0*p.VolPAP
     p.NNap0 = p.NaCp0*p.Wp0
-    p.NKp0 = p.NaCp0*p.Wp0
+    p.NKp0 = p.KCp0*p.Wp0
     p.NClp0 = p.ClCp0*p.Wp0
     p.NCap0 = p.CaCp0*p.VolPostSyn
     p.CNa = p.NNai0 + p.NNae0 + p.NNag0 + p.NNap0
@@ -64,7 +64,9 @@ def parameters(p, dict_):
     p.CCl = p.NCli0 + p.NCle0 + p.NClg0 + p.NClp0
     p.CCa = p.NCai0 + p.NCac0 + p.NCag0 + p.NCap0
     p.Wtot = p.Wi0 + p.We0 + p.Wg0 + p.Wp0
-
+    p.AMPA2A0 = 0
+    p.AMPA2D0 = 0
+    p.AMPA2R0 = 1
     #-------------------------------------------------------------
     # Glutamate recycling initial conditions
     # -----------------------------------------------------------
@@ -85,8 +87,23 @@ def parameters(p, dict_):
     p.NR20 = (-18*p.CaCi0**5*p.ND0*p.k1init*p.k2init*p.k3**5*p.k4*p.kmin1/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 6*p.CaCi0**4*p.ND0*p.k1init*p.k2init*p.k3**4*p.k4*p.kmin1*p.kmin2init/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) - 3*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4*p.kmin1*p.kmin2init*p.kmin3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + 3*p.CaCi0**2*p.k2init*p.k3**2*(-6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3*p.k4/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3) + p.ND0*p.k1init))/(p.kmin1*p.kmin2init*p.kmin3**2)
     p.NR30 = 6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
     p.NGlui0 = p.NGluitot
+    # Impermeants and conserved quantitiesNEW
+    p.NAi = (block_synapse * 2 * p.NCai0 - p.NCli0 -
+             block_synapse * p.NGlui0 + p.NKi0 + p.NNai0 - (p.C * p.Vi0) / p.F)
 
-    
+    p.NAp = (block_synapse*2*p.NCap0 - p.NClp0 + p.NKp0 + p.NNap0 - (p.C*p.Vp0)/p.F)
+
+
+    p.NAi, p.NAe, p.NBe, p.NAg, p.NAg, p.NAp = symbols('p.NAi p.NAe p.NBe p.NAg p.NAg p.NAp')
+    eq1 = sp.Eq(-p.NaCi0 - p.KCi0 - p.ClCi0 - p.CaCi0 - p.GluCi0 - p.NAi * p.Wi0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe * p.We0 + p.NBe * p.We0)
+    eq2 = sp.Eq(-p.NaCg0 - p.KCg0 - p.ClCg0 - p.CaCg0 - p.GluCg0 - p.NAg * p.Wg0 - p.NBg * p.Wg0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe * p.We0 + p.NBe * p.We0)
+    eq3 = sp.Eq(-p.NaCp0 - p.KCp0 - p.ClCp0 - p.CaCp0 - p.GluCp0 - p.NAp * p.Wp0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe * p.We0 + p.NBe * p.We0)
+    eq4 = sp.Eq(p.CNa + p.CK - p.CCl + 2* p.CCa - p.CGlu - p.NAi - p.NAe + p.NBe - p.NAg + p.NBg - p.NAp)
+    eq5 = sp.Eq((p.F/ p.C) * (p.NNai0 + p.NKi0 - p.NCli0 + 2 * p.NCai0 + p.NGlui0 - p.NAi) - p.Vi0)
+    eq6 = sp.Eq((p.F / p.C) * (p.NNag0 + p.NKg0 - p.NClg0 + 2 * p.NCag0 + p.NGlug0 - p.NAg + p.NBg) - p.Vg0)
+    eq7 = sp.Eq((p.F / p.C) * (p.NNap0 + p.NKp0 - p.NClp0 + 2 * p.NCap0 - p.NAp) - p.Vp0)
+    sol = solve((eq1, eq2, eq3, eq4, eq5, eq6, eq7), (p.NAi, p.NAe, p.NBe, p.NAg, p.NAg, p.NAp))
+    print(sol)
     # Impermeants and conserved quantities
     p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
              block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F)
@@ -218,7 +235,7 @@ def parameters(p, dict_):
 
     p.INaGp0 = p.PNaG * (p.mp0 ** 3) * (p.hp0) * (p.F ** 2) * (p.Vp0) / (
             p.R * p.T) * ((p.NaCp0 -
-                           p.NaCp0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
+                           p.NaCe0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
                                   1 - exp(-(p.F * p.Vp0) / (p.R * p.T))))
     p.IKGp0 = (p.PKG * (p.np0 ** 2)) * (p.F ** 2) * (p.Vp0) / (
             p.R * p.T) * ((p.KCp0 -
@@ -253,7 +270,10 @@ def parameters(p, dict_):
                        p.CaCp0 / p.CaCc0 * exp((p.eNCX - 1) * p.F * p.Vp0 / p.R / p.T)) / (
                        1 + p.ksatNCX * exp((p.eNCX - 1) * p.F * p.Vp0 / p.R / p.T))
 
-    p.JAMPA20 = p.PAMPA2 * p.AMPA2A0 * p.R * p.T / p.F * log(p.NaCe0 / p.NaCp0)
+    p.JAMPA20 = p.PAMPA2 * p.AMPA2A0 * (p.F ** 2) * (p.Vp0) / (
+            p.R * p.T) * ((p.NaCp0 -
+                           p.NaCp0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
+                                  1 - exp(-(p.F * p.Vp0) / (p.R * p.T))))
 
     #p.JEAATi0 = p.PEAATi * p.R * p.T / p.F * log(
         #p.NaCe0 ** 3 / p.NaCp0 ** 3 * p.KCp0 / p.KCe0 * p.HeOHai * p.GluCc0 / p.GluCp0)

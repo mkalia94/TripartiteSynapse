@@ -1,5 +1,6 @@
 import warnings
 from numpy import *
+from sympy import *
 from assimulo.solvers import CVode
 from assimulo.problem import Explicit_Problem
 import matplotlib.pyplot as plt
