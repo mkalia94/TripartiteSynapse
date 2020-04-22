@@ -11,4 +11,3 @@ def get_initvals(fm):
         fm.initvals = fm.initvals + 1e-7*array([1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0])*fm.initvals
     else:    
         fm.initvals  = fm.initvals + 1e-5*fm.initvals
-    
