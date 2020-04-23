@@ -94,18 +94,18 @@ def parameters(p, dict_):
     p.NAp = (block_synapse*2*p.NCap0 - p.NClp0 + p.NKp0 + p.NNap0 - (p.C*p.Vp0)/p.F)
 
 
-    p.NAi, p.NAe, p.NBe, p.NAg, p.NAg, p.NAp = symbols('p.NAi p.NAe p.NBe p.NAg p.NAg p.NAp')
-    eq1 = sp.Eq(-p.NaCi0 - p.KCi0 - p.ClCi0 - p.CaCi0 - p.GluCi0 - p.NAi * p.Wi0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe * p.We0 + p.NBe * p.We0)
-    eq2 = sp.Eq(-p.NaCg0 - p.KCg0 - p.ClCg0 - p.CaCg0 - p.GluCg0 - p.NAg * p.Wg0 - p.NBg * p.Wg0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe * p.We0 + p.NBe * p.We0)
-    eq3 = sp.Eq(-p.NaCp0 - p.KCp0 - p.ClCp0 - p.CaCp0 - p.GluCp0 - p.NAp * p.Wp0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe * p.We0 + p.NBe * p.We0)
-    eq4 = sp.Eq(p.CNa + p.CK - p.CCl + 2* p.CCa - p.CGlu - p.NAi - p.NAe + p.NBe - p.NAg + p.NBg - p.NAp)
+    '''p.NAi, p.NAe, p.NBe, p.NAg, p.NAg, p.NAp = sp.symbols('p.NAi p.NAe p.NBe p.NAg p.NAg p.NAp')
+    eq1 = sp.Eq(-p.NaCi0 - p.KCi0 - p.ClCi0 - p.CaCi0 - p.GluCi0 - p.NAi * p.Wi0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe / p.We0 + p.NBe / p.We0)
+    eq2 = sp.Eq(-p.NaCg0 - p.KCg0 - p.ClCg0 - p.CaCg0 - p.GluCg0 - p.NAg * p.Wg0 - p.NBg * p.Wg0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe / p.We0 + p.NBe / p.We0)
+    eq3 = sp.Eq(-p.NaCp0 - p.KCp0 - p.ClCp0 - p.CaCp0 - p.GluCp0 - p.NAp * p.Wp0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe / p.We0 + p.NBe / p.We0)
+    eq4 = sp.Eq(p.CNa + p.CK - p.CCl + 2 * p.CCa - p.CGlu - p.NAi - p.NAe + p.NBe - p.NAg + p.NBg - p.NAp)
     eq5 = sp.Eq((p.F/ p.C) * (p.NNai0 + p.NKi0 - p.NCli0 + 2 * p.NCai0 + p.NGlui0 - p.NAi) - p.Vi0)
     eq6 = sp.Eq((p.F / p.C) * (p.NNag0 + p.NKg0 - p.NClg0 + 2 * p.NCag0 + p.NGlug0 - p.NAg + p.NBg) - p.Vg0)
     eq7 = sp.Eq((p.F / p.C) * (p.NNap0 + p.NKp0 - p.NClp0 + 2 * p.NCap0 - p.NAp) - p.Vp0)
-    sol = solve((eq1, eq2, eq3, eq4, eq5, eq6, eq7), (p.NAi, p.NAe, p.NBe, p.NAg, p.NAg, p.NAp))
-    print(sol)
+    sol = sp.solve((eq1, eq2, eq3, eq4, eq5, eq6, eq7), (p.NAe, p.NBe, p.NAg, p.NAg, ))
+    print(sol)'''
     # Impermeants and conserved quantities
-    p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
+    '''p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
              block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F)
     p.NAp = (block_synapse*2*p.NCap0 - p.NClp0 + p.NKp0 + p.NNap0 - (p.C*p.Vp0)/p.F)
     p.NAe = (p.Cg*p.Vg0*p.Wi0 + p.C*p.Vi0*(-p.We0 + p.Wi0) +
@@ -136,7 +136,7 @@ def parameters(p, dict_):
                   block_synapse*p.NGlui0*p.Wg0 + 2*p.NKi0*p.Wg0 +
                   2*p.NNai0*p.Wg0 - block_synapse*2*p.NCag0*p.Wi0 +
                   block_synapse*p.NGlug0*p.Wi0 - 2*p.NKg0*p.Wi0 -
-                  2*p.NNag0*p.Wi0))/(2*p.F*p.Wi0)
+                  2*p.NNag0*p.Wi0))/(2*p.F*p.Wi0)'''
 
     # If we ignore charge conservation and thus remove NBe (this might be useful
     # to adjust baseline equilibria)

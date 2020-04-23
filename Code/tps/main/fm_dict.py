@@ -230,3 +230,26 @@ dict_ = {#
         'PGluLg' : 0,            # Neuron glutamate leak conductance
         'CGlu' : 0}               # Molar amount of total glutamate in the system
 
+p.NNai0 = p.NaCi0*p.Wi0
+p.NKi0 = p.KCi0*p.Wi0
+p.NCli0 = p.ClCi0*p.Wi0
+p.NCai0 = p.CaCi0*p.VolPreSyn
+p.NNae0 = p.NaCe0*p.We0
+p.NKe0 = p.KCe0*p.We0
+p.NCle0 = p.ClCe0*p.We0
+p.NCac0 = p.CaCc0*p.Volc
+p.NGluc0 = p.NF0
+p.NNag0 = p.NaCg0*p.Wg0
+p.NKg0 = p.KCg0*p.Wg0
+p.NClg0 = p.ClCg0*p.Wg0
+p.NCag0 = p.CaCg0*p.VolPAP
+p.NGlug0 = p.GluCg0*p.VolPAP
+p.NNap0 = p.NaCp0*p.Wp0
+p.NKp0 = p.KCp0*p.Wp0
+p.NClp0 = p.ClCp0*p.Wp0
+p.NCap0 = p.CaCp0*p.VolPostSyn
+p.CNa = p.NNai0 + p.NNae0 + p.NNag0 + p.NNap0
+p.CK = p.NKi0 + p.NKe0 + p.NKg0 + p.NKp0
+p.CCl = p.NCli0 + p.NCle0 + p.NClg0 + p.NClp0
+p.CCa = p.NCai0 + p.NCac0 + p.NCag0 + p.NCap0
+p.Wtot = p.Wi0 + p.We0 + p.Wg0 + p.Wp0
