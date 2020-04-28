@@ -111,6 +111,7 @@ def model(t, y, p, *args):
     NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1- NR2 - NR3
     CaCc = NCac/p.Volc
     GluCc = NGluc/p.Volc
+    #print(GluCc)
     #tprint(GluCc)
     #Joel Glutamat: adds 150mM = 0.15M
     # Voltages
@@ -298,10 +299,10 @@ def model(t, y, p, *args):
                     CaCp / CaCc * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T)) / (
                     1 + p.ksatNCX * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T))
 
-    JAMPA2 = p.PAMPA2 * AMPA2A * (p.F ** 2) * (p.Vp) / (
-            p.R * p.T) * ((p.NaCp -
-                           p.NaCe * exp(-(p.F * p.Vp) / (p.R * p.T))) / (
-                                  1 - exp(-(p.F * p.Vp) / (p.R * p.T))))
+    JAMPA2 = p.PAMPA2 * AMPA2A * (p.F ** 2) * (Vp) / (
+            p.R * p.T) * ((NaCp -
+                           NaCe * exp(-(p.F * Vp) / (p.R * p.T))) / (
+                                  1 - exp(-(p.F * Vp) / (p.R * p.T))))
     # JAMPA1 = p.PAMPA1 * p.R*p.T/p.F*log(NaCe/NaCp)
 
     # JNMDA = p.PNMDA * p.R*p.T/p.F*log(NaCe/NaCp * KCp/KCe * CaCc/CaCp)
@@ -467,7 +468,7 @@ def model(t, y, p, *args):
     AMPAtaoDR = 100
     #NMDAtaoAD
     #NMDAtaoDR
-
+    GluT = 5e-3
 
     # ==========================================================================
     # ----------------------------FINAL MODEL-----------------------------------
@@ -483,13 +484,13 @@ def model(t, y, p, *args):
        gates_block*(alphan*(1-n)-betan*n),
        synapse_block*(-1/2/p.F)*(ICaG+ICaLi -INCXi),
        # GLUTAMATE RECYCLING
-       (k1*ND-(p.kmin1+k2)*NN+kmin2*NR),
-       (k2*NN-(kmin2+3*p.k3*CaCi)*NR + p.kmin3*NR1),
-       (3*p.k3*CaCi*NR-(p.kmin3+2*p.k3*CaCi)*NR1+2*p.kmin3*NR2),
-       (2*p.k3*CaCi*NR1-(2*p.kmin3+p.k3*CaCi)*NR2+3*p.kmin3*NR3),
-       (p.k3*CaCi*NR2-(3*p.kmin3+p.k4)*NR3),
-       synapse_block*(- NI*ND/p.trec + JEAATi + 1/p.F*IGluLi),
-       (NI*ND/p.trec-k1*ND+p.kmin1*NN),
+       (k1*ND-(p.kmin1+k2)*NN+kmin2*NR),        #N_D
+       (k2*NN-(kmin2+3*p.k3*CaCi)*NR + p.kmin3*NR1),        #N_R
+       (3*p.k3*CaCi*NR-(p.kmin3+2*p.k3*CaCi)*NR1+2*p.kmin3*NR2),        #N_R1
+       (2*p.k3*CaCi*NR1-(2*p.kmin3+p.k3*CaCi)*NR2+3*p.kmin3*NR3),       #N_R2
+       (p.k3*CaCi*NR2-(3*p.kmin3+p.k4)*NR3),                #N_R3
+       synapse_block*(- NI*ND/p.trec + JEAATi + 1/p.F*IGluLi), #N_I
+       (NI*ND/p.trec-k1*ND+p.kmin1*NN),                        #N_D
        # ASTROCYTE
        astblock*((-1/p.F)*(3*Ipumpg + INaLg +
                   synapse_block*3*INCXg)+JNKCC1+synapse_block*3*JEAATg),
@@ -497,16 +498,16 @@ def model(t, y, p, *args):
                  + JNKCC1-synapse_block*JEAATg),
        astblock*(2*JNKCC1 + 1/p.F*IClLg),
        synapse_block*astblock*(-1/2/p.F)*(-INCXg + ICaLg),
-       # POSTSYN
-       synapse_block*astblock*(JEAATg + 1/p.F*IGluLg),  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
-       0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\
+       synapse_block*astblock*(JEAATg + 1/p.F*IGluLg),
+       0,
        # WATER
        fluxi, \
        astblock*fluxg,
+        #postsyn
        fluxp,
        ((-1 / p.F * (INaGp + INaLp + 3 * Ipumpp) + JAMPA2) - synapse_block * 3 / p.F * INCXp),
        (-1 / p.F * (IKGp + IKLp - 2 * Ipumpp) - JKClp),
-       (1 / p.F * (IClG + IClLp) - JKClp),
+       (1 / p.F * (IClGp + IClLp) - JKClp),
        synapse_block * (-1 / 2 / p.F) * (ICaGp + ICaLp - INCXp),
        gates_block * (alphamp * (1 - mp) - betamp * mp),
        gates_block * (alphahp * (1 - hp) - betahp * hp),

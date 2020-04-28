@@ -88,22 +88,29 @@ def parameters(p, dict_):
     p.NR30 = 6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
     p.NGlui0 = p.NGluitot
     # Impermeants and conserved quantitiesNEW
-    p.NAi = (block_synapse * 2 * p.NCai0 - p.NCli0 -
-             block_synapse * p.NGlui0 + p.NKi0 + p.NNai0 - (p.C * p.Vi0) / p.F)
+    p.NAi = -p.C * p.Vi0 / p.F + 2 * p.CaCi0 * p.Wi0 - p.ClCi0 * p.Wi0 + p.GluCi0 * p.Wi0 + p.KCi0 * p.Wi0 + p.NaCi0 * p.Wi0
+    p.NAe = (p.F * p.We0 * p.Wi0 * (-p.CaCc0 + p.CaCi0 - p.ClCe0 + p.ClCi0 - p.GluCc0 + p.GluCi0 - p.KCe0 + p.KCi0 - p.NaCe0 + p.NaCi0) + p.F * p.Wi0 * (
+                2 * p.CCa - p.CCl - p.CGlu + p.CK + p.CNa) + p.Wi0 * (
+                      p.C * p.Vg0 + p.C * p.Vp0 - 2 * p.CaCg0 * p.F * p.Wg0 - 2 * p.CaCp0 * p.F * p.Wp0 + p.ClCg0 * p.F * p.Wg0 + p.ClCp0 * p.F * p.Wp0 - p.F * p.GluCg0 * p.Wg0 - p.F * p.KCg0 * p.Wg0 - p.F * p.KCp0 * p.Wp0 - p.F * p.NaCg0 * p.Wg0 - p.F * p.NaCp0 * p.Wp0) + (
+                      p.We0 - p.Wi0) * (
+                      -p.C * p.Vi0 + 2 * p.CaCi0 * p.F * p.Wi0 - p.ClCi0 * p.F * p.Wi0 + p.F * p.GluCi0 * p.Wi0 + p.F * p.KCi0 * p.Wi0 + p.F * p.NaCi0 * p.Wi0)) / (
+                     2 * p.F * p.Wi0)
+    p.NBe = (p.F * p.We0 * p.Wi0 * (-p.CaCc0 + p.CaCi0 - p.ClCe0 + p.ClCi0 - p.GluCc0 + p.GluCi0 - p.KCe0 + p.KCi0 - p.NaCe0 + p.NaCi0) + p.F * p.Wi0 * (
+                -2 * p.CCa + p.CCl + p.CGlu - p.CK - p.CNa) + p.Wi0 * (
+                      -p.C * p.Vg0 - p.C * p.Vp0 + 2 * p.CaCg0 * p.F * p.Wg0 + 2 * p.CaCp0 * p.F * p.Wp0 - p.ClCg0 * p.F * p.Wg0 - p.ClCp0 * p.F * p.Wp0 + p.F * p.GluCg0 * p.Wg0 + p.F * p.KCg0 * p.Wg0 + p.F * p.KCp0 * p.Wp0 + p.F * p.NaCg0 * p.Wg0 + p.F * p.NaCp0 * p.Wp0) + (
+                      p.We0 + p.Wi0) * (
+                      -p.C * p.Vi0 + 2 * p.CaCi0 * p.F * p.Wi0 - p.ClCi0 * p.F * p.Wi0 + p.F * p.GluCi0 * p.Wi0 + p.F * p.KCi0 * p.Wi0 + p.F * p.NaCi0 * p.Wi0)) / (
+                     2 * p.F * p.Wi0)
+    p.NBg = p.C * p.Vg0 / (2 * p.F) - p.C * p.Vi0 * p.Wg0 / (
+                2 * p.F * p.Wi0) - 3 * p.CaCg0 * p.Wg0 / 2 + 3 * p.CaCi0 * p.Wg0 / 2 - p.GluCg0 * p.Wg0 + p.GluCi0 * p.Wg0 - p.KCg0 * p.Wg0 + p.KCi0 * p.Wg0 - p.NaCg0 * p.Wg0 + p.NaCi0 * p.Wg0
+    p.NAg = -p.C * p.Vg0 / (2 * p.F) - p.C * p.Vi0 * p.Wg0 / (
+                2 * p.F * p.Wi0) + p.CaCg0 * p.Wg0 / 2 + 3 * p.CaCi0 * p.Wg0 / 2 - p.ClCg0 * p.Wg0 + p.GluCi0 * p.Wg0 + p.KCi0 * p.Wg0 + p.NaCi0 * p.Wg0
+    p.NAp = -p.C * p.Vi0 * p.Wp0 / (2 * p.F * p.Wi0) - p.C * p.Vp0 / (
+                2 * p.F) + 3 * p.CaCi0 * p.Wp0 / 2 + p.CaCp0 * p.Wp0 / 2 - p.ClCp0 * p.Wp0 + p.GluCi0 * p.Wp0 - p.GluCp0 * p.Wp0 / 2 + p.KCi0 * p.Wp0 + p.NaCi0 * p.Wp0 + p.NaCp0 * p.Wp0
+    p.NBp = -p.C * p.Vi0 * p.Wp0 / (2 * p.F * p.Wi0) + p.C * p.Vp0 / (
+                2 * p.F) + 3 * p.CaCi0 * p.Wp0 / 2 - 3 * p.CaCp0 * p.Wp0 / 2 + p.GluCi0 * p.Wp0 - p.GluCp0 * p.Wp0 / 2 + p.KCi0 * p.Wp0 - p.KCp0 * p.Wp0 + p.NaCi0 * p.Wp0
 
-    p.NAp = (block_synapse*2*p.NCap0 - p.NClp0 + p.NKp0 + p.NNap0 - (p.C*p.Vp0)/p.F)
-
-
-    '''p.NAi, p.NAe, p.NBe, p.NAg, p.NAg, p.NAp = sp.symbols('p.NAi p.NAe p.NBe p.NAg p.NAg p.NAp')
-    eq1 = sp.Eq(-p.NaCi0 - p.KCi0 - p.ClCi0 - p.CaCi0 - p.GluCi0 - p.NAi * p.Wi0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe / p.We0 + p.NBe / p.We0)
-    eq2 = sp.Eq(-p.NaCg0 - p.KCg0 - p.ClCg0 - p.CaCg0 - p.GluCg0 - p.NAg * p.Wg0 - p.NBg * p.Wg0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe / p.We0 + p.NBe / p.We0)
-    eq3 = sp.Eq(-p.NaCp0 - p.KCp0 - p.ClCp0 - p.CaCp0 - p.GluCp0 - p.NAp * p.Wp0 + p.NaCe0 + p.KCe0 + p.ClCe0 + p.CaCc0 + p.GluCc0 + p.NAe / p.We0 + p.NBe / p.We0)
-    eq4 = sp.Eq(p.CNa + p.CK - p.CCl + 2 * p.CCa - p.CGlu - p.NAi - p.NAe + p.NBe - p.NAg + p.NBg - p.NAp)
-    eq5 = sp.Eq((p.F/ p.C) * (p.NNai0 + p.NKi0 - p.NCli0 + 2 * p.NCai0 + p.NGlui0 - p.NAi) - p.Vi0)
-    eq6 = sp.Eq((p.F / p.C) * (p.NNag0 + p.NKg0 - p.NClg0 + 2 * p.NCag0 + p.NGlug0 - p.NAg + p.NBg) - p.Vg0)
-    eq7 = sp.Eq((p.F / p.C) * (p.NNap0 + p.NKp0 - p.NClp0 + 2 * p.NCap0 - p.NAp) - p.Vp0)
-    sol = sp.solve((eq1, eq2, eq3, eq4, eq5, eq6, eq7), (p.NAe, p.NBe, p.NAg, p.NAg, ))
-    print(sol)'''
+    print(p.NAi, p.NAe, p.NBe, p.NBg, p.NAg, p.NAp, p.NBp)
     # Impermeants and conserved quantities
     '''p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
              block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F)
