@@ -16,4 +16,4 @@ ex5 = (F/ C) * ((NaCi0 + KCi0 - ClCi0 + 2*CaCi0 + GluCi0)*Wi0 - NAi) - Vi0
 ex6 = (F / C) * ((NaCg0 + KCg0 - ClCg0 + 2*CaCg0 + GluCg0)*Wg0 - NAg + NBg) - Vg0
 ex7 = (F / C) * ((NaCp0 + KCp0 - ClCp0 + 2*CaCp0)*Wp0 - NAp + NBp) - Vp0
 
-solve([ex1,ex2,ex3,ex4,ex5,ex6,ex7],NAi,NAe,NBe,NBg,NAg,NAp,NBp)
+sol = solve([ex1,ex2,ex3,ex4,ex5,ex6,ex7],NAi,NAe,NBe,NBg,NAg,NAp,NBp)
