@@ -76,11 +76,11 @@ dict_ = {#
         'ClCi0' : 7,              # Neuronal chloride concentration
         'CaCi0' : 0.1*1e-3,       # Neuronal calcium concentration
         'GluCi0' : 3 ,            # Neuronal glutamate concentration
-        'NaCp0' : 13,             # PS Neuronal sodium concentration
-        'KCp0' : 145,             # PS Neuronal potassium concentration
+        'NaCp0' : 13.0,             # PS Neuronal sodium concentration
+        'KCp0' : 145.0,             # PS Neuronal potassium concentration
         'ClCp0' : 7,              # PS Neuronal chloride concentration
         'CaCp0' : 0.1*1e-3,       # PS Neuronal calcium concentration
-        'GluCp0' : 3 ,            # PS Neuronal glutamate concentration
+        #'GluCp0' : 3 ,            # PS Neuronal glutamate concentration
         'NaCe0' : 152,            # Extracellular sodium concentration
         'KCe0' : 3,               # Extracellular potassium concentration
         'ClCe0' : 135,            # Extracellular chloride concentration

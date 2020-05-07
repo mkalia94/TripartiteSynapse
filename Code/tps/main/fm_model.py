@@ -81,7 +81,7 @@ def model(t, y, p, *args):
     # ECS
     We = p.Wtot - Wi - Wg - Wp
     NNae = p.CNa - NNag - NNa - NNap
-    NKe = p.CK - NKg - NK -NKp
+    NKe = p.CK - NKg - NK - NKp
     NCle = p.CCl - NClg - NCl - NClp
     NaCe = NNae/We
     KCe = NKe/We
@@ -95,10 +95,10 @@ def model(t, y, p, *args):
     GluCi = NGlui/p.VolPreSyn
     # Postsynaptic Neuron
 
-    NaCp = NNa / Wp
-    KCp = NK / Wp
-    ClCp = NCl / Wp
-    CaCp = NCai / Wp
+    NaCp = NNap / Wp
+    KCp = NKp / Wp
+    ClCp = NClp / Wp
+    CaCp = NCap / Wp
 
     # Astrocyte
     NaCg = NNag/Wg
@@ -122,7 +122,7 @@ def model(t, y, p, *args):
     Vi = V # Needed for plotting
     Vg = p.F/p.Cg*(NNag + NKg + p.NBg - p.NAg - NClg +
                    synapse_block*2*NCag - synapse_block*NGlug)
-    Vp = p.F / p.C * (NNap + NKp + synapse_block * 2 * NCap - NClp - p.NAp)
+    Vp = p.F / p.C * (NNap + NKp + synapse_block * 2 * NCap - NClp - p.NAp + p.NBp)
 
 
     # ==========================================================================
@@ -237,7 +237,7 @@ def model(t, y, p, *args):
 
         # Gated currents
     INaGp = p.PNaGp * (mp ** 3) * (hp) * (p.F ** 2) * (Vp) / (
-            p.R * p.T) * ((NaCi -
+            p.R * p.T) * ((NaCp -
                            NaCe * exp(-(p.F * Vp) / (p.R * p.T))) / (
                                   1 - exp(-(p.F * Vp) / (p.R * p.T))))
     IKGp = (p.PKG * (np ** 2)) * (p.F ** 2) * (Vp) / (
@@ -283,10 +283,10 @@ def model(t, y, p, *args):
     # blockerExp = blockerExpAlt
 
     # Na-K pump
-    sigmapump = 1 / 7 * (exp(NaCe / 67.3) - 1)
-    fpump = 1 / (1 + 0.1245 * exp(-0.1 * p.F / p.R / p.T * V) +
-                 0.0365 * sigmapump * exp(-p.F / p.R / p.T * V))
-    Ipumpp = blockerExp * p.pumpScaleNeuron * fpump * p.PNKAi * (
+    sigmapumpP = 1 / 7 * (exp(NaCe / 67.3) - 1)
+    fpumpP = 1 / (1 + 0.1245 * exp(-0.1 * p.F / p.R / p.T * Vp) +
+                 0.0365 * sigmapumpP * exp(-p.F / p.R / p.T * Vp))
+    IpumpP = blockerExp * p.pumpScaleNeuron * fpumpP * p.PNKAp * (
             NaCp ** (1.5) / (NaCp ** (1.5) + p.nka_na ** 1.5)) * (KCe / (KCe + p.nka_k))
 
     # KCl cotransport
@@ -388,15 +388,15 @@ def model(t, y, p, *args):
     # ----------------------------VOLUME DYNAMICS------------------------------
     # =========================================================================
     SCi = NaCi+KCi+ClCi+p.NAi/Wi
-    SCp = NaCp+KCp+ClCp+p.NAp/Wp
-    SCe = NaCe+KCe+ClCe+p.NAe/We + p.NBe/We
+    SCp = NaCp+KCp+ClCp+p.NAp/Wp+p.NBp/Wp
+    SCe = NaCe+KCe+ClCe+p.NAe/We
     SCg = NaCg + KCg + ClCg + p.NAg/Wg + p.NBg/Wg
     delpii = p.R*p.T*(SCi-SCe)
     fluxi = p.LH20i*(delpii)
     delpig = p.R*p.T*(SCg-SCe)
     fluxg = p.LH20g*(delpig)
     delpip = p.R * p.T * (SCp - SCe)
-    fluxp = p.LH20p * (delpii)
+    fluxp = p.LH20p * (delpip)
 
     Voli = Wi/p.Wi0*100
     Volg = Wg/p.Wg0*100
@@ -476,7 +476,7 @@ def model(t, y, p, *args):
     
     ODEs = [  # Neuron
        ((-1/p.F*(INaG+INaLi+3*Ipumpi))-synapse_block*3/p.F*INCXi +
-        synapse_block*3*JEAATi ),
+        synapse_block*3*JEAATi),
        (-1/p.F*(IKG+IKLi-2*Ipumpi)-JKCl-synapse_block*JEAATi),
        (1/p.F*(IClG+IClLi)-JKCl),
        gates_block*(alpham*(1-m)-betam*m),
@@ -505,13 +505,13 @@ def model(t, y, p, *args):
        astblock*fluxg,
         #postsyn
        fluxp,
-       ((-1 / p.F * (INaGp + INaLp + 3 * Ipumpp)) - synapse_block * 3 / p.F * INCXp), #+ JAMPA
-       (-1 / p.F * (IKGp + IKLp - 2 * Ipumpp) - JKClp),
+       ((-1 / p.F * (INaGp + INaLp + 3 * IpumpP)) / p.F * INCXp), #+ JAMPA
+       (-1 / p.F * (IKGp + IKLp - 2 * IpumpP) - JKClp),
        (1 / p.F * (IClGp + IClLp) - JKClp),
-       synapse_block * (-1 / 2 / p.F) * (ICaGp + ICaLp - INCXp),
-       gates_block * (alphamp * (1 - mp) - betamp * mp),
-       gates_block * (alphahp * (1 - hp) - betahp * hp),
-       gates_block * (alphanp * (1 - np) - betanp * np)]
+       (-1 / 2 / p.F) * (ICaGp + ICaLp - INCXp),
+       (alphamp * (1 - mp) - betamp * mp),
+       (alphahp * (1 - hp) - betahp * hp),
+       (alphanp * (1 - np) - betanp * np)]
        #-AMPA2A/AMPAtaoAD + (GluCc*AMPA2R)/AMPAtaoRA - AMPA2A/AMPAtaoAR,
        #(1/1+exp(GluT - GluCc)) * AMPA2A/AMPAtaoAD + AMPA2D/AMPAtaoDR]
        #AMPA1A/AMPAtaoAD - AMPA2D/AMPAtaoDR]
