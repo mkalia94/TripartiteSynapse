@@ -31,8 +31,8 @@ def model(t, y, p, *args):
         mp = y[:, 27]
         hp = y[:, 28]
         np = y[:, 29]
-        AMPA2A = y[:, 30]
-        AMPA2D = y[:, 31]
+        #AMPA2A = y[:, 30]
+        #AMPA2D = y[:, 31]
         #AMPA1A = y[:,32]
         #NMDAA = y[:, 33]
 
@@ -67,8 +67,8 @@ def model(t, y, p, *args):
         mp = y[27]
         hp = y[28]
         np = y[29]
-        AMPA2A = y[30]
-        AMPA2D = y[31]
+        #AMPA2A = y[30]
+        #AMPA2D = y[31]
         #AMPA1A = y[32]
         #NMDAA = y[33]
 
@@ -220,12 +220,12 @@ def model(t, y, p, *args):
     # ===========================================================================
     # --------------------------hier postsynapse-----------------------------------------
     # ============================================================================
-    alphamp = 0.32 * (Vp + 52) / (1 - exp(-(V + 52) / 4))
-    betamp = 0.28 * (V + 25) / (exp((V + 25) / 5) - 1)
-    alphahp = 0.128 * exp(-(V + 53) / 18)
-    betahp = 4 / (1 + exp(-(V + 30) / 5))
-    alphanp = 0.016 * (V + 35) / (1 - exp(-(V + 35) / 5))
-    betanp = 0.25 * exp(-(V + 50) / 40)
+    alphamp = 0.32 * (Vp + 52) / (1 - exp(-(Vp + 52) / 4))
+    betamp = 0.28 * (Vp + 25) / (exp((Vp + 25) / 5) - 1)
+    alphahp = 0.128 * exp(-(Vp + 53) / 18)
+    betahp = 4 / (1 + exp(-(Vp + 30) / 5))
+    alphanp = 0.016 * (Vp + 35) / (1 - exp(-(Vp + 35) / 5))
+    betanp = 0.25 * exp(-(Vp + 50) / 40)
 
     if p.nogates:
         gates_block = 0
@@ -262,11 +262,11 @@ def model(t, y, p, *args):
                                 KCp - KCe * exp((-p.F * Vp) / (p.R * p.T))) / (
                                     1 - exp((-p.F * Vp) / (p.R * p.T))))
     IClLp = p.PClLi * (p.F ** 2) / (
-            p.R * p.T) * V * ((ClCp -
+            p.R * p.T) * Vp * ((ClCp -
                                ClCe * exp((p.F * Vp) / (p.R * p.T))) / (
                                       1 - exp((p.F * Vp) / (p.R * p.T))))
     ICaLp = 4 * p.PCaLi * (p.F ** 2) / (
-            p.R * p.T) * V * ((CaCp -
+            p.R * p.T) * Vp * ((CaCp -
                                CaCc * exp((-2 * p.F * Vp) / (p.R * p.T))) / (
                                       1 - exp((-2 * p.F * Vp) / (p.R * p.T))))
     #IGluLp = p.PGluLi * p.F ** 2 / (
@@ -299,16 +299,16 @@ def model(t, y, p, *args):
                     CaCp / CaCc * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T)) / (
                     1 + p.ksatNCX * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T))
 
-    JAMPA2 = p.PAMPA2 * AMPA2A * (p.F ** 2) * (Vp) / (
-            p.R * p.T) * ((NaCp -
-                           NaCe * exp(-(p.F * Vp) / (p.R * p.T))) / (
-                                  1 - exp(-(p.F * Vp) / (p.R * p.T))))
+    #JAMPA2 = p.PAMPA2 * AMPA2A * (p.F ** 2) * (Vp) / (
+            #p.R * p.T) * ((NaCp -
+                           #NaCe * exp(-(p.F * Vp) / (p.R * p.T))) / (
+                                  #1 - exp(-(p.F * Vp) / (p.R * p.T))))
     # JAMPA1 = p.PAMPA1 * p.R*p.T/p.F*log(NaCe/NaCp)
 
     # JNMDA = p.PNMDA * p.R*p.T/p.F*log(NaCe/NaCp * KCp/KCe * CaCc/CaCp)
 
-    CAMPA2 = 1
-    AMPA2R = CAMPA2 - AMPA2D - AMPA2A
+    #CAMPA2 = 1
+    #AMPA2R = CAMPA2 - AMPA2D - AMPA2A
     #CAMPA1 = 1
     #AMPA1R = CAMPA1 - AMPA1A
     #CNMDA = 1
@@ -505,15 +505,15 @@ def model(t, y, p, *args):
        astblock*fluxg,
         #postsyn
        fluxp,
-       ((-1 / p.F * (INaGp + INaLp + 3 * Ipumpp) + JAMPA2) - synapse_block * 3 / p.F * INCXp),
+       ((-1 / p.F * (INaGp + INaLp + 3 * Ipumpp)) - synapse_block * 3 / p.F * INCXp), #+ JAMPA
        (-1 / p.F * (IKGp + IKLp - 2 * Ipumpp) - JKClp),
        (1 / p.F * (IClGp + IClLp) - JKClp),
        synapse_block * (-1 / 2 / p.F) * (ICaGp + ICaLp - INCXp),
        gates_block * (alphamp * (1 - mp) - betamp * mp),
        gates_block * (alphahp * (1 - hp) - betahp * hp),
-       gates_block * (alphanp * (1 - np) - betanp * np),
-       -AMPA2A/AMPAtaoAD + (GluCc*AMPA2R)/AMPAtaoRA - AMPA2A/AMPAtaoAR,
-       (1/1+exp(GluT - GluCc)) * AMPA2A/AMPAtaoAD + AMPA2D/AMPAtaoDR]
+       gates_block * (alphanp * (1 - np) - betanp * np)]
+       #-AMPA2A/AMPAtaoAD + (GluCc*AMPA2R)/AMPAtaoRA - AMPA2A/AMPAtaoAR,
+       #(1/1+exp(GluT - GluCc)) * AMPA2A/AMPAtaoAD + AMPA2D/AMPAtaoDR]
        #AMPA1A/AMPAtaoAD - AMPA2D/AMPAtaoDR]
        #NMDAA / NMDAtaoAD - AMPA2D / NMDAtaoDR]
 
