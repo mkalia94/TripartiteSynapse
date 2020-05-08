@@ -1,5 +1,5 @@
 from tps import *
-import sympy as sp
+
 
 def parameters(p, dict_):
     p.__dict__.update(dict_)
@@ -32,6 +32,7 @@ def parameters(p, dict_):
 
     # Glial uptake parameters
     p.PNKAg = p.PNKAi
+    p.PNKAp = p.PNKAi
     p.LH20g = p.LH20i
     p.PNKCC1 = p.nkccScale*0.3*p.UKCl
     p.PKir = p.kirScale*3.7*6*10**3/p.F
@@ -90,19 +91,8 @@ def parameters(p, dict_):
     # Impermeants and conserved quantitiesNEW
     p.NAi = -p.C * p.Vi0 / p.F + 2 * p.CaCi0 * p.Wi0 - p.ClCi0 * p.Wi0 - p.GluCi0 * p.Wi0 + p.KCi0 * p.Wi0 + p.NaCi0 * p.Wi0
 
-    p.NAe = (p.F * p.We0 * p.Wi0 * (-p.CaCc0 + p.CaCi0 - p.ClCe0 + p.ClCi0 - p.GluCc0 + p.GluCi0 - p.KCe0 + p.KCi0 - p.NaCe0 + p.NaCi0) + p.F * p.Wi0 * (
-                2 * p.CCa - p.CCl - p.CGlu + p.CK + p.CNa) + p.Wi0 * (
-                      p.C * p.Vg0 + p.C * p.Vp0 - 2 * p.CaCg0 * p.F * p.Wg0 - 2 * p.CaCp0 * p.F * p.Wp0 + p.ClCg0 * p.F * p.Wg0 + p.ClCp0 * p.F * p.Wp0 +
-                             p.F * p.GluCg0 * p.Wg0 - p.F * p.KCg0 * p.Wg0 - p.F * p.KCp0 * p.Wp0 - p.F * p.NaCg0 * p.Wg0 - p.F * p.NaCp0 * p.Wp0 ) - ( p.We0 - p.Wi0) * (p.C * p.Vi0 -
-                                    2 * p.CaCi0 * p.F * p.Wi0 + p.ClCi0 * p.F * p.Wi0 + p.F * p.GluCi0 * p.Wi0 - p.F * p.KCi0 * p.Wi0 - p.F * p.NaCi0 * p.Wi0))/(2 * p.F * p.Wi0)
-
-    p.NBe = (p.F * p.We0 * p.Wi0 * (-p.CaCc0 + p.CaCi0 - p.ClCe0 + p.ClCi0 - p.GluCc0 + p.GluCi0 - p.KCe0 + p.KCi0 - p.NaCe0 + p.NaCi0) + p.F * p.Wi0 * (
-                -2 * p.CCa + p.CCl + p.CGlu - p.CK - p.CNa) + p.Wi0 * (
-                      -p.C * p.Vg0 - p.C * p.Vp0 + 2 * p.CaCg0 * p.F * p.Wg0 + 2 * p.CaCp0 * p.F * p.Wp0 - p.ClCg0 * p.F * p.Wg0 - p.ClCp0 * p.F * p.Wp0
-                      -p.F * p.GluCg0 * p.Wg0 + p.F * p.KCg0 * p.Wg0 + p.F * p.KCp0 * p.Wp0 + p.F * p.NaCg0 * p.Wg0 + p.F * p.NaCp0 * p.Wp0) - (
-                      p.We0 + p.Wi0) * (
-                      p.C * p.Vi0 - 2 * p.CaCi0 * p.F * p.Wi0 + p.ClCi0 * p.F * p.Wi0 + p.F * p.GluCi0 * p.Wi0 - p.F * p.KCi0 * p.Wi0 - p.F * p.NaCi0 * p.Wi0)) / (
-                     2 * p.F * p.Wi0)
+    p.NAe = -p.C * p.Vi0 * p.We0 / (
+                p.F * p.Wi0) - p.CaCc0 * p.We0 + 3 * p.CaCi0 * p.We0 - p.ClCe0 * p.We0 - p.GluCc0 * p.We0 - p.KCe0 * p.We0 + 2 * p.KCi0 * p.We0 - p.NaCe0 * p.We0 + 2 * p.NaCi0 * p.We0
 
     p.NBg = p.C * p.Vg0 / (2 * p.F) - p.C * p.Vi0 * p.Wg0 / (
                 2 * p.F * p.Wi0) - 3 * p.CaCg0 * p.Wg0 / 2 + 3 * p.CaCi0 * p.Wg0 / 2 - p.KCg0 * p.Wg0 + p.KCi0 * p.Wg0 - p.NaCg0 * p.Wg0 + p.NaCi0 * p.Wg0
@@ -111,12 +101,12 @@ def parameters(p, dict_):
                 2 * p.F * p.Wi0) + p.CaCg0 * p.Wg0 / 2 + 3 * p.CaCi0 * p.Wg0 / 2 - p.ClCg0 * p.Wg0 - p.GluCg0 * p.Wg0 + p.KCi0 * p.Wg0 + p.NaCi0 * p.Wg0
 
     p.NAp = -p.C * p.Vi0 * p.Wp0 / (2 * p.F * p.Wi0) - p.C * p.Vp0 / (
-                2 * p.F) + 3 * p.CaCi0 * p.Wp0 / 2 + p.CaCp0 * p.Wp0 / 2 - p.ClCp0 * p.Wp0 - p.GluCp0 * p.Wp0 / 2 + p.KCi0 * p.Wp0 + p.NaCi0 * p.Wp0
+                2 * p.F) + 3 * p.CaCi0 * p.Wp0 / 2 + p.CaCp0 * p.Wp0 / 2 - p.ClCp0 * p.Wp0 + p.KCi0 * p.Wp0 + p.NaCi0 * p.Wp0
 
     p.NBp = -p.C * p.Vi0 * p.Wp0 / (2 * p.F * p.Wi0) + p.C * p.Vp0 / (
-                2 * p.F) + 3 * p.CaCi0 * p.Wp0 / 2 - 3 * p.CaCp0 * p.Wp0 / 2 - p.GluCp0 * p.Wp0 / 2 + p.KCi0 * p.Wp0 - p.KCp0 * p.Wp0 + p.NaCi0 * p.Wp0 - p.NaCp0 * p.Wp0
+                2 * p.F) + 3 * p.CaCi0 * p.Wp0 / 2 - 3 * p.CaCp0 * p.Wp0 / 2 + p.KCi0 * p.Wp0 - p.KCp0 * p.Wp0 + p.NaCi0 * p.Wp0 - p.NaCp0 * p.Wp0
 
-    print(p.NAi, p.NAe, p.NBe, p.NBg, p.NAg, p.NAp, p.NBp)
+    print(p.NAi, p.NAe, p.NBg, p.NAg, p.NAp, p.NBp)
     # Impermeants and conserved quantities
     '''p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
              block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F)
@@ -177,15 +167,15 @@ def parameters(p, dict_):
 
     # Gates postsynapse
 
-    p.alphamp0 = 0.32 * (p.Vi0 + 52) / (1 - exp(-(p.Vi0 + 52) / 4))
-    p.betamp0 = 0.28 * (p.Vi0 + 25) / (exp((p.Vi0 + 25) / 5) - 1)
-    p.alphahp0 = 0.128 * exp(-(p.Vi0 + 53) / 18)
-    p.betahp0 = 4 / (1 + exp(-(p.Vi0 + 30) / 5))
-    p.alphanp0 = 0.016 * (p.Vi0 + 35) / (1 - exp(-(p.Vi0 + 35) / 5))
-    p.betanp0 = 0.25 * exp(-(p.Vi0 + 50) / 40)
-    p.mp0 = p.m0
-    p.hp0 = p.h0
-    p.np0 = p.n0
+    p.alphamp0 = 0.32 * (p.Vp0 + 52) / (1 - exp(-(p.Vp0 + 52) / 4))
+    p.betamp0 = 0.28 * (p.Vp0 + 25) / (exp((p.Vp0 + 25) / 5) - 1)
+    p.alphahp0 = 0.128 * exp(-(p.Vp0 + 53) / 18)
+    p.betahp0 = 4 / (1 + exp(-(p.Vp0 + 30) / 5))
+    p.alphanp0 = 0.016 * (p.Vp0 + 35) / (1 - exp(-(p.Vp0 + 35) / 5))
+    p.betanp0 = 0.25 * exp(-(p.Vp0 + 50) / 40)
+    p.m0 = p.alphamp0 / (p.alphamp0 + p.betamp0)
+    p.h0 = p.alphahp0 / (p.alphahp0 + p.betahp0)
+    p.n0 = p.alphanp0 / (p.alphanp0 + p.betanp0)
 
     # Neuronal leaks
     p.INaG0 = p.PNaG*(p.m0**3)*(p.h0)*(p.F**2)*(p.Vi0)/(
@@ -245,7 +235,7 @@ def parameters(p, dict_):
     p.PCaLi = (-p.ICaG0+p.INCXi0)/p.ICaLi0
     #---------------------------------------------------------------------------------
     # Postsynaptic Neuron leaks
-
+    #test
     p.INaGp0 = p.PNaG * (p.mp0 ** 3) * (p.hp0) * (p.F ** 2) * (p.Vp0) / (
             p.R * p.T) * ((p.NaCp0 -
                            p.NaCe0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
@@ -271,11 +261,11 @@ def parameters(p, dict_):
                                                            1 - exp((p.F * p.Vp0) / (p.R * p.T))))
     p.JKClp0 = p.UKCl * p.R * p.T / p.F * (log(p.KCp0) +
                                           log(p.ClCp0) - log(p.KCe0) - log(p.ClCe0))
-    p.sigmapump = 1 / 7 * (exp(p.NaCe0 / 67.3) - 1)
-    p.fpump = 1 / (1 + 0.1245 * exp(-0.1 * p.F / p.R / p.T * p.Vi0) +
-                   0.0365 * p.sigmapump * exp(-p.F / p.R / p.T * p.Vi0))
-    p.neurPump = p.pumpScaleNeuron * p.PNKAi * p.fpump * (p.NaCi0 ** (1.5) / (
-            p.NaCi0 ** (1.5) + p.nka_na ** 1.5)) * (p.KCe0 / (p.KCe0 + p.nka_k))
+    p.sigmapumpP = 1 / 7 * (exp(p.NaCe0 / 67.3) - 1)
+    p.fpumpP = 1 / (1 + 0.1245 * exp(-0.1 * p.F / p.R / p.T * p.Vp0) +
+                   0.0365 * p.sigmapumpP * exp(-p.F / p.R / p.T * p.Vp0))
+    p.neurPumpP = p.pumpScaleNeuron * p.PNKAp * p.fpumpP * (p.NaCp0 ** (1.5) / (
+            p.NaCp0 ** (1.5) + p.nka_na ** 1.5)) * (p.KCe0 / (p.KCe0 + p.nka_k))
     p.INCXp0 = p.PNCXi * (p.NaCe0 ** 3) / (
             p.alphaNaNCX ** 3 + p.NaCe0 ** 3) * (
                        p.CaCc0 / (p.alphaCaNCX + p.CaCc0)) * (
@@ -283,10 +273,10 @@ def parameters(p, dict_):
                        p.CaCp0 / p.CaCc0 * exp((p.eNCX - 1) * p.F * p.Vp0 / p.R / p.T)) / (
                        1 + p.ksatNCX * exp((p.eNCX - 1) * p.F * p.Vp0 / p.R / p.T))
 
-    p.JAMPA20 = p.PAMPA2 * p.AMPA2A0 * (p.F ** 2) * (p.Vp0) / (
-            p.R * p.T) * ((p.NaCp0 -
-                           p.NaCp0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
-                                  1 - exp(-(p.F * p.Vp0) / (p.R * p.T))))
+    #p.JAMPA20 = p.PAMPA2 * p.AMPA2A0 * (p.F ** 2) * (p.Vp0) / (
+            #p.R * p.T) * ((p.NaCp0 -
+                           #p.NaCp0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
+                                  #1 - exp(-(p.F * p.Vp0) / (p.R * p.T))))
 
     #p.JEAATi0 = p.PEAATi * p.R * p.T / p.F * log(
         #p.NaCe0 ** 3 / p.NaCp0 ** 3 * p.KCp0 / p.KCe0 * p.HeOHai * p.GluCc0 / p.GluCp0)
@@ -307,7 +297,7 @@ def parameters(p, dict_):
                + block_synapse) / p.INaLp0  # Estimated sodium leak
     #                                                    conductance in neuron
     p.PKLp = (-p.IKGp0 + 2 * p.neurPump - p.F * p.JKClp0 -
-              block_synapse * p.JEAATi0 * p.F) / p.IKLi0  # Estimated K leak conductance in neuron
+              block_synapse * p.F) / p.IKLi0  # Estimated K leak conductance in neuron
     p.PClLp = (p.F * p.JKClp0 - p.IClGp0) / p.IClLp0  # Estimated Cl leak conducatance in neuron
     p.PCaLp = (-p.ICaGp0 + p.INCXp0) / p.ICaLp0
 
@@ -364,7 +354,7 @@ def parameters(p, dict_):
     
     # Glu parameters
     p.PGluLi = (p.F*p.NI0*p.ND0/p.trec - p.F*p.JEAATi0)/p.IGluLi0
-    p.PGluLg   = -p.F*p.JEAATg0/p.IGluLg0
+    p.PGluLg = -p.F*p.JEAATg0/p.IGluLg0
     
     
 
@@ -375,7 +365,7 @@ def parameters(p, dict_):
     ctr = 0
     p.err = 0
     
-    if (p.NAi>0) & (p.NAe>0) & (p.NAg>0) & (p.NBe>=0) & (p.NBg>0):
+    if (p.NAi>0) & (p.NAe>0) & (p.NAg>0) & (p.NBe>=0) & (p.NBg>0) & (p.NAp>0) & (p.NBp>0):
         disp('Quantity of impermeants....OK')
     else:
         disp('ERROR: Quantity of an impermeant is nonpositive')
