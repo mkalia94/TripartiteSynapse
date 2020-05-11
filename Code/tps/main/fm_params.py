@@ -21,7 +21,7 @@ def parameters(p, dict_):
     p.PEAATg = p.eaatScaleAst*2*1e-5
     p.PEAATi = p.eaatScaleNeuron*1e-6
     #EAAT??
-    p.PAMPA2 = 2*1e-5
+    #p.PAMPA2 = 2*1e-5
     #p.PAMPA1 = ...
     #p.PNMDA = ...
 
