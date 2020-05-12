@@ -75,26 +75,26 @@ def plotall(fm,t,y,fig,spec,case):
         #plt.tick_params(axis='both', which='minor', labelsize=2)
 
         ax10 = fig.add_subplot(spec[1,0])
-        plottwoaxes(fm,t,y,['NaCi','NaCg'],['NaCe'],r"[Na$^+$] (mM)",fig,ax10)
+        plottwoaxes(fm,t,y,['NaCi','NaCg','NaCp'],['NaCe'],r"[Na$^+$] (mM)",fig,ax10)
 
         ax10 = fig.add_subplot(spec[1,1])
-        plottwoaxes(fm,t,y,['KCi','KCg'],['KCe'],r"[K$^+$] (mM)",fig,ax10)
+        plottwoaxes(fm,t,y,['KCi','KCg','KCp'],['KCe'],r"[K$^+$] (mM)",fig,ax10)
 
         ax20 = fig.add_subplot(spec[2,0])
-        plottwoaxes(fm,t,y,['ClCi','ClCg'],['ClCe'],r"[Cl$^-$] (mM)",fig,ax20)
+        plottwoaxes(fm,t,y,['ClCi','ClCg','ClCp'],['ClCe'],r"[Cl$^-$] (mM)",fig,ax20)
 
         ax21 = fig.add_subplot(spec[2,1])
         plottwoaxes(fm,t,y,['GluCi','GluCg'],['GluCc'],"[Glu] (mM)",fig,ax21)
 
         ax30 = fig.add_subplot(spec[3,0])
-        plottwoaxes(fm,t,y,['CaCi','CaCg'],['CaCc'],r"[Ca$^{2+}$] (mM)",fig,ax30)
+        plottwoaxes(fm,t,y,['CaCi','CaCg','CaCp'],['CaCc'],r"[Ca$^{2+}$] (mM)",fig,ax30)
 
         ax31 = fig.add_subplot(spec[3,1])
-        plottwoaxes(fm,t,y,['Voli','Volg'],[],r"Volume increase ($\%$)",fig,ax31)
+        plottwoaxes(fm,t,y,['Voli','Volg','Volp'],[],r"Volume increase ($\%$)",fig,ax31)
         
 
         ax40 = fig.add_subplot(spec[4,0])
-        plottwoaxes(fm,t,y,['Vi','Vg'],[],"Mem. Potential (mV)",fig,ax40)
+        plottwoaxes(fm,t,y,['Vi','Vg','Vp'],[],"Mem. Potential (mV)",fig,ax40)
 
         ax41 = fig.add_subplot(spec[4,1])
         plottwoaxes(fm,t,y,['p.F*JEAATi'],['p.F*JEAATg'],"forward EAAT current (pA)",fig,ax41)
@@ -104,7 +104,7 @@ def plotall(fm,t,y,fig,spec,case):
         ax50.set_xlabel('time (min.)', fontdict={'fontsize': 8, 'fontweight': 'medium'})
         
         ax51 = fig.add_subplot(spec[5,1])
-        plottwoaxes(fm,t,y,['Ipumpi','Ipumpg'],[],"NKA current (pA)",fig,ax51)
+        plottwoaxes(fm,t,y,['Ipumpi','Ipumpg','IpumpP'],[],"NKA current (pA)",fig,ax51)
         ax51.set_xlabel('time (min.)', fontdict={'fontsize': 8, 'fontweight': 'medium'})
 
     elif case == 2:

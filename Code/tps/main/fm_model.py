@@ -1,5 +1,6 @@
 from tps import *
 def model(t, y, p, *args):
+    #only PS
     if size(shape(y)) == 2:
         NNa = y[:, 0]
         NK = y[:, 1]
