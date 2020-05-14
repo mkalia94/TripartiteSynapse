@@ -266,10 +266,10 @@ def parameters(p, dict_):
                        p.CaCp0 / p.CaCc0 * exp((p.eNCX - 1) * p.F * p.Vp0 / p.R / p.T)) / (
                        1 + p.ksatNCX * exp((p.eNCX - 1) * p.F * p.Vp0 / p.R / p.T))
 
-    #p.JAMPA20 = p.PAMPA2 * p.AMPA2A0 * (p.F ** 2) * (p.Vp0) / (
-            #p.R * p.T) * ((p.NaCp0 -
-                           #p.NaCp0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
-                                  #1 - exp(-(p.F * p.Vp0) / (p.R * p.T))))
+    p.JAMPA20 = p.PAMPA2 * p.AMPA2A0 * (p.F ** 2) * (p.Vp0) / (
+            p.R * p.T) * ((p.NaCp0 -
+                           p.NaCp0 * exp(-(p.F * p.Vp0) / (p.R * p.T))) / (
+                                  1 - exp(-(p.F * p.Vp0) / (p.R * p.T))))
 
     #p.JEAATi0 = p.PEAATi * p.R * p.T / p.F * log(
         #p.NaCe0 ** 3 / p.NaCp0 ** 3 * p.KCp0 / p.KCe0 * p.HeOHai * p.GluCc0 / p.GluCp0)

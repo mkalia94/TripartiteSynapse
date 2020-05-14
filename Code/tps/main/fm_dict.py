@@ -99,8 +99,8 @@ dict_ = {#
         'VolPAP' : 1*1e-3,        # Perisynaptic astrocyte process volume (fixed)
         'Volc' : 1*1e-3,          # Cleft volume (fixed)
         # RECEPTOR initials
-        'AMPA2A0' : 0,
-        'AMPA2D0' : 0,
+        'AMPA2A0' : 0.4,
+        'AMPA2D0' : 0.1,
         'NMDAA0': 0,
         'PAMPA2' : 0,             # AMPA2 permeability (defined in tps/fm_params.py)
         'PAMPA1' :0,              # AMPA1 permeability (defined in tps/fm_params.py)
