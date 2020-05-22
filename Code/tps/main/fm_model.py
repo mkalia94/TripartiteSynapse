@@ -300,7 +300,7 @@ def model(t, y, p, *args):
                     CaCp / CaCc * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T)) / (
                     1 + p.ksatNCX * exp((p.eNCX - 1) * p.F * Vp / p.R / p.T))
 
-    JAMPA2 = p.PAMPA2 * AMPA2A * (p.F ** 2) * (Vp) / (
+    IAMPA2 = p.PAMPA2 * AMPA2A * (p.F ** 2) * (Vp) / (
             p.R * p.T) * ((NaCp -
                            NaCe * exp(-(p.F * Vp) / (p.R * p.T))) / (
                                   1 - exp(-(p.F * Vp) / (p.R * p.T))))
@@ -310,7 +310,13 @@ def model(t, y, p, *args):
 
     CAMPA2 = 1
     AMPA2R = CAMPA2 - AMPA2D - AMPA2A
+    print("AMPA2R:")
+    print(AMPA2R)
+    print("AMPA2A:")
+    print(AMPA2A)
+    print("AMPA2D:")
     print(AMPA2D)
+
     #print(AMPA2A)
     #print(AMPA2R)
     #CAMPA1 = 1
@@ -466,10 +472,10 @@ def model(t, y, p, *args):
     else:
         astblock = 1
     #timeconstants
-    AMPAtaoAD = 40 #4
-    AMPAtaoRA = 4   #0.1
-    AMPAtaoAR = 100     #10
-    AMPAtaoDR = 1000    #100
+    AMPAtaoAD = 4 #4
+    AMPAtaoRA = 0.1   #0.1
+    AMPAtaoAR = 10    #10
+    AMPAtaoDR = 100    #100
     #NMDAtaoAD
     #NMDAtaoDR
     GluT = 5e-5
@@ -509,15 +515,15 @@ def model(t, y, p, *args):
        astblock*fluxg,
         #postsyn
        fluxp,
-       ((-1 / p.F * (INaGp + INaLp + 3 * IpumpP)) / p.F * INCXp), #+ JAMPA
+       ((-1 / p.F * (INaGp + INaLp + 3 * IpumpP + IAMPA2)) - p.F * INCXp), #+ JAMPA
        (-1 / p.F * (IKGp + IKLp - 2 * IpumpP) - JKClp),
        (1 / p.F * (IClGp + IClLp) - JKClp),
        (-1 / 2 / p.F) * (ICaGp + ICaLp - INCXp),
        (alphamp * (1 - mp) - betamp * mp),
        (alphahp * (1 - hp) - betahp * hp),
        (alphanp * (1 - np) - betanp * np),
-       (1/1+exp(GluCc - GluT)) * -AMPA2A/AMPAtaoAD + (GluCc*AMPA2R)/AMPAtaoRA - AMPA2A/AMPAtaoAR, # add (1/1+exp(GluCc - GluT))
-       (1/1+exp(GluCc - GluT)) * AMPA2A/AMPAtaoAD + AMPA2D/AMPAtaoDR]
+       (1/1+exp(GluT - GluCc)) * -AMPA2A/AMPAtaoAD + (GluCc*AMPA2R)/AMPAtaoRA - AMPA2A/AMPAtaoAR, # add (1/1+exp(GluCc - GluT))
+       (1/1+exp(GluT - GluCc)) * AMPA2A/AMPAtaoAD - AMPA2D/AMPAtaoDR]
        #AMPA1A/AMPAtaoAD - AMPA2D/AMPAtaoDR]
        #NMDAA / NMDAtaoAD - AMPA2D / NMDAtaoDR]
 
