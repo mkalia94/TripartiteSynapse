@@ -241,9 +241,9 @@ def parameters(p, dict_):
                            p.ClCe0 * exp(p.F * p.Vp0 / (p.R * p.T))) / (
                                   1 - exp(p.F * p.Vp0 / (p.R * p.T))))
     p.INaLp0 = (p.F ** 2) / (p.R * p.T) * p.Vp0 * ((
-                                                           p.NaCp0 -
-                                                           p.NaCe0 * exp((-p.F * p.Vp0) / (p.R * p.T))) / (
-                                                           1 - exp((-p.F * p.Vp0) / (p.R * p.T))))
+                p.NaCp0 -
+                p.NaCe0 * exp((-p.F * p.Vp0) / (p.R * p.T))) / (
+                        1 - exp((-p.F * p.Vp0) / (p.R * p.T))))
     p.IKLp0 = p.F ** 2 / (p.R * p.T) * p.Vp0 * ((
                                                         p.KCp0 - p.KCe0 * exp((-p.F * p.Vp0) / (p.R * p.T))) / (
                                                         1 - exp((-p.F * p.Vp0) / (p.R * p.T))))
@@ -284,8 +284,8 @@ def parameters(p, dict_):
                                                           #p.GluCp0 - p.GluCc0 * exp((p.F * p.Vp0) / (p.R * p.T))) / (
                                                           #1 - exp((p.F * p.Vp0) / (p.R * p.T))))
 
-    p.PNaLp = (-p.INaGp0 - 3 * p.neurPump - block_synapse * 3 * p.INCXp0
-               + block_synapse - p.IAMPA20) / p.INaLp0  # Estimated sodium leak
+    p.PNaLp = (-p.INaGp0 - 3 * p.neurPump - 3 * p.INCXp0
+               - p.IAMPA20) / p.INaLp0  # Estimated sodium leak
     #                                                    conductance in PS neuron
     p.PKLp = (-p.IKGp0 + 2 * p.neurPump - p.F * p.JKClp0 -
               block_synapse * p.F) / p.IKLi0  # Estimated K leak conductance in PS neuron
