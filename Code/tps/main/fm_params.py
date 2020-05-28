@@ -87,17 +87,24 @@ def parameters(p, dict_):
     p.NR30 = 6*p.CaCi0**3*p.ND0*p.k1init*p.k2init*p.k3**3/(6*p.CaCi0**3*p.k2init*p.k3**3*p.k4 + 6*p.CaCi0**3*p.k3**3*p.k4*p.kmin1 + 2*p.CaCi0**2*p.k3**2*p.k4*p.kmin1*p.kmin2init + p.CaCi0*p.k3*p.k4*p.kmin1*p.kmin2init*p.kmin3 + 2*p.k4*p.kmin1*p.kmin2init*p.kmin3**2 + 6*p.kmin1*p.kmin2init*p.kmin3**3)
     p.NGlui0 = p.NGluitot
     p.GluCp0 = 0
+    
     # Impermeants and conserved quantitiesNEW
+
+    print(p.GluCi0)
+    
+    p.NAe = (p.F*p.We0*p.Wi0*(-p.ClCe0 + p.ClCi0 - p.KCe0 + p.KCi0 - p.NaCe0 + p.NaCi0) + p.F*p.Wi0*(2*p.CCa - p.CCl - p.CGlu + p.CK + p.CNa) + p.Wi0*(p.C*p.Vg0 + p.C*p.Vp0 - 2*p.CaCg0*p.F*p.VolPAP - 2*p.CaCp0*p.F*p.VolPostSyn + p.ClCg0*p.F*p.Wg0 + p.ClCp0*p.F*p.Wp0 + p.F*p.GluCg0*p.VolPAP - p.F*p.KCg0*p.Wg0 - p.F*p.KCp0*p.Wp0 - p.F*p.NaCg0*p.Wg0 - p.F*p.NaCp0*p.Wp0) - (p.We0 - p.Wi0)*(p.C*p.Vi0 - 2*p.CaCi0*p.F*p.VolPreSyn + p.ClCi0*p.F*p.Wi0 + p.F*p.GluCi0*p.VolPreSyn - p.F*p.KCi0*p.Wi0 - p.F*p.NaCi0*p.Wi0))/(2*p.F*p.Wi0)
     p.NAi = -p.C*p.Vi0/p.F + 2*p.CaCi0*p.VolPreSyn - p.ClCi0*p.Wi0 - p.GluCi0*p.VolPreSyn + p.KCi0*p.Wi0 + p.NaCi0*p.Wi0
-    p.NAg = -p.C*p.Vg0/(2*p.F) - p.C*p.Vi0*p.Wg0/(2*p.F*p.Wi0) + p.CaCg0*p.VolPAP - p.CaCg0*p.Wg0/2 + p.CaCi0*p.VolPreSyn*p.Wg0/p.Wi0 + p.CaCi0*p.Wg0/2 - p.ClCg0*p.Wg0 - p.GluCg0*p.VolPAP/2 - p.GluCg0*p.Wg0/2 - p.GluCi0*p.VolPreSyn*p.Wg0/(2*p.Wi0) + p.GluCi0*p.Wg0/2 + p.KCi0*p.Wg0 + p.NaCi0*p.Wg0
-    p.NAp =-p.C*p.Vi0*p.Wp0/(2*p.F*p.Wi0) - p.C*p.Vp0/(2*p.F) + p.CaCi0*p.VolPreSyn*p.Wp0/p.Wi0 + p.CaCi0*p.Wp0/2 + p.CaCp0*p.VolPostSyn - p.CaCp0*p.Wp0/2 - p.ClCp0*p.Wp0 - p.GluCi0*p.VolPreSyn*p.Wp0/(2*p.Wi0) + p.GluCi0*p.Wp0/2 + p.KCi0*p.Wp0 + p.NaCi0*p.Wp0
-    p.NBg = p.C*p.Vg0/(2*p.F) - p.C*p.Vi0*p.Wg0/(2*p.F*p.Wi0) - p.CaCg0*p.VolPAP - p.CaCg0*p.Wg0/2 + p.CaCi0*p.VolPreSyn*p.Wg0/p.Wi0 + p.CaCi0*p.Wg0/2 + p.GluCg0*p.VolPAP/2 - p.GluCg0*p.Wg0/2 - p.GluCi0*p.VolPreSyn*p.Wg0/(2*p.Wi0) + p.GluCi0*p.Wg0/2 - p.KCg0*p.Wg0 + p.KCi0*p.Wg0 - p.NaCg0*p.Wg0 + p.NaCi0*p.Wg0
-    p.NAe =  p.We0*(-p.C*p.Vi0 + 2*p.CaCi0*p.F*p.VolPreSyn - p.ClCi0*p.F*p.Wi0 - p.F*p.GluCi0*p.VolPreSyn + p.F*p.KCi0*p.Wi0 + p.F*p.NaCi0*p.Wi0 + p.F*p.Wi0*(-p.CaCc0 + p.CaCi0 - p.ClCe0 + p.ClCi0 - p.GluCc0 + p.GluCi0 - p.KCe0 + p.KCi0 - p.NaCe0 +p.NaCi0))/(p.F*p.Wi0)
-    p.NBp = -p.C*p.Vi0*p.Wp0/(2*p.F*p.Wi0) + p.C*p.Vp0/(2*p.F) + p.CaCi0*p.VolPreSyn*p.Wp0/p.Wi0 + p.CaCi0*p.Wp0/2 - p.CaCp0*p.VolPostSyn - p.CaCp0*p.Wp0/2 - p.GluCi0*p.VolPreSyn*p.Wp0/(2*p.Wi0) + p.GluCi0*p.Wp0/2 + p.KCi0*p.Wp0 - p.KCp0*p.Wp0 + p.NaCi0*p.Wp0 - p.NaCp0*p.Wp0
+    p.NAp = -p.C*p.Vi0*p.Wp0/(2*p.F*p.Wi0) - p.C*p.Vp0/(2*p.F) + p.CaCi0*p.VolPreSyn*p.Wp0/p.Wi0 + p.CaCp0*p.VolPostSyn - p.ClCp0*p.Wp0 - p.GluCi0*p.VolPreSyn*p.Wp0/(2*p.Wi0) + p.KCi0*p.Wp0 + p.NaCi0*p.Wp0
+    p.NAg = -p.C*p.Vg0/(2*p.F) - p.C*p.Vi0*p.Wg0/(2*p.F*p.Wi0) + p.CaCg0*p.VolPAP + p.CaCi0*p.VolPreSyn*p.Wg0/p.Wi0 - p.ClCg0*p.Wg0 - p.GluCg0*p.VolPAP/2 - p.GluCi0*p.VolPreSyn*p.Wg0/(2*p.Wi0) + p.KCi0*p.Wg0 + p.NaCi0*p.Wg0
+    p.NBe = (p.F*p.We0*p.Wi0*(-p.ClCe0 + p.ClCi0 - p.KCe0 + p.KCi0 - p.NaCe0 + p.NaCi0) + p.F*p.Wi0*(-2*p.CCa + p.CCl + p.CGlu - p.CK - p.CNa) + p.Wi0*(-p.C*p.Vg0 - p.C*p.Vp0 + 2*p.CaCg0*p.F*p.VolPAP + 2*p.CaCp0*p.F*p.VolPostSyn - p.ClCg0*p.F*p.Wg0 - p.ClCp0*p.F*p.Wp0 - p.F*p.GluCg0*p.VolPAP + p.F*p.KCg0*p.Wg0 + p.F*p.KCp0*p.Wp0 + p.F*p.NaCg0*p.Wg0 + p.F*p.NaCp0*p.Wp0) - (p.We0 + p.Wi0)*(p.C*p.Vi0 - 2*p.CaCi0*p.F*p.VolPreSyn + p.ClCi0*p.F*p.Wi0 + p.F*p.GluCi0*p.VolPreSyn - p.F*p.KCi0*p.Wi0 - p.F*p.NaCi0*p.Wi0))/(2*p.F*p.Wi0)
+    p.NBg = p.C*p.Vg0/(2*p.F) - p.C*p.Vi0*p.Wg0/(2*p.F*p.Wi0) -p.CaCg0*p.VolPAP + p.CaCi0*p.VolPreSyn*p.Wg0/p.Wi0 + p.GluCg0*p.VolPAP/2 - p.GluCi0*p.VolPreSyn*p.Wg0/(2*p.Wi0) - p.KCg0*p.Wg0 + p.KCi0*p.Wg0 - p.NaCg0*p.Wg0 + p.NaCi0*p.Wg0
+    p.NBp = -p.C*p.Vi0*p.Wp0/(2*p.F*p.Wi0) + p.C*p.Vp0/(2*p.F) + p.CaCi0*p.VolPreSyn*p.Wp0/p.Wi0 - p.CaCp0*p.VolPostSyn - p.GluCi0*p.VolPreSyn*p.Wp0/(2*p.Wi0) + p.KCi0*p.Wp0 - p.KCp0*p.Wp0 + p.NaCi0*p.Wp0 - p.NaCp0*p.Wp0
+
+
 
 
     
-    print(p.NAi, p.NAe, p.NBg, p.NAg, p.NAp, p.NBp)
+    print(p.NAi, p.NAe, p.NBg, p.NAg, p.NAp, p.NBp,p.NBe)
     # Impermeants and conserved quantities
     '''p.NAi = (block_synapse*2*p.NCai0 - p.NCli0 -
              block_synapse*p.NGlui0 + p.NKi0 + p.NNai0 - (p.C*p.Vi0)/p.F)

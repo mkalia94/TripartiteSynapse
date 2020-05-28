@@ -310,12 +310,12 @@ def model(t, y, p, *args):
 
     CAMPA2 = 1
     AMPA2R = CAMPA2 - AMPA2D - AMPA2A
-    print("AMPA2R:")
-    print(AMPA2R)
-    print("AMPA2A:")
-    print(AMPA2A)
-    print("AMPA2D:")
-    print(AMPA2D)
+    # print("AMPA2R:")
+    # print(AMPA2R)
+    # print("AMPA2A:")
+    # print(AMPA2A)
+    # print("AMPA2D:")
+    # print(AMPA2D)
 
     #print(AMPA2A)
     #print(AMPA2R)
