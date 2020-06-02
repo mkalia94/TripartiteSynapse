@@ -515,7 +515,7 @@ def model(t, y, p, *args):
        astblock*fluxg,
         #postsyn
        fluxp,
-       ((-1 / p.F * (INaGp + INaLp + 3 * IpumpP + IAMPA2)) - 3 * p.F / INCXp), #+ JAMPA #works: - p.F * INCXp
+        ((-1 / p.F * (INaGp + INaLp + 3 * IpumpP + IAMPA2)) - p.F * INCXp), #+ JAMPA #works: - p.F * INCXp
        (-1 / p.F * (IKGp + IKLp - 2 * IpumpP) - JKClp),
        (1 / p.F * (IClGp + IClLp) - JKClp),
        (-1 / 2 / p.F) * (ICaGp + ICaLp - INCXp),
