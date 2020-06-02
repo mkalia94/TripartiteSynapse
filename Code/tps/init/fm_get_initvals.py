@@ -7,6 +7,6 @@ def get_initvals(fm):
     # fm.NMDAA0])
     # added 12 DE´s
     if fm.nogates:
-        fm.initvals = fm.initvals + 1e-7*array([1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,])*fm.initvals
+        fm.initvals = fm.initvals + 1e-7*array([1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0])*fm.initvals
     else:    
-        fm.initvals  = fm.initvals + 1e-5*fm.initvals
+        fm.initvals  = fm.initvals #+ 1e-7*fm.initvals
