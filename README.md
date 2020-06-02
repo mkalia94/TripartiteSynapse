@@ -19,6 +19,10 @@ Refer to files 'Example' and Paper_Figures on how to run simulations. Run:
 `chmod +x ./Example`
 `Example`
 
+## GUI
+A simple GUI was geenrated for didactic purposes, run:
+`python -i set_up_GUI.py`
+
 ## Bifurcations
 Bifurcation computations are stored in various .mat files in the folder 'BifFiles'. Running 'createbif.py' constructs the bifurcation diagram presented in Fig. 5 automatically.
 
