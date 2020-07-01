@@ -217,13 +217,9 @@ def solveModel():
 	fm = tps.fmclass(paramdict) # create a model (__init__.py of tps)
 	tps.negcheck_init(fm) # execute function negcheck (tps/exec)
 	tps.exec_cases(fm,tps.fmclass) # execute function exec_cases (tps/exec)
-	global timeArr, myData, tstart, tend, firstPlot
+	global timeArr, outputData, tstart, tend, firstPlot
 	timeArr,outputData = tps.exec_solve(fm) # execute function exec_solve (tps/exec)
-	#transpose data
-	myData = np.zeros((len(outputData[0]),len(outputData)))
-	for rowIdx in range(len(outputData)):
-		for colIdx in range(len(outputData[0])):
-			myData[colIdx][rowIdx] = outputData[rowIdx][colIdx]
+
 	#fm.model(t,y,string) #string = 'NNa' -> creates a plot of description in string, using t as sampling time
 
 	tstart = paramdict["tstart"]
@@ -239,7 +235,7 @@ def plotModel():
 		graphsToPlot = app.getOptionBox("Graphs")
 		for itemIdx, itemLabel in enumerate(graphsToPlot):
 			if graphsToPlot[itemLabel]:
-				axes.plot(timeArr, myData[itemIdx], label=itemLabel)
+				axes.plot(timeArr, outputData[:,itemIdx], label=itemLabel)
 
 		# area of oxygen deprivation
 		limits = axes.get_ylim()
@@ -293,7 +289,7 @@ app.setEntryDefault("tStartVal",20)
 app.addLabel("tEndLabel","T end",11,0)
 app.addNumericEntry("tEndVal",11,1)
 app.setEntryDefault("tEndVal",30)
-myData = []
+outputData = []
 timeArr = []
 tstart = 0
 tend = 0
