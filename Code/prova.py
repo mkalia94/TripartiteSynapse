@@ -10,7 +10,14 @@ def showLabels():
 	axesList = fig.get_axes()
 	axes = axesList[0]
 
-	axes.legend()
+	anyPlot = False
+	plotList = app.getOptionBox("Graphs")
+	for plotIdx,plotLabel in enumerate(plotList):
+		if plotList[plotLabel]:
+			anyPlot = True
+			break
+	if anyPlot:
+		axes.legend()
 	axes.set_xlabel("time")
 	axes.set_ylabel("Y Axes")
 	app.refreshPlot("plotFig")
@@ -24,14 +31,6 @@ def plotSomething():
 	showLabels()
 
 def solveModel():
-	tStart = app.getEntry("tStartVal")
-	tEnd = app.getEntry("tEndVal")
-	if tStart is None:
-		tStart = 20
-	if tEnd is None:
-		tEnd = 30
-	if tEnd < tStart:
-		tEnd = tStart
 
 	paramdict = {'pumpScaleAst': 1.0,
                  'pumpScaleNeuron': 1.0,
@@ -45,8 +44,8 @@ def solveModel():
                  'beta1': 4,
                  'beta2': 4,
                  'perc': 0.5,
-                 'tstart': tStart,
-                 'tend': tEnd,
+                 'tstart': 20,
+                 'tend': 30,
                  't0': 0.0,
                  'tfinal': 100.0,
                  'alphae0': 0.2,
@@ -214,7 +213,27 @@ def solveModel():
                  'geteigs': False,
                  'savematlabpar': False,
                  'nosynapse': False}
+
+	tabId = app.getTabbedFrameSelectedTab("experimentsFrame")
+	paramList = None
+	for expIdx,expVal in enumerate(experimentList):
+		if tabId == expVal[0]+"Tab":
+			experimentId = expVal[0]
+			paramList = expVal[2]
+			break
+	if paramList == None:
+		return
+
+	for idx,par in enumerate(paramList):
+		if isinstance(par[2],bool):
+			paramdict[par[0]] = app.getCheckBox(par[0]+"Val_"+experimentId)
+		elif isinstance(par[2],float) or isinstance(par[2],int):
+			paramdict[par[0]] = app.getEntry(par[0]+"Val_"+experimentId)
+# 		print(par[0])
+# 		print(paramdict[par[0]])
+
 	fm = tps.fmclass(paramdict) # create a model (__init__.py of tps)
+	print(fm.__dict__)
 	tps.negcheck_init(fm) # execute function negcheck (tps/exec)
 	tps.exec_cases(fm,tps.fmclass) # execute function exec_cases (tps/exec)
 	global timeArr, outputData, tstart, tend, firstPlot
@@ -229,7 +248,6 @@ def solveModel():
 	plotModel()
 
 def plotModel():
-
 	axes.clear()
 	if not firstPlot:
 		graphsToPlot = app.getOptionBox("Graphs")
@@ -249,6 +267,15 @@ def plotModel():
 		showLabels()
 
 def showOptions():
+	try:
+		app.getOptionBox("Graphs")
+	except Exception:
+		pass
+	else:
+		print("try to remove the box")
+		app.removeOptionBox("Graphs")
+
+	app.openFrame("rootFrame")
 	app.addTickOptionBox("Graphs",[
 		"NNa",
 		"NK",
@@ -272,29 +299,125 @@ def showOptions():
 		"Vtemp",
 		"Wi",
 		"Wg"
-		], 0,10)
+		], 0,11,1,1)
 	app.setOptionBoxChangeFunction("Graphs", plotModel)
+	app.setOptionBoxSticky("Graphs","ne")
+	app.stopFrame()
+
+def printTutorial(eventData,parLabel):
+	#print(parLabel)
+	#print(eventData.widget._name)
+
+	if parLabel == "root":
+		app.setMessage("infoText","")
+	else:
+		app.setMessage("infoText","Instructions for "+parLabel)
+
+def getClickFunction(widgetLabel):
+	return lambda eventData: printTutorial(eventData,widgetLabel)
 
 
-# main run
+### end of defined functions
+### main run
+
+# create a new gui
 app = gui()
+app.setStretch("both")
+rootFrame = app.startFrame("rootFrame")
 
-fig = app.addPlotFig("plotFig",0,0,10,10)
+# create text for instructions
+app.addMessage("infoText","",row=0,column=0,rowspan=20,colspan=1)
+
+# create figure for plots
+fig = app.addPlotFig("plotFig",row=0,column=1,colspan=10,rowspan=10)
 axes = fig.add_subplot(111)
-app.addButton("SolveBtn", solveModel, 10,9)
-#app.addButton("PlotBtn", plotSomething,11,9)
-app.addLabel("tStartLabel","T start",10,0)
-app.addNumericEntry("tStartVal",10,1)
-app.setEntryDefault("tStartVal",20)
-app.addLabel("tEndLabel","T end",11,0)
-app.addNumericEntry("tEndVal",11,1)
-app.setEntryDefault("tEndVal",30)
+
+# definition of experiments: name and associated parameters
+# experiment = [name | label | parameters]
+# parameters = [name | label | default]
+experimentList = [
+	["EnergyDeprivation","Energy Deprivation",[
+	 	["ECS","ECS",0.2],
+	 	["tfinal","T total [min]",100.0],
+		["tstart","T start [min]",20.0],
+		["tend","T end [min]",30.0],
+		["EnergyAvailable","Available Energy",0.5],
+		["solve","Solve",True],
+		["nogates","No Gates",True],
+		["savenumpy","Save numpy",False],
+		["savematlab","Save matlab",False],
+		["Plot","Plot",True]]],
+ 	["Excitation","Excitation",[
+		["ECS","ECS",0.2],
+		["tfinal","T total [min]",100.0],
+		["StartExcitation","T start excitation [min]",1.0],
+		["EndExcitation","T end excitation [min]",15.0],
+		["Current","Current [pA]",20],
+		["Wavelength","Wavelength [min]",20.0],
+		["Duty","Duty [fraction]",0.95],
+		["BlockAstrocyte","Block Astrocyte gradients",0.5],
+		["nogates","No Gates",True],
+		["solve","Solve",True],
+		["savenumpy","Save numpy",False],
+		["savematlab","Save matlab",False],
+		["Plot","Plot",True]]]]
+
+# open a tabbed frame for the experiments
+app.startTabbedFrame("experimentsFrame",row=10,column=1,colspan=10,rowspan=10)
+
+# create single tabs
+for expIdx,expVal in enumerate(experimentList):
+	# open tab and set correct text
+	app.startTab(expVal[0]+"Tab")
+	app.setTabText("experimentsFrame",expVal[0]+"Tab",expVal[1])
+
+	# create parameters (label+control)
+	for parIdx,parVal in enumerate(experimentList[expIdx][2]):
+		# label creation and handling of click event
+		labelWidget = app.addLabel(parVal[0]+"Label_"+expVal[0],parVal[1],row=parIdx,column=0)
+		myCallback = getClickFunction(parVal[0])
+		labelWidget.bind("<Button-1>",myCallback,add="+")
+
+		# control creation, according to its type
+		if isinstance(parVal[2],bool):
+			app.addCheckBox(parVal[0]+"Val_"+expVal[0],row=parIdx,column=1)
+			app.setCheckBox(parVal[0]+"Val_"+expVal[0],ticked=parVal[2], callFunction=False)
+			app.setCheckBoxText(parVal[0]+"Val_"+expVal[0],"")
+		elif isinstance(parVal[2], float) or isinstance(parVal[2], int):
+			app.addNumericEntry(parVal[0]+"Val_"+expVal[0],row=parIdx,column=1)
+			app.setEntry(parVal[0]+"Val_"+expVal[0],parVal[2])
+	# close single tab
+	app.stopTab()
+
+# close tabbed frame
+app.stopTabbedFrame()
+
+# create solve button
+app.addButton("SolveBtn", solveModel, row=20,column=10,rowspan=1,colspan=1)
+app.setButton("SolveBtn","Solve")
+app.setButtonSticky("SolveBtn","ne")
+
+# set window's title
+app.setTitle("TriSyn GUI")
+
+# initialization of global variables
 outputData = []
 timeArr = []
 tstart = 0
 tend = 0
 firstPlot = True;
 
+app.stopFrame()
 
+# handle click function for whole window (not working)
+rootFrame.bind("<Button-1>",getClickFunction("root"),add="+")
+
+# myAttrFile = open("C:/Users/toalu/Google Drive/UTwente/Work/TriSyn GUI/prova gui/gui_attributes.txt","w")
+# for att in dir(app):
+# 	myAttrFile.write(att+"\n")
+# 	#print(att)#, getattr(app,att)
+# myAttrFile.close()
+
+# run the gui
 app.go()
 #no code after this line
