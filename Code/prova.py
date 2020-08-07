@@ -213,7 +213,8 @@ def getModelOutputNames():
 		"NGlug",
 		"Vtemp",
 		"Wi",
-		"Wg"]
+		"Wg",
+		"NNa/Wi"]
 	return modelOutputNames
 
 def getExperimentParameters():
@@ -256,7 +257,7 @@ def getTutorialPages():
 		["tutorialTab1","Introduction",[
 		  ["h1","Title"],
 		  ["h2","Sub title"],
-		  ["p","Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
+		  ["p",r"Lorem $\alpha$ ipsum dolor sit amet,\nconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
 		  ["h2","Another sub title"],
 		  ["p","Arcu dictum varius duis at consectetur lorem. Pellentesque eu tincidunt tortor aliquam. Pellentesque adipiscing commodo elit at imperdiet dui. Ultricies lacus sed turpis tincidunt id aliquet risus feugiat in. Ullamcorper eget nulla facilisi etiam dignissim diam quis. Elementum nisi quis eleifend quam adipiscing vitae. Lacus suspendisse faucibus interdum posuere lorem ipsum. Faucibus in ornare quam viverra orci. Penatibus et magnis dis parturient montes nascetur ridiculus. Aliquam ultrices sagittis orci a scelerisque purus. Montes nascetur ridiculus mus mauris vitae ultricies leo integer malesuada."]
 		  ]],
@@ -341,6 +342,7 @@ def solveModel():
 
 def solvedModelCallback(varIn=None):
 	print(varIn)
+	updateModelInfo()
 	stopWaitingWidget()
 	showOptions()
 	global firstPlot
@@ -387,7 +389,9 @@ def plotModel():
 		graphsToPlot = app.getOptionBox("Graphs")
 		for itemIdx, itemLabel in enumerate(graphsToPlot):
 			if graphsToPlot[itemLabel]:
-				axes.plot(timeArr, outputData[:,itemIdx], label=itemLabel)
+				dataLine = currentModel.model(timeArr,outputData,itemLabel)
+				axes.plot(timeArr, dataLine, label=itemLabel)
+
 
 		# area of oxygen deprivation
 		limits = axes.get_ylim()
