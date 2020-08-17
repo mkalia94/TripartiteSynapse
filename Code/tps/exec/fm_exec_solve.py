@@ -9,11 +9,14 @@ def exec_solve(fm,*args):
             y = load('SimDataImages/{a}/yfile.npy'.format(a=loc_))
         elif args:
             t = args[0]
-            y = args[1]            
+            y = args[1]
         else:
+			# starting to solve status
             t, y = solver(fm, fm.t0, fm.tfinal, fm.initvals)
+			# solved status
 
-        negcheck(fm,t,y)    
+        negcheck(fm,t,y)
+		# simulation ok status
 
         if 'excite' in fm.__dict__.keys():
             duration_ = 1.2*(fm.excite[3]/60)/(1-fm.excite[4])
@@ -30,12 +33,12 @@ def exec_solve(fm,*args):
                             ctr = ctr + 1
             ctr = ctr/2+0.5
             disp('Excitation: Number of action potentials: {a}'.format(a=ctr))
-                
-        exec_plot(fm,t,y)
-        exec_savedata(fm,t,y)
-        exec_geteigs(fm,y[-1,:])
+
+        #exec_plot(fm,t,y)
+        #exec_savedata(fm,t,y)
+        #exec_geteigs(fm,y[-1,:])
 
     else:
         t = 0
         y = 0
-    return t,y    
+    return t,y

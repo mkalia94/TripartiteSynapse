@@ -1,8 +1,6 @@
 import tps
 import model_functions as mf
-from numpy import sin, pi, arange
 from appJar import gui
-import random
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -158,6 +156,9 @@ def showOptions():
 	app.addTickOptionBox("Graphs", mf.getModelOutputNames(), row=0,column=3,rowspan=1,colspan=2)
 	app.setOptionBoxChangeFunction("Graphs", plotModel)
 	app.setOptionBoxSticky("Graphs","ne")
+	app.addButton("plotWinBtn", openPlotWindow, row=2,column=2)
+	app.setButton("plotWinBtn","Advanced Plots")
+	app.setButtonSticky("plotWinBtn","se")
 	app.stopFrame()
 
 
@@ -184,6 +185,9 @@ def fixPaneWidth():
 				# should use scroll's width instrad of fixed number
 				app.setMessageWidth(lineLabel, app.getScrollPaneWidget(tutorialTab[0]+"Panel").winfo_width()-20)
 
+
+def openPlotWindow():
+	app.showSubWindow("plottingWin")
 
 
 ### end of defined functions
@@ -326,6 +330,11 @@ app.stopFrame()
 
 # handle click function for whole window (not working)
 rootFrame.bind("<Button-1>",getClickFunction("root"),add="+")
+
+# create second window
+app.startSubWindow("plottingWin",title="Plot Editor", modal=True, blocking=False, transient=False)
+app.addLabel("Plotting Window")
+app.stopSubWindow()
 
 # myAttrFile = open("C:/Users/toalu/Google Drive/UTwente/Work/TriSyn GUI/prova gui/gui_attributes.txt","w")
 # for att in dir(app):
