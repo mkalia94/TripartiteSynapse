@@ -18,7 +18,6 @@ a = Analysis(['trisynGUI.py'],
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
-          Tree('data', prefix='data'),
           a.scripts,
           a.binaries,
           a.zipfiles,

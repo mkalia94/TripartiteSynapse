@@ -4,6 +4,10 @@ from appJar import gui
 import matplotlib.pyplot as plt
 import numpy as np
 
+import gc
+import sys
+import random
+
 # application's functions
 
 def plotSomething():
@@ -12,7 +16,6 @@ def plotSomething():
 	axes.clear()
 	axes.plot(x,y)
 	app.refreshPlot("plotFig")
-	showLabels()
 
 
 def updateModel():
@@ -39,32 +42,26 @@ def updateModel():
 	tps.negcheck_init(fm) # execute function negcheck (tps/exec)
 	tps.exec_cases(fm,tps.fmclass) # execute function exec_cases (tps/exec)
 
-	global currentModel, tstart, tend
+	global currentModel
 	currentModel = fm
-	tstart = currentModel.__dict__["tstart"]
-	tend = currentModel.__dict__["tend"]
 	#print(fm.__dict__.keys())
 	updateModelInfo()
 
 
 def solveModel():
-	if currentModel == None:
-		updateModel()
-
-	print("ready to simulate")
-
-	global timeArr, outputData
-
+	global lastSolvedModel, timeArr, outputData
 	fm = currentModel
 	timeArr,outputData = tps.exec_solve(fm) # execute function exec_solve (tps/exec)
+	lastSolvedModel = fm
 
 	#fm.model(t,y,string) #string = 'NNa' -> creates a plot of description in string, using t as sampling time
 
 
 def solvedModelCallback(varIn=None):
 	print(varIn)
+	updateStatusLabel("Simulation complete")
 	updateModelInfo()
-	stopWaitingWidget()
+	#stopWaitingWidget()
 	showOptions()
 	global firstPlot
 	firstPlot = False
@@ -72,13 +69,20 @@ def solvedModelCallback(varIn=None):
 
 
 def solveBtnFunction():
-	startWaitingWidget()
-	useThreads = False
-	if useThreads:
-		app.threadCallback(solveModel, solvedModelCallback)
-	else:
-		solveModel()
-		solvedModelCallback()
+	if currentModel == None:
+		updateModel()
+
+	global CurrentSolvedExperiment
+	tabId = app.getTabbedFrameSelectedTab("experimentsFrame")
+	for expIdx,expVal in enumerate(experimentList):
+		if tabId == expVal[0]+"Tab":
+			CurrentSolvedExperiment = expVal[0]
+			break
+	print(CurrentSolvedExperiment)
+	updateStatusLabel("Simulating")
+
+	#startWaitingWidget()
+	app.threadCallback(solveModel, solvedModelCallback)
 
 
 def updateModelInfo():
@@ -93,15 +97,19 @@ def updateModelInfo():
 			newLabel = str(round(currentModel.__dict__[modelInfoVal[0]],4))
 		else:
 			newLabel = str(currentModel.__dict__[modelInfoVal[0]])
-		app.setLabel(modelInfoVal[0]+"_expInfoVal",newLabel)
+		app.queueFunction(app.setLabel,modelInfoVal[0]+"_expInfoVal",newLabel)
 
 
-def startWaitingWidget():
-	print("Start waiting...")
+def updateStatusLabel(newStatus):
+	app.queueFunction(app.setLabel,"statusLabel","Status: "+newStatus)
 
 
-def stopWaitingWidget():
-	print("Done!")
+# def startWaitingWidget():
+# 	print("Start waiting...")
+
+
+# def stopWaitingWidget():
+# 	print("Done waiting!")
 
 
 def plotModel():
@@ -114,12 +122,21 @@ def plotModel():
 				axes.plot(timeArr, dataLine, label=itemLabel)
 
 
-		# area of oxygen deprivation
+		# plot areas
 		limits = axes.get_ylim()
 		ymin = limits[0]
 		ymax = limits[1]
-		areaX = np.array([tstart, tend])
-		axes.fill_between(areaX, ymin, ymax, alpha=0.2)
+
+		for expIdx,expVal in enumerate(experimentAreas):
+			if CurrentSolvedExperiment == expVal[0]:
+				areasToPlot = expVal[1]
+				break
+		for areaIdx,areaVal in enumerate(areasToPlot):
+			tstart = lastSolvedModel.__dict__[areaVal[0]]
+			tend = lastSolvedModel.__dict__[areaVal[1]]
+			areaX = np.array([tstart, tend])
+			axes.fill_between(areaX, ymin, ymax, alpha=0.2)
+
 		axes.set_ylim(limits)
 		axes.set_xlim([timeArr[0], timeArr[-1]])
 		app.refreshPlot("plotFig")
@@ -144,13 +161,21 @@ def showLabels():
 
 
 def showOptions():
+	# reset option box
 	try:
 		app.getOptionBox("Graphs")
 	except Exception:
 		pass
 	else:
-		print("try to remove the box")
 		app.removeOptionBox("Graphs")
+
+	# reset plotting button
+	try:
+		app.getButton("plotWinBtn")
+	except Exception:
+		pass
+	else:
+		app.removeButton("plotWinBtn")
 
 	app.openFrame("rootFrame")
 	app.addTickOptionBox("Graphs", mf.getModelOutputNames(), row=0,column=3,rowspan=1,colspan=2)
@@ -169,7 +194,7 @@ def printParamInfo(eventData,parLabel):
 	if parLabel == "root":
 		app.setMessage("infoText","")
 	else:
-		app.setMessage("infoText","Instructions for "+parLabel)
+		app.setMessage("infoText","Instructions for "+parLabel+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer.")
 
 def getClickFunction(widgetLabel):
 	return lambda eventData: printParamInfo(eventData,widgetLabel)
@@ -179,32 +204,51 @@ def fixPaneWidth():
 	#print(app.getScrollPaneWidget(tutorialTab[0]+"Panel").winfo_width())
 	global tutorialText
 	for tutorialTabsIdx,tutorialTab in enumerate(tutorialText):
+		# should use scroll's width instrad of fixed number
+		widgetWidth = app.getScrollPaneWidget(tutorialTab[0]+"Panel").winfo_width()-20
 		for tutorialLineIdx,tutorialLine in enumerate(tutorialTab[2]):
 			if tutorialLine[0]=="p":
 				lineLabel = tutorialTab[0]+"_line"+str(tutorialLineIdx)
-				# should use scroll's width instrad of fixed number
-				app.setMessageWidth(lineLabel, app.getScrollPaneWidget(tutorialTab[0]+"Panel").winfo_width()-20)
+				app.setMessageWidth(lineLabel, widgetWidth)
 
 
 def openPlotWindow():
 	app.showSubWindow("plottingWin")
 
 
+def pickAColor():
+	oldColour = app.getButtonBg("colorPickerBtn")
+	newColour = app.colourBox(colour=oldColour,parent="plottingWin")
+	app.setButtonBg("colorPickerBtn",newColour)
+
+
+def initPlotWidow():
+	plotSpaceFig.clear()
+	axes1_1 = plotSpaceFig.add_subplot(2,3,random.randint(1,6))
+	axes1_2 = plotSpaceFig.add_subplot(2,3,random.randint(1,6))
+	app.refreshPlot("plottingSpace")
+
+
+
 ### end of defined functions
 ### main run
 
 # create a new gui
-app = gui()
-app.setStretch("both")
-rootFrame = app.startFrame("rootFrame")
+app = gui() #geom="1000x850" it should resize later on...
+
+# set window's title
+app.setTitle("TriSyn GUI")
 
 # initialization of global variables
 currentModel = None
+lastSolvedModel = None
 outputData = None
 timeArr = None
-tstart = 0
-tend = 0
 firstPlot = True;
+CurrentSolvedExperiment = None
+
+app.setStretch("both")
+rootFrame = app.startFrame("rootFrame")
 
 # tutorialText = [label | title | lines]
 # lines = [style | text]
@@ -223,11 +267,6 @@ for tutorialTabsIdx,tutorialTab in enumerate(tutorialText):
 	app.startTab(tutorialTab[0]+"Tab")
 	app.setTabText("tutorialFrame",tutorialTab[0]+"Tab",tutorialTab[1])
 	app.startScrollPane(tutorialTab[0]+"Panel", disabled="horizontal")
-# 	myAttrFile = open("C:/Users/toalu/Google Drive/UTwente/Work/TriSyn GUI/prova gui/scrollPane_size.txt","w")
-# 	for att in dir(app.getScrollPaneWidget(tutorialTab[0]+"Panel").size):
-# 	 	myAttrFile.write(att+"\n")
-# 	 	print(getattr(app,att))#, getattr(app,att)
-# 	myAttrFile.close()
 
 	for tutorialLineIdx,tutorialLine in enumerate(tutorialTab[2]):
 		lineLabel = tutorialTab[0]+"_line"+str(tutorialLineIdx)
@@ -257,8 +296,12 @@ app.stopTabbedFrame()
 
 app.setStretch("both")
 # create text for instructions
-app.addMessage("infoText","",row=2,column=0,rowspan=1,colspan=1)
+app.startScrollPane("infoScroll", disabled="horizontal",row=2,column=0,rowspan=1,colspan=1)
+app.addMessage("infoText","")
+app.setMessageSticky("infoText","news")
+app.setMessageAspect("infoText",300)
 app.setMessageRelief("infoText","sunken")
+app.stopScrollPane()
 
 # create figure for plots
 fig = app.addPlotFig("plotFig",row=0,column=1,colspan=2,rowspan=1)
@@ -268,6 +311,7 @@ axes = fig.add_subplot(111)
 # experiment = [name | label | parameters]
 # parameters = [name | label | default]
 experimentList = mf.getExperimentParameters()
+experimentAreas = mf.getExperimentAreas()
 
 # open a tabbed frame for the experiments
 app.startTabbedFrame("experimentsFrame",row=1,column=1,colspan=1,rowspan=1)
@@ -318,14 +362,17 @@ for modelInfoIdx,modelInfoVal in enumerate(modelInfo):
 app.stopLabelFrame()
 updateModel()
 
+# create status label
+app.setSticky("we")
+app.addLabel("statusLabel","",row=3,column=1)
+updateStatusLabel("Ready")
+
 # create solve button
 app.addButton("SolveBtn", solveBtnFunction, row=1,column=2,rowspan=1,colspan=1)
 app.setButton("SolveBtn","Solve")
 app.setButtonSticky("SolveBtn","nwe")
 
-# set window's title
-app.setTitle("TriSyn GUI")
-
+# close root frame
 app.stopFrame()
 
 # handle click function for whole window (not working)
@@ -333,16 +380,120 @@ rootFrame.bind("<Button-1>",getClickFunction("root"),add="+")
 
 # create second window
 app.startSubWindow("plottingWin",title="Plot Editor", modal=True, blocking=False, transient=False)
-app.addLabel("Plotting Window")
-app.stopSubWindow()
+app.setSticky("nswe")
+app.setStretch("both")
+# app.addLabel("tempLabel","Work in Progress")
+# will be added from the template
+app.startFrame("rootPlotWindow")
 
-# myAttrFile = open("C:/Users/toalu/Google Drive/UTwente/Work/TriSyn GUI/prova gui/gui_attributes.txt","w")
-# for att in dir(app):
-# 	myAttrFile.write(att+"\n")
-# 	#print(att)#, getattr(app,att)
-# myAttrFile.close()
+# left column: line lists, subplot controls
+app.setExpand("none")
+app.startFrame("controlsColumn",row=0,column=0)
+
+app.setStretch("both")
+app.addListBox("linesBox",mf.getModelOutputNames(),row=0,column=0,colspan=3)
+app.selectListItemAtPos("linesBox",0,callFunction=False)
+
+app.setStretch("column")
+app.addNamedButton("Add line","addLineBtn",func=initPlotWidow,row=1,column=0,colspan=3)
+app.setButtonSticky("addLineBtn","es")
+
+app.addNamedButton("<","previousPlotBtn",func=None,row=2,column=0)
+app.addNamedButton("+","addPlotBtn",func=None,row=2,column=1)
+app.addNamedButton(">","nextPlotBtn",func=None,row=2,column=2)
+app.setButtonSticky("previousPlotBtn","ews")
+app.setButtonSticky("addPlotBtn","ews")
+app.setButtonSticky("nextPlotBtn","ews")
+
+app.stopFrame()
+app.setFrameSticky("controlsColumn","wns") # wens to stick to the plot
+
+# central column: plotting area
+app.setExpand("both")
+app.setStretch("both")
+app.startFrame("plottingSpaceFrame",row=0,column=1)
+plotSpaceFig = app.addPlotFig("plottingSpace")
+plotSpaceFig.add_subplot(111)
+app.stopFrame()
+app.setFrameSticky("plottingSpaceFrame","nsew")
+
+# right column: plot settings
+app.setExpand("none")
+app.startFrame("settingsColumn",row=0,column=2)
+
+app.setStretch("column")
+app.startLabelFrame("lineControls", hideTitle=False, label="Line Editor")
+# line selector
+app.addOptionBox("lineSelector",["- Lines -"],row=0,column=0,colspan=2)
+
+# color selector
+app.setStretch("none")
+app.addLabel("colorLabel", "Colour:",row=1,column=0)
+app.setLabelSticky("colorLabel","w")
+app.setStretch("column")
+app.addNamedButton("", "colorPickerBtn", func=pickAColor, row=1, column=1)
+app.setButtonSticky("colorPickerBtn","we")
+
+# axis selector
+app.startLabelFrame("axisControl", hideTitle=False, label="Axis", row=2, column=0, colspan=2)
+app.addRadioButton("axisRadio","Left")
+app.addRadioButton("axisRadio","Right")
+app.stopLabelFrame()
+
+# size selector
+app.addLabel("weightLabel","Weight:", row=3, column=0)
+app.addNumericEntry("weightVal", row=3, column=1)
+app.setEntry("weightVal",1)
+app.setEntryWidth("weightVal",7)
+app.addLabel("offsetLabel","Offset:", row=4, column=0)
+app.addNumericEntry("offsetVal", row=4, column=1)
+app.setEntry("offsetVal",0)
+app.setEntryWidth("offsetVal",7)
+
+# delete curve
+app.addNamedButton("Delete Line","deleteLineBtn",func=None,row=5,column=1)
+
+app.stopLabelFrame()
+
+app.startLabelFrame("plotControls", hideTitle=False, label="Plot Editor")
+app.addLabel("plotTitleLabel","Title:",row=0,column=0)
+app.addEntry("plotTitleVal",row=0,column=1,colspan=2)
+app.addLabel("plotXlabelLabel","X label:",row=1,column=0)
+app.addEntry("plotXlabelVal",row=1,column=1,colspan=2)
+app.addLabel("plotY1labelLabel","Y1 label:",row=2,column=0)
+app.addEntry("plotY1labelVal",row=2,column=1,colspan=2)
+app.addLabel("plotY2labelLabel","Y2 label:",row=3,column=0)
+app.addEntry("plotY2labelVal",row=3,column=1,colspan=2)
+
+app.addLabel("minAxisLabel","Min",row=4,column=1)
+app.addLabel("maxAxisLabel","Max",row=4,column=2)
+app.addLabel("plotY1limitsLabel","Y1 lim:",row=5,column=0)
+app.addNumericEntry("plotY1minVal",row=5,column=1)
+app.setEntryWidth("plotY1minVal",7)
+app.addNumericEntry("plotY1maxVal",row=5,column=2)
+app.setEntryWidth("plotY1maxVal",7)
+app.addLabel("plotY2limitsLabel","Y2 lim:",row=6,column=0)
+app.addNumericEntry("plotY2minVal",row=6,column=1)
+app.setEntryWidth("plotY2minVal",7)
+app.addNumericEntry("plotY2maxVal",row=6,column=2)
+app.setEntryWidth("plotY2maxVal",7)
+
+app.addNamedButton("Delete Subplot","deleteSubplotBtn",func=None, row=7,column=2)
+app.stopLabelFrame()
+
+app.stopFrame()
+app.setFrameSticky("settingsColumn","ens") # wens to stick to the plot
+
+app.stopFrame()
+
+initPlotWidow()
+app.stopSubWindow()
 
 
 # run the gui
 app.go()
-#no code after this line
+
+#code after this line is executed when the gui is closed
+gc.collect()
+sys.exit()
+exit()

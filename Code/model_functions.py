@@ -233,7 +233,7 @@ def getExperimentParameters():
 			["tend","T end [min]",30.0],
 			["EnergyAvailable","Available Energy",0.5],
 			["solve","Solve",True],
-			["nogates","No Gates",True],
+			["nogates","Asymptotic Gates",True],
 			["savenumpy","Save numpy",False],
 			["savematlab","Save matlab",False],
 			["Plot","Plot",True]]],
@@ -246,12 +246,36 @@ def getExperimentParameters():
 			["Wavelength","Wavelength [min]",20.0],
 			["Duty","Duty [fraction]",0.95],
 			["BlockAstrocyte","Block Astrocyte gradients",0.5],
-			["nogates","No Gates",True],
+			["nogates","Asymptotic Gates",True],
 			["solve","Solve",True],
 			["savenumpy","Save numpy",False],
 			["savematlab","Save matlab",False],
+			["Plot","Plot",True]]],
+	 	["Test","Test",[
+			["StartExcitation","T start excitation [min]",1.0],
+			["EndExcitation","T end excitation [min]",15.0],
+			["tstart","T start [min]",20.0],
+			["tend","T end [min]",30.0],
+			["nogates","No Gates",True],
 			["Plot","Plot",True]]]]
 	return experimentList
+
+def getExperimentAreas():
+	# info for plotting
+	# experimentArea = [name | areas]
+	# areas = [startParam | endParam]
+	experimentAreas = [
+		["EnergyDeprivation",[
+			["tstart","tend"]
+			]],
+		["Excitation",[
+			["StartExcitation","EndExcitation"]
+			]],
+		["Test",[
+			["StartExcitation","EndExcitation"],
+			["tstart","tend"]
+			]]]
+	return experimentAreas
 
 def getTutorialPages():
 	# tutorialText = [label | title | lines]
