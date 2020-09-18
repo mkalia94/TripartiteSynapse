@@ -35,8 +35,17 @@ def updateModel():
 			paramdict[par[0]] = app.getCheckBox(par[0]+"Val_"+experimentId)
 		elif isinstance(par[2],float) or isinstance(par[2],int):
 			paramdict[par[0]] = app.getEntry(par[0]+"Val_"+experimentId)
-# 		print(par[0])
-# 		print(paramdict[par[0]])
+		elif isinstance(par[2],dict):
+			checkedOptions = app.getOptionBox(par[0]+" Option List")
+			for optionIdx, optionItem in enumerate(checkedOptions.keys()):
+				try:
+					app.getLabel(par[0]+"_"+optionItem+"Label")
+				except Exception:
+					pass
+				else:
+					tInit = app.getEntry(par[0]+"_"+optionItem+"_tStart")
+					tFinish = app.getEntry(par[0]+"_"+optionItem+"_tEnd")
+					paramdict[par[0]][optionItem] = [tInit, tFinish]
 
 	fm = tps.fmclass(paramdict) # create a model (__init__.py of tps)
 	tps.negcheck_init(fm) # execute function negcheck (tps/exec)
@@ -46,6 +55,51 @@ def updateModel():
 	currentModel = fm
 	#print(fm.__dict__.keys())
 	updateModelInfo()
+
+
+def getParamOptionHandler(paramName):
+	return lambda: paramOptionHandler(paramName)
+
+def paramOptionHandler(paramName):
+	# collect already set items
+	paramDefaultDict = mf.getDefaultModelParameters()[paramName]
+	checkedOptions = app.getOptionBox(paramName+" Option List")
+	for optionIdx, optionItem in enumerate(checkedOptions.keys()):
+		try:
+			app.getLabel(paramName+"_"+optionItem+"Label")
+		except Exception:
+			pass
+		else:
+			tInit = app.getEntry(paramName+"_"+optionItem+"_tStart")
+			tFinish = app.getEntry(paramName+"_"+optionItem+"_tEnd")
+			paramDefaultDict[optionItem] = [tInit, tFinish]
+
+	# clear frame
+	app.emptyFrame(paramName+"ItemsFrame")
+
+	# repopulate
+	app.openFrame(paramName+"ItemsFrame")
+	myRow = 1
+	anyItem = False
+	for optionIdx, optionItem in enumerate(checkedOptions.keys()):
+		if checkedOptions[optionItem]:
+			anyItem = True
+			app.addLabel(paramName+"_"+optionItem+"Label",optionItem, row=myRow, column=0)
+			app.addNumericEntry(paramName+"_"+optionItem+"_tStart", row=myRow, column=1)
+			app.addNumericEntry(paramName+"_"+optionItem+"_tEnd", row=myRow, column=2)
+			myRow += 1
+			app.setEntry(paramName+"_"+optionItem+"_tStart",float(paramDefaultDict[optionItem][0]),callFunction=False)
+			app.setEntry(paramName+"_"+optionItem+"_tEnd",float(paramDefaultDict[optionItem][1]),callFunction=False)
+			app.setEntryWidth(paramName+"_"+optionItem+"_tStart",5)
+			app.setEntryWidth(paramName+"_"+optionItem+"_tEnd",5)
+			app.setEntryChangeFunction(paramName+"_"+optionItem+"_tStart",updateModel)
+			app.setEntryChangeFunction(paramName+"_"+optionItem+"_tEnd",updateModel)
+
+	if anyItem:
+		app.addLabel(paramName+"_tStartLabel","t start", row=0, column=1)
+		app.addLabel(paramName+"_tEndLabel","t end", row=0, column=2)
+
+	app.stopFrame()
 
 
 def solveModel():
@@ -322,6 +376,7 @@ for expIdx,expVal in enumerate(experimentList):
 	app.startTab(expVal[0]+"Tab")
 	app.setTabText("experimentsFrame",expVal[0]+"Tab",expVal[1])
 
+	app.startScrollPane("paramScroll"+expVal[0])
 	# create parameters (label+control)
 	for parIdx,parVal in enumerate(experimentList[expIdx][2]):
 		# label creation and handling of click event
@@ -340,7 +395,22 @@ for expIdx,expVal in enumerate(experimentList):
 			app.addNumericEntry(parVal[0]+"Val_"+expVal[0],row=parIdx,column=1)
 			app.setEntry(parVal[0]+"Val_"+expVal[0],parVal[2])
 			app.setEntryChangeFunction(parVal[0]+"Val_"+expVal[0],updateModel)
+		elif isinstance(parVal[2], dict):
+			# to do
+			app.startFrame(parVal[0]+"Container",row=parIdx,column=1)
+			# add list item
+			defaultParameters = mf.getDefaultModelParameters()
+			print(parVal[0])
+			app.addTickOptionBox(parVal[0]+" Option List",defaultParameters[parVal[0]].keys(),row=0,column=0)
+			app.setOptionBoxChangeFunction(parVal[0]+" Option List", getParamOptionHandler(parVal[0]))
+			app.startFrame(parVal[0]+"ItemsFrame",row=1,column=0)
+				# empty at creation
+			app.stopFrame()
+			app.stopFrame()
+			continue
+
 	# close single tab
+	app.stopScrollPane()
 	app.stopTab()
 
 # close tabbed frame

@@ -191,7 +191,26 @@ def getDefaultModelParameters():
                  'nochargecons': False,
                  'geteigs': False,
                  'savematlabpar': False,
-                 'nosynapse': False}
+                 'nosynapse': False,
+				 'testDict':{
+					 'ch1': [0, 1],
+					 'ch2': [2, 3],
+					 'ch3': [2, 3],
+					 'ch4': [2, 3],
+					 'ch5': [2, 3],
+					 'ch6': [2, 3],
+					 'ch7': [2, 3],
+					 'ch8': [2, 3],
+					 'ch9': [2, 3],
+					 'ch10': [2, 3],
+					 'ch11': [2, 3],
+					 'ch12': [2, 3],
+					 'ch13': [2, 3],
+					 'ch14': [2, 3],
+					 'ch15': [2, 3],
+					 'ch16': [2, 3],
+					 'ch17': [2, 3],
+					 'ch18': [5, 6]}}
 	return paramdict
 
 def getModelOutputNames():
@@ -254,6 +273,7 @@ def getExperimentParameters():
 	 	["Test","Test",[
 			["StartExcitation","T start excitation [min]",1.0],
 			["EndExcitation","T end excitation [min]",15.0],
+			["testDict","a dictionary",{}],
 			["tstart","T start [min]",20.0],
 			["tend","T end [min]",30.0],
 			["nogates","No Gates",True],
