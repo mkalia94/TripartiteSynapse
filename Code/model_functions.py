@@ -333,3 +333,10 @@ def getModelInfo():
 		]
 	return modelInfo
 
+def getParamInfo(paramName):
+	if paramName == "ECS":
+		return "A description of ECS"
+	elif paramName == "tfinal":
+		return "Length of simulation"
+	else:
+		return paramName+" is a parameter of the experiment."

@@ -116,7 +116,7 @@ def solvedModelCallback(varIn=None):
 	updateStatusLabel("Simulation complete")
 	updateModelInfo()
 	#stopWaitingWidget()
-	showOptions()
+	showGraphOptions()
 	global firstPlot
 	firstPlot = False
 	plotModel()
@@ -214,7 +214,7 @@ def showLabels():
 	app.refreshPlot("plotFig")
 
 
-def showOptions():
+def showGraphOptions():
 	# reset option box
 	try:
 		app.getOptionBox("Graphs")
@@ -248,7 +248,7 @@ def printParamInfo(eventData,parLabel):
 	if parLabel == "root":
 		app.setMessage("infoText","")
 	else:
-		app.setMessage("infoText","Instructions for "+parLabel+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer."+"\nAnd this might be a very long text that might even require a scroll. Is it scrolling yet? Who knows, but we can try to make it longer.")
+		app.setMessage("infoText",mf.getParamInfo(parLabel))
 
 def getClickFunction(widgetLabel):
 	return lambda eventData: printParamInfo(eventData,widgetLabel)
