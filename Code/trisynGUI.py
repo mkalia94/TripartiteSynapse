@@ -176,11 +176,11 @@ def solveModel():
 
 
 def solvedModelCallback(varIn=None):
-	print(varIn)
 	updateStatusLabel("Simulation complete")
 	updateModelInfo()
 	#stopWaitingWidget()
 	showGraphOptions()
+	initPlotWidow()
 	global firstPlot
 	firstPlot = False
 	plotModel()
@@ -196,7 +196,7 @@ def solveBtnFunction():
 		if tabId == expVal[0]+"Tab":
 			CurrentSolvedExperiment = expVal[0]
 			break
-	print(CurrentSolvedExperiment)
+	#print(CurrentSolvedExperiment)
 	updateStatusLabel("Simulating")
 
 	#startWaitingWidget()
@@ -316,7 +316,6 @@ def showGraphOptions():
 		areasList.append([tstart, tend])
 	global graphData
 	graphData = cGraphs(timeArr,outputData,areas=areasList)
-
 
 
 def printParamInfo(eventData,parLabel):
@@ -471,7 +470,6 @@ def updateSubplotInfo():
 	y1Min = app.getEntry("plotY1minVal")
 	y1Max = app.getEntry("plotY1maxVal")
 	if isinstance(y1Min,float) and isinstance(y1Max,float):
-		print(y1Min)
 		graphData.subplots[graphData.currentIdx].y1Lim = [y1Min, y1Max]
 	else:
 		graphData.subplots[graphData.currentIdx].y1Lim = None
@@ -648,6 +646,8 @@ for tutorialTabsIdx,tutorialTab in enumerate(tutorialText):
  			#app.setMessageRelief(lineLabel,"sunken")
 		elif tutorialLine[0]=="a":
 			app.addWebLink(tutorialLine[1],tutorialLine[2])
+		elif tutorialLine[0]=="img":
+			app.addImage(lineLabel, tutorialLine[1])
 		else:
 			app.addLabel(lineLabel, tutorialLine[1])
 			app.setLabelSticky(lineLabel,"news")
@@ -712,11 +712,9 @@ for expIdx,expVal in enumerate(experimentList):
 			app.setEntry(parVal[0]+"Val_"+expVal[0],parVal[2])
 			app.setEntryChangeFunction(parVal[0]+"Val_"+expVal[0],updateModel)
 		elif isinstance(parVal[2], dict):
-			# to do
 			app.startFrame(parVal[0]+"Container",row=parIdx,column=1)
 			# add list item
 			defaultParameters = mf.getDefaultModelParameters()
-			print(parVal[0])
 			app.addTickOptionBox(parVal[0]+" Option List",defaultParameters[parVal[0]].keys(),row=0,column=0)
 			app.setOptionBoxChangeFunction(parVal[0]+" Option List", getParamOptionHandler(parVal[0]))
 			app.startFrame(parVal[0]+"ItemsFrame",row=1,column=0)

@@ -227,6 +227,7 @@ def getModelOutputNames():
 		"NR1",
 		"NR2",
 		"NR3",
+		"- prova -",
 		"NI",
 		"ND",
 		"NNag",
@@ -300,7 +301,8 @@ def getExperimentAreas():
 def getTutorialPages():
 	# tutorialText = [label | title | lines]
 	# lines = [style | text]
-	# style = {"h1","h2","p","a"}
+	# style = {"h1","h2","p","a","img"}
+	# images are loaded faster if gif format
 	tutorialText = [
 		["tutorialTab1","Introduction",[
 		  ["h1","Title"],
@@ -308,6 +310,7 @@ def getTutorialPages():
 		  ["a","A link","http://www.google.com/"],
 		  ["p",ltx(r"Lorem $\alpha$ ipsum dolor sit amet,\\consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")],
 		  ["h2","Another sub title"],
+		  ["img","Images\\aLeaf.gif"],
 		  ["p",ltx(r"\frac{dx}{dt} = 0")],
 		  ["p","Arcu dictum varius duis at consectetur lorem. Pellentesque eu tincidunt tortor aliquam. Pellentesque adipiscing commodo elit at imperdiet dui. Ultricies lacus sed turpis tincidunt id aliquet risus feugiat in. Ullamcorper eget nulla facilisi etiam dignissim diam quis. Elementum nisi quis eleifend quam adipiscing vitae. Lacus suspendisse faucibus interdum posuere lorem ipsum. Faucibus in ornare quam viverra orci. Penatibus et magnis dis parturient montes nascetur ridiculus. Aliquam ultrices sagittis orci a scelerisque purus. Montes nascetur ridiculus mus mauris vitae ultricies leo integer malesuada."]
 		  ]],

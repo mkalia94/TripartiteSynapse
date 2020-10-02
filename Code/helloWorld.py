@@ -31,7 +31,7 @@ def solve():
 
 
 
-usePlots = False
+usePlots = True
 app = gui()
 app.addLabel("myLabel","Hello World")
 app.addButton("Go",solve)
