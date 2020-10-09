@@ -22,21 +22,25 @@ def solve():
 	app.setLabel("myLabel","Solved")
 	print("Solved")
 
-	if usePlots:
-		fig.clear()
-		axes = fig.add_subplot(1,1,1)
-		dataLine = fm.model(timeArr,outputData,"NNa/Wi")
-		axes.plot(timeArr, dataLine, label="NNa/Wi")
-		app.refreshPlot("plotFig")
 
+def openSub1():
+	app.showSubWindow("subWin1")
+
+def askAString():
+	newString = app.textBox("New String","ciao, come stai?:", parent="subWin1")
+	print(newString)
 
 
 usePlots = True
 app = gui()
 app.addLabel("myLabel","Hello World")
 app.addButton("Go",solve)
+app.addButton("Win",openSub1)
 
-if usePlots:
-	fig = app.addPlotFig("plotFig",row=0,column=1,colspan=2,rowspan=1)
+app.startSubWindow("subWin1", title="Sub win 1", modal=True, blocking=False, transient=False)
+app.addNamedButton("String","newWinBtn",func=askAString)
+
+app.stopSubWindow()
+
 
 app.go()

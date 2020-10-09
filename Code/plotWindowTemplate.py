@@ -7,15 +7,23 @@ Created on Thu Sep  3 10:11:05 2020
 
 from appJar import gui
 import model_functions as mf
-import random
 import tps
 import matplotlib.pyplot as plt
 import matplotlib
+from math import ceil
+
+import numpy as np
+from scipy.interpolate import interp1d
 
 # setup, do not copy
 paramdict = mf.getDefaultModelParameters()
 myModel = tps.fmclass(paramdict)
 timeArr,outputData = tps.exec_solve(myModel)
+
+# resampling test
+interpolatingFunc = interp1d(timeArr, outputData, axis=0, assume_sorted=True)
+resampledTime = np.linspace(0,100,500)
+resampledData = interpolatingFunc(resampledTime)
 
 # class definitions
 class cLine:
@@ -259,12 +267,12 @@ def executePlot():
 		app.refreshPlot("plottingSpace")
 		return
 	# find number of rows for subplots
-	if nPlots <= 2:
+	if nPlots == 1:
 		nRows = 1
 	else:
 		nRows = 2
 	# find number of columns for subplots
-	if nPlots == 1:
+	if nPlots <= 2:
 		nCols = 1
 	elif nPlots <= 4:
 		nCols = 2
@@ -275,9 +283,7 @@ def executePlot():
 	for axIdx in range(1,min(6,nPlots)+1):
 		# create left y axis
 		leftAxis = plotSpaceFig.add_subplot(nRows,nCols,axIdx)
-		# create right y axis
-		rightAxis = leftAxis.twinx()
-		myAxes.append([leftAxis,rightAxis])
+		myAxes.append(leftAxis)
 	# find subplot range to use, the selected one should be last, unless the previous ones are less than six
 	# it might be better if it worked like pages
 	if graphData.currentIdx < 5:
@@ -289,64 +295,128 @@ def executePlot():
 	# plot
 	for subplotIdx in range(plotIdxStart,plotIdxEnd+1):
 		axIdx = subplotIdx-plotIdxStart
-
-		# plot lines
-		for lineIdx,lineObj in enumerate(graphData.subplots[subplotIdx].lines):
-			dataLine = myModel.model(graphData.timeData,graphData.dataset,lineObj.name)
-			if lineObj.isLeftAxis:
-				axPosIdx = 0
-			else:
-				axPosIdx = 1
-
-			if lineObj.color == None:
-				cmap = plt.get_cmap("tab10")
-				lineObj.color = cmap(lineIdx%10)
-				# set color for future edits
-				graphData.subplots[subplotIdx].lines[lineIdx].color = matplotlib.colors.rgb2hex(cmap(lineIdx%10)[:3])
-
-			myAxes[axIdx][axPosIdx].plot(graphData.timeData, lineObj.offset+lineObj.weight*dataLine, label=lineObj.name, color=lineObj.color)
-
-		# plot areas
-		if graphData.subplots[subplotIdx].y1Lim == None:
-			yMin = myAxes[axIdx][0].get_ylim()[0]
-			yMax = myAxes[axIdx][0].get_ylim()[1]
-		else:
-			yMin = graphData.subplots[subplotIdx].y1Lim[0]
-			yMax = graphData.subplots[subplotIdx].y1Lim[1]
-		for areaLims in  graphData.areas:
-			myAxes[axIdx][0].fill_between(areaLims, yMin, yMax, alpha=0.2)
-
-		# add frame if current subplot
-		if subplotIdx == graphData.currentIdx:
-			xMin = graphData.timeData[0]
-			xMax = graphData.timeData[-1]
-			rectX = [xMin, xMax, xMax, xMin, xMin]
-			rectY = [yMin, yMin, yMax, yMax, yMin]
-			myAxes[axIdx][0].plot(rectX,rectY,color="red",linewidth=4)
-
-		# set subplot info
-		mySubplot = graphData.subplots[subplotIdx]
-		myAxes[axIdx][0].set_title(mySubplot.title)
-		myAxes[axIdx][0].set_xlabel(mySubplot.xLabel)
-		myAxes[axIdx][0].set_ylabel(mySubplot.y1Label)
-		myAxes[axIdx][1].set_ylabel(mySubplot.y2Label)
-		myAxes[axIdx][0].set_xlim([graphData.timeData[0], graphData.timeData[-1]])
-		if mySubplot.y1Lim == None:
-			myAxes[axIdx][0].set_ylim([yMin, yMax])
-		else:
-			myAxes[axIdx][0].set_ylim(mySubplot.y1Lim)
-		if not mySubplot.y2Lim == None:
-			myAxes[axIdx][1].set_ylim(mySubplot.y2Lim)
+		plotSingleSubplot(myAxes[axIdx], subplotIdx, highlightCurrent=True)
 
 	app.refreshPlot("plottingSpace")
 
 
+def plotSingleSubplot(leftAxis, subplotIdx, highlightCurrent=False):
+	# plot lines
+	rightAxis = None
+	for lineIdx,lineObj in enumerate(graphData.subplots[subplotIdx].lines):
+		dataLine = myModel.model(graphData.timeData,graphData.dataset,lineObj.name)
+		if lineObj.isLeftAxis:
+			axToUse = leftAxis
+		else:
+			if rightAxis == None:
+				rightAxis = leftAxis.twinx()
+			axToUse = rightAxis
+
+		if lineObj.color == None:
+			cmap = plt.get_cmap("tab10")
+			lineObj.color = cmap(lineIdx%10)
+			# set color for future edits
+			graphData.subplots[subplotIdx].lines[lineIdx].color = matplotlib.colors.rgb2hex(cmap(lineIdx%10)[:3])
+
+		axToUse.plot(graphData.timeData, lineObj.offset+lineObj.weight*dataLine, label=lineObj.name, color=lineObj.color)
+
+	# plot areas
+	if graphData.subplots[subplotIdx].y1Lim == None:
+		yMin = leftAxis.get_ylim()[0]
+		yMax = leftAxis.get_ylim()[1]
+	else:
+		yMin = graphData.subplots[subplotIdx].y1Lim[0]
+		yMax = graphData.subplots[subplotIdx].y1Lim[1]
+	for areaLims in  graphData.areas:
+		leftAxis.fill_between(areaLims, yMin, yMax, alpha=0.2)
+
+	# add frame if current subplot
+	if subplotIdx == graphData.currentIdx and highlightCurrent:
+		xMin = graphData.timeData[0]
+		xMax = graphData.timeData[-1]
+		rectX = [xMin, xMax, xMax, xMin, xMin]
+		rectY = [yMin, yMin, yMax, yMax, yMin]
+		leftAxis.plot(rectX,rectY,color="red",linewidth=4)
+
+	# set subplot info
+	mySubplot = graphData.subplots[subplotIdx]
+	leftAxis.set_title(mySubplot.title)
+	leftAxis.set_xlabel(mySubplot.xLabel)
+	leftAxis.set_ylabel(mySubplot.y1Label)
+	if not rightAxis == None:
+		rightAxis.set_ylabel(mySubplot.y2Label)
+	leftAxis.set_xlim([graphData.timeData[0], graphData.timeData[-1]])
+	if mySubplot.y1Lim == None:
+		leftAxis.set_ylim([yMin, yMax])
+	else:
+		leftAxis.set_ylim(mySubplot.y1Lim)
+	if (not mySubplot.y2Lim == None) and (not rightAxis == None):
+		rightAxis.set_ylim(mySubplot.y2Lim)
+	leftAxis.legend(loc="center left")
+	if not rightAxis == None:
+		rightAxis.legend(loc = "center right")
+
+
+def exportSubplots():
+	nPlots = len(graphData.subplots)
+	if nPlots == 0:
+		return;
+
+	files = [('PDF', '*.pdf'),
+		  ('PNG', '*.png')]
+
+	myFile = app.saveBox(fileTypes = files, fileName = "TriSynPlots.pdf")
+	if myFile=="":
+		return
+
+	# determine number of rows and columns
+	if nPlots == 1:
+		nRows = 1
+	elif nPlots <= 6:
+		nRows = 2
+	else:
+		nRows = ceil(nPlots/3)
+	if nPlots <= 2:
+		nCols = 1
+	elif nPlots <= 4:
+		nCols = 2
+	else:
+		nCols = 3
+
+	# create temporary figure to plot all the output
+	tempFig = plt.figure(figsize = (nCols*6.4, nRows*4.8))
+
+	for subIdx,subpplotObj in enumerate(graphData.subplots):
+		myLeftAx = tempFig.add_subplot(nRows, nCols, subIdx+1)
+		plotSingleSubplot(myLeftAx, subIdx,highlightCurrent=False)
+
+	tempFig.savefig(myFile, bbox_inches="tight", pad_inches=0.4)
+
+
+def addCustomLine():
+	if len(graphData.subplots) == 0:
+		return
+	newLine = app.textBox("Custom Line", "Type your custom line:", parent=None)
+	if newLine == None:
+		return
+	try:
+		myModel.model(graphData.timeData,graphData.dataset,newLine)
+	except:
+		# line not defined
+		print("Custom line not defined")
+		return
+	graphData.subplots[graphData.currentIdx].addLine(newLine)
+
+	# update plot and info
+	executePlot()
+	displaySubplotInfo()
 
 
 app = gui() # do not copy
 
 # data init, this should be created when the plot is available
-graphData = cGraphs(timeArr,outputData,areas=[[1, 15], [20, 30]])
+# graphData = cGraphs(timeArr,outputData,areas=[[1, 15], [20, 30]])
+graphData = cGraphs(resampledTime,resampledData,areas=[[1, 15], [20, 30]])
 
 # window init
 app.setSticky("nswe")
@@ -362,7 +432,7 @@ app.addListBox("linesBox",mf.getModelOutputNames(),row=0,column=0,colspan=2)
 app.selectListItemAtPos("linesBox",0,callFunction=False)
 
 app.setStretch("column")
-app.addNamedButton("Custom","customLineBtn",func=None,row=1,column=0)
+app.addNamedButton("Custom","customLineBtn",func=addCustomLine,row=1,column=0)
 app.setButtonSticky("customLineBtn","ws")
 app.addNamedButton("Add line","addLineBtn",func=addLine,row=1,column=1)
 app.setButtonSticky("addLineBtn","es")
@@ -463,6 +533,10 @@ app.setEntryChangeFunction("plotY2maxVal",updateSubplotInfo)
 # delete subplot
 app.addNamedButton("Delete Subplot","deleteSubplotBtn",func=removeCurrentSubplot, row=7,column=2)
 app.stopLabelFrame()
+
+# export button
+app.addNamedButton("Export", "exportBtn", func=exportSubplots)
+app.setButtonSticky("exportBtn","ne")
 
 app.stopFrame()
 app.setFrameSticky("settingsColumn","ens") # wens to stick to the plot

@@ -214,6 +214,7 @@ def getDefaultModelParameters():
 	return paramdict
 
 def getModelOutputNames():
+	# entries contained by - are considered as headers
 	modelOutputNames = [
 		"NNa",
 		"NK",
@@ -227,7 +228,7 @@ def getModelOutputNames():
 		"NR1",
 		"NR2",
 		"NR3",
-		"- prova -",
+		"- Test -",
 		"NI",
 		"ND",
 		"NNag",
