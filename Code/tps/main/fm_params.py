@@ -257,12 +257,14 @@ def parameters(p, dict_):
     if (p.NAi>0) & (p.NAe>0) & (p.NAg>0) & (p.NBe>=0) & (p.NBg>0):
         disp('Quantity of impermeants....OK')
     else:
+        p.status = p.status + '\n ERROR: Quantity of an impermeant is nonpositive'
         disp('ERROR: Quantity of an impermeant is nonpositive')
         p.err = 10
         
     if (p.PGluLg>0) & (p.PNaLg>0) & (p.PKLg>0) & (p.PClLg>0) & (p.PCaLg>0):
         disp('Leak cond. in astrocytes....OK')
     else:
+        p.status = p.status + '\n ERROR: Sign error in astrocyte leak conductance. '
         disp('ERROR: Sign error in astrocyte leak conductance')
         disp('PGluLg (>0): {}'.format(p.PGluLg))
         disp('PNaLg (<0): {}'.format(p.PNaLg))
@@ -275,6 +277,7 @@ def parameters(p, dict_):
     if (p.PGluLi>0) & (p.PNaLi>0) & (p.PKLi>0) & (p.PClLi>0) & (p.PCaLi>0):
         disp('Leak cond. in neurons....OK')
     else:
+        p.status = p.status + '\n ERROR: Sign error in neuron leak conductance. '
         disp('ERROR: Sign error in neuron leak conductance')
         disp('PGluLi (>0): {}'.format(p.PGluLi))
         disp('PNaLi (>0): {}'.format(p.PNaLi))
@@ -283,3 +286,4 @@ def parameters(p, dict_):
         disp('PCaLi (>0): {}'.format(p.PCaLi))
         disp('----------------------------------')
         p.err = 10
+    

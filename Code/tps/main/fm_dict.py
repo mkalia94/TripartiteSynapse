@@ -186,5 +186,29 @@ dict_ = {#
         'NR30' : 0,               # Molar amount of readily releasable pool 3 (R3)
         'PGluLi' : 0,           # Astrocyte glutamate leak conductance
         'PGluLg' : 0,            # Neuron glutamate leak conductance
-        'CGlu' : 0}               # Molar amount of total glutamate in the system
+        'CGlu' : 0,               # Molar amount of total glutamate in the system
+        #----------------------------------------------------------------------------------------------------------
+        # GUI parameters
+        'experiment' : 'Select parameters to begin solving',
+        'status': 'Quiet',
+         'testDict':{
+             'ch1': [0, 1],
+             'ch2': [2, 3],
+             'ch3': [2, 3],
+             'ch4': [2, 3],
+             'ch5': [2, 3],
+             'ch6': [2, 3],
+             'ch7': [2, 3],
+             'ch8': [2, 3],
+             'ch9': [2, 3],
+             'ch10': [2, 3],
+             'ch11': [2, 3],
+             'ch12': [2, 3],
+             'ch13': [2, 3],
+             'ch14': [2, 3],
+             'ch15': [2, 3],
+             'ch16': [2, 3],
+             'ch17': [2, 3],
+             'ch18': [5, 6]}
+        }
 
