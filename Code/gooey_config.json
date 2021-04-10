@@ -1,6 +1,6 @@
 {
   "language": "english",
-  "target": "\"C:\\Users\\toalu\\anaconda3\\envs\\trisyn\\python.exe\" -u \"C:\\Users\\toalu\\Google Drive\\UTwente\\Work\\TriSyn\\Code\\set_up_GUI.py\"",
+  "target": "'/home/manu/anaconda3/envs/tps/bin/python' -u 'set_up_GUI.py'",
   "suppress_gooey_flag": false,
   "program_name": "Tripartite Synapse v1.0",
   "program_description": "Tripartite Synapse: v1.0",
@@ -29,7 +29,7 @@
   "manual_start": false,
   "monospace_display": false,
   "image_dir": "::gooey/default",
-  "language_dir": "C:\\Users\\toalu\\anaconda3\\envs\\trisyn\\lib\\site-packages\\gooey\\languages",
+  "language_dir": "/home/manu/anaconda3/envs/tps/lib/python3.7/site-packages/gooey/languages",
   "progress_regex": null,
   "progress_expr": null,
   "hide_progress_msg": false,

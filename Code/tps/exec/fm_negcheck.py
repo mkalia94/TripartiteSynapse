@@ -9,6 +9,5 @@ def negcheck(fm,t,y):
     if negcheck_ == 0:
         disp('Positivity check ...OK')
     else:
-        fm.status = fm.status + 'ERROR: Negative states obtained after solve. '
         disp('ERROR: Negative states!')
     return    

@@ -38,6 +38,8 @@ for key in args.__dict__:
 
 if 'saveloc' in paramdict.keys():
     disp('------{a}------'.format(a=paramdict['saveloc']))
+elif 'readdata' in paramdict.keys():
+    disp('------{a}------'.format(a=paramdict['readdata']))
 else:
     disp('------Test------')
 
