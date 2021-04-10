@@ -18,6 +18,7 @@ Running the simulations from the manuscript 'Ion dynamics of the energy-deprived
 Refer to files 'Example' and Paper_Figures on how to run simulations. Run:
 `chmod +x ./Example`
 `Example`
+[Example is outdated as of 10/04/2021. refer only to Paper_Figures] 
 
 ## GUI
 A simple GUI was geenrated for didactic purposes, run:
