@@ -72,9 +72,9 @@ def exec_plot(fm,t,y):
     ## -----THIS DOES NOT HAVE TO GO INTO THE FINAL VERSION-----    
     # For plotting all relvant characteristics, as per tps.fm_plotall    
     if fm.plotall:
-        widths = [1,1]
-        heights= [0.25,1,1,1,1,1,1]
-        wspace_ = 1.2
+        widths = [2,2]
+        heights= [0.5,1,1,1,1,1,1]
+        wspace_ = 0.6
         hspace_ = 0.6
         figsizex_ = sum(widths)+(len(widths)+1)*wspace_
         figsizey_ = sum(heights)+(len(heights)+1)*hspace_

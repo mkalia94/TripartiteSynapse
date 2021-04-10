@@ -34,7 +34,18 @@ def exec_solve(fm,*args):
         exec_plot(fm,t,y)
         exec_savedata(fm,t,y)
         exec_geteigs(fm,y[-1,:])
-
+        # plt.figure()
+        
+        # plt.plot(t[200:],fm.model(array(t),y,'3*Ipumpg')[200:],label="NKA outward Na current")
+        # plt.plot(t[200:],fm.model(array(t),y,'3*p.F*JEAATg')[200:],label="EAAT inward Na current")
+        # if fm.NMDAscale > 0:
+        #     plt.plot(t[200:],fm.model(array(t),y,'-INMDA_Na')[200:],label="NMDA inward Na current")
+        # plt.legend()
+        # plt.savefig('{a}/nka_vs_eaat.pdf'.format(a=fm.directory), format='pdf',bbox_inches='tight',pad_inches=0)
+        # plt.figure()
+        # plt.plot(t[200:],fm.model(array(t),y,'NaCg')[200:],label="Na in astrocyte")
+        # plt.legend()
+        # plt.savefig('{a}/nacg.pdf'.format(a=fm.directory), format='pdf',bbox_inches='tight',pad_inches=0)
     else:
         t = 0
         y = 0

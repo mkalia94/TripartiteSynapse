@@ -10,9 +10,14 @@ dict_ = {#
         'kirScale' : 1.0,               # factor Kir conductance
         'eaatScaleNeuron' : 1.0,        # factor EAAT conductance (neuron)
         'eaatScaleAst':1.0,             # factor EAAT conductance (astrocyte)
+        'NMDAscale' : 1.0,
+        'KCCscale': 1.0,
+        'origEAAT' : 0.0,
         'ncxScale' : 1.0,
         'nka_na' : 13.0,
         'nka_k' : 0.2,
+        'nka_na_g': 13.0,
+        'nka_k_g':0.2,
         'beta1' : 4,                    # sigmoidal rate NKA blockade onset
         'beta2' : 4,                    # sigmoidal rate NKA blockade offset
         'perc' : 0.0,                   # Available energy during NKA blockade (in fraction, between 0 and 1)
@@ -35,7 +40,8 @@ dict_ = {#
         'PNaL_base': 0.2*1e-5,
         'PKL_base': 2*1e-5,
         'PClL_base': 0.25*1e-5,
-        'UKCl' : 13*1e-7,         # flux rate of KCl cotransporter
+        'UKCl' : 13*1e-7,# flux rate of KCl cotransporter
+        'UKClg' : 13*1e-7,
         'LH20i' : 2*1e-14 ,       # Osmotic permeability in the neuron
         'PNKAi' : 54.5*1.6,       # Baseline NKA pump strength
         'Cg' : 20.0,              # Astrocyte membrane capacitance
@@ -50,6 +56,8 @@ dict_ = {#
         'eNCX' : 0.35,            # NCX: position of energy barrier
         'ksatNCX' : 0.1,          # NCX: saturation factor
         'PEAATi' : 0,              # EAAT: Neuronal EAAT strength (defined in tps/fm_params.py)
+        'EAAT_beta': 1.2,
+        'EAAT_th': 5*1e-4,
         'PEAATg' : 0,              # EAAT: Astrocyte EAAT strength (defined in tps/fm_params.py)
         'HeOHa' : 0.66,           # Proton ratio (ex:in) in astrocytes (fixed)
         'HeOHai':0.66,            # Proton ratio (ex:in) in neurons (fixed)
@@ -186,5 +194,19 @@ dict_ = {#
         'NR30' : 0,               # Molar amount of readily releasable pool 3 (R3)
         'PGluLi' : 0,           # Astrocyte glutamate leak conductance
         'PGluLg' : 0,            # Neuron glutamate leak conductance
-        'CGlu' : 0}               # Molar amount of total glutamate in the system
+        'CGlu' : 0,               # Molar amount of total glutamate in the system
+        #---------------------------------------------------------------------------------------------------------
+        # NMDA gates parameters
+        'Rc' : 0.0738,
+        'Rb' : 5000,
+        'Rv' : 2.0,
+        'Rr' : 0.0068,
+        'R0' : 0.0465,
+        'Rd' : 0.0084,
+        'Mg' : 1,
+        'gNMDA_Na' : 1e-5,
+        'gNMDA_K' : 1e-6,
+        'gNMDA_Ca' : 1e-7,
+}
+
 

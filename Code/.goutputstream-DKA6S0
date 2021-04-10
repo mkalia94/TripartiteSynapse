@@ -1,0 +1,187 @@
+import tps
+import model_functions as mf
+from appJar import gui
+import matplotlib.pyplot as plt
+import matplotlib
+import numpy as np
+from math import ceil
+from scipy.interpolate import interp1d
+
+
+# class definitions
+class cLine:
+        def __init__(self, name, color=None, isLeftAxis=True, weight=1, offset=0):
+                self.name = name # name is also the formula for the line
+                self.color = color
+                self.isLeftAxis = isLeftAxis
+                self.weight = weight
+                self.offset = offset
+
+class cSubplot:
+        def __init__(self, title="", xLabel="", y1Label="", y2Label="", y1Lim=None, y2Lim=None):
+                self.title = title
+                self.xLabel = xLabel
+                self.y1Label = y1Label
+                self.y2Label = y2Label
+                self.y1Lim = y1Lim
+                self.y2Lim = y2Lim
+                self.lines = []
+        def addLine(self,formula):
+                if isinstance(formula,str):
+                        # formula must be unique
+                        okToAdd = True
+                        for existingLines in self.lines:
+                                if formula == existingLines.name:
+                                        okToAdd = False
+                                        break
+                        if okToAdd:
+                                self.lines.append(cLine(formula))
+        def removeLine(self,lineIdx):
+                if lineIdx >= 0 and lineIdx < len(self.lines):
+                        self.lines.pop(lineIdx)
+
+class cGraphs:
+        def __init__(self,timeData, dataset, areas=[]):
+                self.subplots = []
+                self.timeData = timeData
+                self.dataset = dataset
+                self.areas = areas
+                self.currentIdx = None
+        def addSubplot(self,newSubplot=cSubplot()):
+                if isinstance(newSubplot, cSubplot):
+                        self.subplots.append(newSubplot)
+                        self.currentIdx = len(self.subplots)-1
+        def removeSubplot(self,subplotIdx):
+                if subplotIdx == None:
+                        return
+                if subplotIdx >= 0 and subplotIdx < len(self.subplots):
+                        self.subplots.pop(subplotIdx)
+                        # deinit index when last subplot is removed
+                        if len(self.subplots) == 0:
+                                self.currentIdx = None
+                                return
+                        # reposition index
+                        if self.currentIdx == subplotIdx:
+                                self.currentIdx -= 1
+                        if self.currentIdx == -1:
+                                self.currentIdx = len(self.subplots)-1
+        def nextSubplot(self):
+                if self.currentIdx == None:
+                        # no subplots
+                        return
+                self.currentIdx = self.currentIdx+1
+                if self.currentIdx == len(self.subplots):
+                        self.currentIdx = 0
+        def prevSubplot(self):
+                if self.currentIdx == None:
+                        # no subplots
+                        return
+                self.currentIdx = self.currentIdx-1
+                if self.currentIdx == -1:
+                        self.currentIdx = len(self.subplots)-1
+
+
+# application's functions
+
+def updateModel():
+        paramdict = mf.getDefaultModelParameters()
+        tabId = app.getTabbedFrameSelectedTab("experimentsFrame")
+        paramList = None
+        for expIdx,expVal in enumerate(experimentList):
+                if tabId == expVal[0]+"Tab":
+                        experimentId = expVal[0]
+                        paramList = expVal[2]
+                        break
+        if paramList == None:
+                return
+
+        for idx,par in enumerate(paramList):
+                if isinstance(par[2],bool):
+                        paramdict[par[0]] = app.getCheckBox(par[0]+"Val_"+experimentId)
+                elif isinstance(par[2],float) or isinstance(par[2],int):
+                        paramdict[par[0]] = app.getEntry(par[0]+"Val_"+experimentId)
+                elif isinstance(par[2],dict):
+                        checkedOptions = app.getOptionBox(par[0]+" Option List")
+                        for optionIdx, optionItem in enumerate(checkedOptions.keys()):
+                                try:
+                                        app.getLabel(par[0]+"_"+optionItem+"Label")
+                                except Exception:
+                                        pass
+                                else:
+                                        tInit = app.getEntry(par[0]+"_"+optionItem+"_tStart")
+                                        tFinish = app.getEntry(par[0]+"_"+optionItem+"_tEnd")
+                                        paramdict[par[0]][optionItem] = [tInit, tFinish]
+
+        fm = tps.fmclass(paramdict) # create a model (__init__.py of tps)
+        tps.negcheck_init(fm) # execute function negcheck (tps/exec)
+        tps.exec_cases(fm,tps.fmclass) # execute function exec_cases (tps/exec)
+
+        global currentModel
+        currentModel = fm
+        #print(fm.__dict__.keys())
+        updateModelInfo()
+
+
+def getParamOptionHandler(paramName):
+        return lambda: paramOptionHandler(paramName)
+
+
+def paramOptionHandler(paramName):
+        # collect already set items
+        paramDefaultDict = mf.getDefaultModelParameters()[paramName]
+        checkedOptions = app.getOptionBox(paramName+" Option List")
+        for optionIdx, optionItem in enumerate(checkedOptions.keys()):
+                try:
+                        app.getLabel(paramName+"_"+optionItem+"Label")
+                except Exception:
+                        pass
+                else:
+                        tInit = app.getEntry(paramName+"_"+optionItem+"_tStart")
+                        tFinish = app.getEntry(paramName+"_"+optionItem+"_tEnd")
+                        paramDefaultDict[optionItem] = [tInit, tFinish]
+
+        # clear frame
+        app.emptyFrame(paramName+"ItemsFrame")
+
+        # repopulate
+        app.openFrame(paramName+"ItemsFrame")
+        myRow = 1
+        anyItem = False
+        for optionIdx, optionItem in enumerate(checkedOptions.keys()):
+                if checkedOptions[optionItem]:
+                        anyItem = True
+                        app.addLabel(paramName+"_"+optionItem+"Label",optionItem, row=myRow, column=0)
+                        app.addNumericEntry(paramName+"_"+optionItem+"_tStart", row=myRow, column=1)
+                        app.addNumericEntry(paramName+"_"+optionItem+"_tEnd", row=myRow, column=2)
+                        myRow += 1
+                        app.setEntry(paramName+"_"+optionItem+"_tStart",float(paramDefaultDict[optionItem][0]),callFunction=False)
+                        app.setEntry(paramName+"_"+optionItem+"_tEnd",float(paramDefaultDict[optionItem][1]),callFunction=False)
+                        app.setEntryWidth(paramName+"_"+optionItem+"_tStart",5)
+                        app.setEntryWidth(paramName+"_"+optionItem+"_tEnd",5)
+                        app.setEntryChangeFunction(paramName+"_"+optionItem+"_tStart",updateModel)
+                        app.setEntryChangeFunction(paramName+"_"+optionItem+"_tEnd",updateModel)
+
+        if anyItem:
+                app.addLabel(paramName+"_tStartLabel","t start", row=0, column=1)
+                app.addLabel(paramName+"_tEndLabel","t end", row=0, column=2)
+
+        app.stopFrame()
+
+
+def solveModel():
+        global lastSolvedModel, timeArr, outputData
+        fm = currentModel
+        timeArr,outputData = tps.exec_solve(fm) # execute function exec_solve (tps/exec)
+        lastSolvedModel = fm
+
+        # resampling if needed
+        dt = 1/(60*10)# a reasonable dt (0.1 s)
+        if np.min(np.diff(timeArr)) < dt:
+                print("Data might be resampled...")
+                tStart = timeArr[0]
+                tFinal = timeArr[-1]
+                nData = ceil((tFinal-tStart)/dt)
+                if nData >= np.size(timeArr):
+                        # upsampling is useless
+                        return
+                interpol
