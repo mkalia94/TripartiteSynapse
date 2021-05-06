@@ -17,7 +17,9 @@ def parameters(p, dict_):
             p.alphae0 = 0.98
         else:
             p.alphae0 = 0.2
-
+    
+    p.Lbath = p.coupling_strength*p.LH20i
+    p.bath_exchange = p.coupling_strength*1e-6 
     p.PEAATg = p.eaatScaleAst*2*1e-5
     p.PEAATi = p.eaatScaleNeuron*1e-6
     p.PNCXi = 5.7 # 1/15 of NKA strength
@@ -49,6 +51,12 @@ def parameters(p, dict_):
     p.NClg0 = p.ClCg0*p.Wg0
     p.NCag0 = p.CaCg0*p.VolPAP
     p.NGlug0 = p.GluCg0*p.VolPAP
+    
+    # bath
+    p.NaCb = p.NaCe0 
+    p.KCb = p.KCe0 
+    p.ClCb = p.ClCe0 
+    p.CaCb = p.CaCc0 
 
     p.CNa = p.NNai0 + p.NNae0 + p.NNag0
     p.CK = p.NKi0 + p.NKe0 + p.NKg0
@@ -132,6 +140,8 @@ def parameters(p, dict_):
 
     p.NGlui0 = p.NI0
     p.GluCi0 = p.NGlui0/p.VolPreSyn
+    p.NGluc0 = p.CGlu - p.NGlui0 - p.NGlug0 - p.ND0 - p.NN0 - p.NR0 - p.NR10- p.NR20 - p.NR30
+    p.GluCb = 0 #p.NGluc0/p.Volc
 
     # Gates    
     p.alpham0 = 0.32*(p.Vi0+52)/(1-exp(-(p.Vi0+52)/4))

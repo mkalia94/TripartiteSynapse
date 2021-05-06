@@ -20,13 +20,18 @@ def model(t, y, p, *args):
         NClg = y[:, 16]
         NCag = y[:, 17]
         NGlug = y[:,18]
-        Vtemp = y[:, 19]
-        Wi = y[:, 20]
-        Wg = y[:, 21]
-        fC0 = y[:,22]
-        fC1 = y[:,23]
-        fD = y[:,24]
-        fO = y[:,25]
+        NNae = y[:,19]
+        NKe = y[:,20]
+        NCle = y[:,21]
+        NCac = y[:,22]
+        NGluc = y[:,23]
+        Wi = y[:, 24]
+        Wg = y[:, 25]
+        We = y[:,26]
+        fC0 = y[:,27]
+        fC1 = y[:,28]
+        fD = y[:,29]
+        fO = y[:,30]
     else:
         NNa = y[0]
         NK = y[1]
@@ -47,13 +52,18 @@ def model(t, y, p, *args):
         NClg = y[16]
         NCag = y[17]
         NGlug = y[18]
-        Vtemp = y[19]
-        Wi = y[20]
-        Wg = y[21]
-        fC0 = y[22]
-        fC1 = y[23]
-        fD = y[24]
-        fO = y[25]
+        NNae = y[19]
+        NKe = y[20]
+        NCle = y[21]
+        NCac = y[22]
+        NGluc = y[23]
+        Wi = y[ 24]
+        Wg = y[ 25]
+        We = y[26]
+        fC0 = y[27]
+        fC1 = y[28]
+        fD = y[29]
+        fO = y[30]
     if p.nosynapse:
         synapse_block = 0
     else:
@@ -61,10 +71,10 @@ def model(t, y, p, *args):
 
     # Ionic amounts and concentrations
     # ECS
-    We = p.Wtot - Wi - Wg
-    NNae = p.CNa - NNag - NNa
-    NKe = p.CK - NKg - NK
-    NCle = p.CCl - NClg - NCl
+    #We = p.Wtot - Wi - Wg
+    #NNae = p.CNa - NNag - NNa
+    #NKe = p.CK - NKg - NK
+    #NCle = p.CCl - NClg - NCl
     NaCe = NNae/We
     KCe = NKe/We
     ClCe = NCle/We
@@ -82,14 +92,14 @@ def model(t, y, p, *args):
     GluCg = NGlug/p.VolPAP
     CaCg = NCag/p.VolPAP
     # Cleft
-    NCac = p.CCa - NCai - NCag
-    NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1- NR2 - NR3
+    #NCac = p.CCa - NCai - NCag
+    #NGluc = p.CGlu - NGlui - NGlug - ND - NN - NR - NR1- NR2 - NR3
     CaCc = NCac/p.Volc
     GluCc = NGluc/p.Volc
     
     # Voltages
     if 'excite' in p.__dict__.keys() or 'excite2' in p.__dict__.keys():
-        V = Vtemp
+
         V = p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*(NGlui+NN+NR+NR1+NR2+NR3+ND)-NCl-p.NAi)
     else:
         V = p.F/p.C*(NNa+NK+synapse_block*2*NCai-synapse_block*(NGlui+NN+NR+NR1+NR2+NR3+ND)-NCl-p.NAi)
@@ -279,10 +289,13 @@ def model(t, y, p, *args):
     SCi = NaCi+KCi+ClCi+p.NAi/Wi
     SCe = NaCe+KCe+ClCe+p.NAe/We + p.NBe/We
     SCg = NaCg + KCg + ClCg + p.NAg/Wg + p.NBg/Wg
+    SCb = p.NaCb + p.KCb + p.ClCb + p.NAe/p.We0 + p.NBe/p.We0
     delpii = p.R*p.T*(SCi-SCe)
     fluxi = p.LH20i*(delpii)
     delpig = p.R*p.T*(SCg-SCe)
     fluxg = p.LH20g*(delpig)
+    delpie = p.R*p.T*(SCe-SCb)
+    fluxe = p.Lbath*(delpie)
 
     Voli = Wi/p.Wi0*100
     Volg = Wg/p.Wg0*100
@@ -394,10 +407,17 @@ def model(t, y, p, *args):
        synapse_block*astblock*(-1/2/p.F)*(-INCXg + ICaLg + INMDA_Ca),
        # POSTSYN
        synapse_block*astblock*(JEAATg + 1/p.F*IGluLg),  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
-       0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\
+       # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\
+       # ECS BATH
+       0,
+       0,
+       0,
+       0,
+       0,
        # WATER
        fluxi, \
        astblock*fluxg,\
+       fluxe, \
        (-p.Rb*GluCc*fC0 + p.Rv*fC1), \
        (p.Rb*GluCc*fC0 + p.Rv*fC2 - p.Rv*fC1 -p.Rb*GluCc*fC1), \
        (-p.Rd*fD + p.Rr*fC2), \
@@ -406,6 +426,13 @@ def model(t, y, p, *args):
     if 'excite' in p.__dict__.keys():
         #ODEs[19] =  p.F/p.C*(ODEs[0]+ODEs[1]+synapse_block*2*(ODEs[6])-synapse_block*(ODEs[7]+ODEs[8]+ODEs[9]+ODEs[10]+ODEs[11]+ODEs[12]+ODEs[13])-ODEs[2] + IExcite+IExcite2)
         ODEs[0] = ODEs[0] + IExcite + IExcite2 # Inject current into the neuron in the form of a bit of sodium injection
+    
+    ODEs[19] = -ODEs[0] - ODEs[14] + p.bath_exchange*(p.NaCb-NaCe)
+    ODEs[20] = -ODEs[1] - ODEs[15] + p.bath_exchange*(p.KCb-KCe)
+    ODEs[21] = -ODEs[2] - ODEs[16] + p.bath_exchange*(p.ClCb-ClCe)
+    ODEs[22] = -ODEs[6] - ODEs[17] + p.bath_exchange*(p.CaCb-CaCc)
+    ODEs[23] = -ODEs[12] - ODEs[18] + p.bath_exchange*(p.GluCb-GluCc)
+    
     ODEs = array(ODEs)*60*1e3
 
     if args:

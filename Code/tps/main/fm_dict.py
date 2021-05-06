@@ -207,6 +207,16 @@ dict_ = {#
         'gNMDA_Na' : 1e-5,
         'gNMDA_K' : 1e-6,
         'gNMDA_Ca' : 1e-7,
+        #--------------------------------------------------------------------------------------
+        # Bath params
+        'coupling_strength' : 0,
+        'Lbath' : 0,
+        'bath_exchange': 0,
+        'NaCb':0,
+        'KCb' : 0,
+        'ClCb' : 0,
+        'CaCb' : 0,
+        'GluCb' : 0,
 }
 
 
