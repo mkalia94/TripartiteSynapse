@@ -1,5 +1,5 @@
 # The energy-deprived tripartite synapse
-Running the simulations from the manuscript 'Ion dynamics of the energy-deprived tripartite synapse'
+Running the simulations from the manuscript 'Ion dynamics of the energy-deprived tripartite synapse', see {here}[https://www.biorxiv.org/content/10.1101/2021.03.19.436129v1].
 
 ## Requirements
   - Install Python 3.x (anaconda recommended)
