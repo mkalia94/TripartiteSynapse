@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# All figures from the paper are simulated here
-
-python set_up.py  --saveloc 'ChloridePaperCortex/EAATClblock' --savenumpy  --alphae0 0.8 --tstart 30 --tend 40 --tfinal 70  --perc 0.5   --plot  '{"E$_m$ (mV)":{"plot":["ax1Vi","ax1Vg"]},"[Na$^+$] (mM)":{"plot":["ax1NaCi","ax1NaCg","ax2NaCe"]},"[K$^+$] (mM)":{"plot":["ax1KCi","ax1KCg","ax2KCe"]},"Volume (%)":{"plot":["ax1Voli","ax1Volg","ax21/p.We0*100*We"]},"[Cl] (mM)":{"plot":["ax1ClCi","ax1ClCe","ax1ClCg"],"ax1scale":[5,60]},"size":[1,5]}' --NMDAscale 0 --origEAAT 1  --ClCg0 15 --block '{"IClLg":[10,80,0.5],"JEAATg":[10,80]}' --KCCscale 3.5 --nkccScale 1 --solve 
-
-python set_up.py  --saveloc 'ChloridePaperDG/EAATClblock' --savenumpy  --alphae0 0.8 --tstart 30 --tend 40 --tfinal 70  --perc 0.5   --plot  '{"E$_m$ (mV)":{"plot":["ax1Vi","ax1Vg"]},"[Na$^+$] (mM)":{"plot":["ax1NaCi","ax1NaCg","ax2NaCe"]},"[K$^+$] (mM)":{"plot":["ax1KCi","ax1KCg","ax2KCe"]},"Volume (%)":{"plot":["ax1Voli","ax1Volg","ax21/p.We0*100*We"]},"[Cl] (mM)":{"plot":["ax1ClCi","ax1ClCe","ax1ClCg"],"ax1scale":[5,60]},"size":[1,5]}' --NMDAscale 0 --origEAAT 1  --ClCg0 30 --block '{"IClLg":[10,80,0.5],"JEAATg":[10,80]}' --KCCscale 0.1 --nkccScale 0.2 --solve 
-

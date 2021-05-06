@@ -20,13 +20,8 @@ def model(t, y, p, *args):
         NClg = y[:, 16]
         NCag = y[:, 17]
         NGlug = y[:,18]
-        Vtemp = y[:, 19]
-        Wi = y[:, 20]
-        Wg = y[:, 21]
-        fC0 = y[:,22]
-        fC1 = y[:,23]
-        fD = y[:,24]
-        fO = y[:,25]
+        Wi = y[:, 19]
+        Wg = y[:, 20]
     else:
         NNa = y[0]
         NK = y[1]
@@ -47,13 +42,8 @@ def model(t, y, p, *args):
         NClg = y[16]
         NCag = y[17]
         NGlug = y[18]
-        Vtemp = y[19]
-        Wi = y[20]
-        Wg = y[21]
-        fC0 = y[22]
-        fC1 = y[23]
-        fD = y[24]
-        fO = y[25]
+        Wi = y[19]
+        Wg = y[20]
     if p.nosynapse:
         synapse_block = 0
     else:
@@ -232,7 +222,6 @@ def model(t, y, p, *args):
     JNKCC1 = p.PNKCC1*p.R*p.T/p.F*(log(KCe) + log(NaCe)
                                    + 2*log(ClCe) - log(KCg)
                                    - log(NaCg) - 2*log(ClCg))
-    JKClg = p.UKClg*p.R*p.T/p.F*(log(KCg)+log(ClCg)-log(KCe)-log(ClCe))
     # Kir4.1
     Vkg = p.R*p.T/p.F*log(KCe/KCg)
     minfty = 1/(2+exp(1.62*(p.F/p.R/p.T)*(Vg-Vkg)))
@@ -240,10 +229,7 @@ def model(t, y, p, *args):
     # IKir = p.GKir*(Vg-Vkg)*sqrt(KCe)/(1+exp((Vg - Vkg - 34)/19.23)))
 
     # GLT-1
-    JEAATg = 1/(1+exp(p.EAAT_beta*(p.EAAT_th-GluCc)))*p.PEAATg*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe *
-                                    p.HeOHa*GluCc/GluCg)
-    if p.origEAAT>0:
-        JEAATg = p.PEAATg*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe *
+    JEAATg = p.PEAATg*p.R*p.T/p.F*log(NaCe**3/NaCg**3*KCg/KCe *
                                           p.HeOHa*GluCc/GluCg)
 
     # NCX
@@ -253,26 +239,7 @@ def model(t, y, p, *args):
                                   CaCg/CaCc*exp((p.eNCX-1)*p.F*Vg/p.R/p.T))/(
                                      1+p.ksatNCX*exp(
                                         (p.eNCX-1)*p.F*Vg/p.R/p.T))
-
-    # NMDA
-
-    fC2 = 1 - fC0 -fC1-fD-fO 
     
-    Mg_block = 1/(1+exp(-0.062*Vg))*p.Mg/3.57
-    INMDA_Na = p.gNMDA_Na*Mg_block*fO*(p.F**2)*(Vg)/(
-        p.R*p.T)*((NaCg -
-                   NaCe*exp(-(p.F*Vg)/(p.R*p.T)))/(
-                       1-exp(-(p.F*Vg)/(p.R*p.T))))
-    
-    INMDA_K = p.gNMDA_Na*Mg_block*fO*(p.F**2)*(Vg)/(
-        p.R*p.T)*((NaCg -
-                   NaCe*exp(-(p.F*Vg)/(p.R*p.T)))/(
-                       1-exp(-(p.F*Vg)/(p.R*p.T))))
-
-    INMDA_Ca = p.gNMDA_Na*Mg_block*fO*(p.F**2)*(Vg)/(
-        p.R*p.T)*((NaCg -
-                   NaCe*exp(-(p.F*Vg)/(p.R*p.T)))/(
-                       1-exp(-(p.F*Vg)/(p.R*p.T))))
     # =========================================================================
     # ----------------------------VOLUME DYNAMICS------------------------------
     # =========================================================================
@@ -329,8 +296,6 @@ def model(t, y, p, *args):
                 fluxi = fluxi*blockOther
             elif key == 'WaterA':
                 fluxg = fluxg*blockOther
-            elif key == 'JKClg':
-                JKClg = JKClg*blockOther
             elif key == 'IClLg':
                 partialLeakblock = val_[2] + (1-val_[2])*blockOther
                 IClLg = IClLg*partialLeakblock
@@ -371,8 +336,8 @@ def model(t, y, p, *args):
     ODEs = [  # Neuron
        ((-1/p.F*(INaG+INaLi+3*Ipumpi))-synapse_block*3/p.F*INCXi +
         synapse_block*3*JEAATi ),
-       (-1/p.F*(IKG+IKLi-2*Ipumpi)-JKCl-synapse_block*JEAATi),
-       (1/p.F*(IClG+IClLi)-JKCl),
+       (-1/p.F*(IKG+IKLi-2*Ipumpi)-synapse_block*JEAATi - JKCl),
+       (1/p.F*(IClG+IClLi)) - JKCl,
        gates_block*(alpham*(1-m)-betam*m),
        gates_block*(alphah*(1-h)-betah*h),
        gates_block*(alphan*(1-n)-betan*n),
@@ -387,21 +352,16 @@ def model(t, y, p, *args):
        (NI*ND/p.trec-k1*ND+p.kmin1*NN),
        # ASTROCYTE
        astblock*((-1/p.F)*(3*Ipumpg + INaLg +
-                           synapse_block*3*INCXg + INMDA_Na)+JNKCC1+synapse_block*3*JEAATg),
-       astblock*((-1/p.F)*(-IKir - 2*Ipumpg + IKLg + INMDA_K)+
-                 + JNKCC1-synapse_block*JEAATg - JKClg),
-       astblock*(2*JNKCC1 + 1/p.F*IClLg - JKClg),
-       synapse_block*astblock*(-1/2/p.F)*(-INCXg + ICaLg + INMDA_Ca),
+                           synapse_block*3*INCXg )+JNKCC1+synapse_block*3*JEAATg),
+       astblock*((-1/p.F)*(-IKir - 2*Ipumpg + IKLg)+
+                 + JNKCC1-synapse_block*JEAATg),
+       astblock*(2*JNKCC1 + 1/p.F*IClLg) ,
+       synapse_block*astblock*(-1/2/p.F)*(-INCXg + ICaLg),
        # POSTSYN
        synapse_block*astblock*(JEAATg + 1/p.F*IGluLg),  # 1/(p.tpost)*(-(Vpost-p.Vpost0)-p.Rm*IAMPA),\
-       0,  # p.alphaAMPA*GluCc*(1-mAMPA)-p.betaAMPA*mAMPA,\
        # WATER
        fluxi, \
-       astblock*fluxg,\
-       (-p.Rb*GluCc*fC0 + p.Rv*fC1), \
-       (p.Rb*GluCc*fC0 + p.Rv*fC2 - p.Rv*fC1 -p.Rb*GluCc*fC1), \
-       (-p.Rd*fD + p.Rr*fC2), \
-       (p.R0*fC2 - p.Rc*fO)]
+       astblock*fluxg]
 
     if 'excite' in p.__dict__.keys():
         #ODEs[19] =  p.F/p.C*(ODEs[0]+ODEs[1]+synapse_block*2*(ODEs[6])-synapse_block*(ODEs[7]+ODEs[8]+ODEs[9]+ODEs[10]+ODEs[11]+ODEs[12]+ODEs[13])-ODEs[2] + IExcite+IExcite2)

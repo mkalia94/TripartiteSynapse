@@ -10,9 +10,7 @@ dict_ = {#
         'kirScale' : 1.0,               # factor Kir conductance
         'eaatScaleNeuron' : 1.0,        # factor EAAT conductance (neuron)
         'eaatScaleAst':1.0,             # factor EAAT conductance (astrocyte)
-        'NMDAscale' : 1.0,
         'KCCscale': 1.0,
-        'origEAAT' : 0.0,
         'ncxScale' : 1.0,
         'nka_na' : 13.0,
         'nka_k' : 0.2,
@@ -194,19 +192,7 @@ dict_ = {#
         'NR30' : 0,               # Molar amount of readily releasable pool 3 (R3)
         'PGluLi' : 0,           # Astrocyte glutamate leak conductance
         'PGluLg' : 0,            # Neuron glutamate leak conductance
-        'CGlu' : 0,               # Molar amount of total glutamate in the system
-        #---------------------------------------------------------------------------------------------------------
-        # NMDA gates parameters
-        'Rc' : 0.0738,
-        'Rb' : 5000,
-        'Rv' : 2.0,
-        'Rr' : 0.0068,
-        'R0' : 0.0465,
-        'Rd' : 0.0084,
-        'Mg' : 1,
-        'gNMDA_Na' : 1e-5,
-        'gNMDA_K' : 1e-6,
-        'gNMDA_Ca' : 1e-7,
+        'CGlu' : 0               # Molar amount of total glutamate in the system
 }
 
 
